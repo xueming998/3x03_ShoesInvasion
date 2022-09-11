@@ -7,3 +7,23 @@ def index(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/index.html')
+
+def about(request):
+    # template = loader.get_template("/index.html")
+    # return HttpResponse(template.render())
+    return render(request, 'ShoesInvasionApp/about.html')
+
+def contact(request):
+    # template = loader.get_template("/index.html")
+    # return HttpResponse(template.render())
+    return render(request, 'ShoesInvasionApp/contact.html')
+
+def cart(request):
+    # template = loader.get_template("/index.html")
+    # return HttpResponse(template.render())
+    return render(request, 'ShoesInvasionApp/cart.html')
+
+def shop(request):
+    # template = loader.get_template("/index.html")
+    # return HttpResponse(template.render())
+    return render(request, 'ShoesInvasionApp/shop.html')
