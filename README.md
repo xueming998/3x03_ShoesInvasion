@@ -9,3 +9,15 @@
 6. It should run at 127.0.0.1:8000 by default, but use '127.0.0.1:8000/ShoesInvasionApp' to access the website
 7. '127.0.0.1:8000/admin' is the admin portal for Django
 8. Do what is necessary for the grades!
+
+
+## Setup Database
+1. Install MySQL Workbench Community (https://dev.mysql.com/downloads/mysql/), may need MySQL Server as well.
+2. Create a schema called 'shoesinvasion'
+3. Navigate to '3x03_ShoesInvasion/ShoesInvasion/settings.py'
+4. Find DATABASES and edit to USER, PASSWORD, HOST, PORT according to your setting
+5. In your terminal, CD to 3x03_ShoesInvasion and do ls command
+6. Verify there is a 'manage.py' file
+7. Install mysqlclient and mysql-connector-python by `pip install mysqlclient` and `pip install mysql-connector-python`
+8. Run `python manage.py makemigrations ShoesInvasionApp` and `python manage.py migrate`
+9. Under MySQL Workbench shoesinvasion schema, verify if shopping_cart and users table is created
