@@ -20,4 +20,4 @@
 6. Verify there is a 'manage.py' file
 7. Install mysqlclient and mysql-connector-python by `pip install mysqlclient` and `pip install mysql-connector-python`
 8. Run `python manage.py makemigrations ShoesInvasionApp` and `python manage.py migrate`
-9. Under MySQL Workbench shoesinvasion schema, verify if shopping_cart and users table is created
+9. Under MySQL Workbench shoesinvasion schema, verify that all 7 tables is created
