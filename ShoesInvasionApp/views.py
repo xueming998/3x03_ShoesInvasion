@@ -27,3 +27,8 @@ def shop(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/shop.html')
+
+def login(request):
+    # template = loader.get_template("/index.html")
+    # return HttpResponse(template.render())
+    return render(request, 'ShoesInvasionApp/login_user.html')
