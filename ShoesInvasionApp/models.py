@@ -21,6 +21,7 @@ class users(models.Model):
     user_password = models.CharField(max_length=255)
     forget_pwd_code = models.CharField(max_length=10)
     phone = models.IntegerField(default=0)
+    banned_status = models.CharField(max_length=1)
 
 # Admin Users Table
 class admin_users(models.Model):
