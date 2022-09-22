@@ -19,9 +19,14 @@ class users(models.Model):
     gender = models.CharField(max_length=1)
     user_username = models.CharField(max_length=255)
     user_password = models.CharField(max_length=255)
-    forget_pwd_code = models.CharField(max_length=10)
+    # remove forget_pwd_code
+    forget_pwd_code = models.CharField(max_length=10) 
     phone = models.IntegerField(default=0)
-    banned_status = models.CharField(max_length=1)
+    banned_status = models.CharField(max_length=1, default="N")
+    # verifiedStatus, lockedStatus, lockedCounter, verificationCode
+
+    def __str__(self):
+        return self.fname
 
 # Admin Users Table
 class admin_users(models.Model):
@@ -29,11 +34,19 @@ class admin_users(models.Model):
     admin_username = models.CharField(max_length=255)
     admin_password = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.admin_username
+
+# Editor table
+
 # Transactions Table
 class transactions(models.Model):
     transaction_id = models.IntegerField(default=0, primary_key=True)
     createdDate = models.DateField(default=date.today)
     user_id = models.ForeignKey(users, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.transaction_id
 
 # Products Table
 class products(models.Model):
@@ -47,6 +60,9 @@ class products(models.Model):
     gender_type = models.CharField(max_length=1)
     available = models.CharField(max_length=3)
 
+    def __str__(self):
+        return self.product_name
+
 # Transaction Details Table
 class transaction_details(models.Model):
     transaction_details_id = models.IntegerField(default=0, primary_key=True)
@@ -56,12 +72,18 @@ class transaction_details(models.Model):
     size = models.CharField(max_length=5)
     amount = models.DecimalField(default=0, decimal_places=2, max_digits=6)
 
+    def __str__(self):
+        return self.transaction_details_id
+
 # Products Quantity Table
 class product_quantity(models.Model):
     product = models.ForeignKey(products, on_delete=models.CASCADE)
     size = models.CharField(max_length=5)
     quantity = models.IntegerField(default=0)
     color = models.CharField(max_length=45)
+
+    def __str__(self):
+        return self.product
 
 # Shopping Cart Table
 class Shopping_Cart(models.Model):
@@ -73,3 +95,6 @@ class Shopping_Cart(models.Model):
     color = models.CharField(max_length=45)
     total_price = models.DecimalField(default=0, decimal_places=2, max_digits=6)
     status = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.shopping_id

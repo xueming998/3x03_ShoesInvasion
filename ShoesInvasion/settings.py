@@ -78,13 +78,15 @@ WSGI_APPLICATION = 'ShoesInvasion.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+# F up gitignore not working
+# Asif : asif1234
+# Ken : admin
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'asif1234',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
