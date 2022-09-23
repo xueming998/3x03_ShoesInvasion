@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.contrib import messages
-from .models import users
+from .models import user
 
 # Create your views here.
 def index(request):
