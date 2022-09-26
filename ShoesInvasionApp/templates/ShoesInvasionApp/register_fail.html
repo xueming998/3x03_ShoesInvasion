@@ -1,7 +1,3 @@
-
-{% load bootstrap4 %}
-{% bootstrap_messages %}
-
 <!doctype html>
 <html lang="en">
 
@@ -68,7 +64,7 @@
       background-color: #3e8e41;
     }
   </style>
-  <title>Shoes Invasion</title>
+  <title>Ninja Sneakers</title>
 </head>
 
 <body>
@@ -80,8 +76,8 @@
     <div class="container">
       <div class="row align-items-end">
         <div class="col-lg-7">
-          <h1>Registeration</h1>
-          <p>Already have an account? <a href="login">Member Login</a></p>
+          <h1>Registration Failed!</h1>
+          <p>Already have an account? <a href="login">Member Login</a> | <a href="register">Sign up</a> here now!</p>
         </div>
       </div>
     </div>
@@ -93,74 +89,7 @@
 
         <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
 
-          <form style="width: 1000px;" method="POST" id="MyForm">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-          <label hidden id="incorrectPassword">Password does not match</label>
-          <!-- 
-            <div class="form-group" style="float:left; min-width: 490px">
-              <input type="hidden" id="roletype" name="roletype" value="1">
-              <label>First Name:</label>
-              <input class="form-control" type="text" id="firstName" required name="firstName" placeholder="First Name">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Last Name:</label>
-              <input class="form-control" type="text" id="lastName" required name="lastName" placeholder="Last Name">
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Address:</label>
-              <input class="form-control" type="text" id="address" required name="address" placeholder="Address">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Email:</label>
-              <input class="form-control" type="email" id="email" required name="email" placeholder="Email">
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Date of Birth:</label>
-              <input class="form-control" type="date" id="dob" required name="dob" placeholder="Date of Birth">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Gender:</label>
-              <br>
-              <select name="gender" id="gender" style="min-height:48px; min-width: 490px;">
-                <option value="m">Male</option>
-                <option value="f">Female</option>
-              </select>
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Username:</label>
-              <input class="form-control" type="text" id="username" required name="username" placeholder="Username">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Password:</label>
-              <input class="form-control" type="password" id="password" required name="password" placeholder="Password">
-            </div>
-
-            <div style="clear:both;"></div>
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Phone:</label>
-              <input class="form-control" type="number" id="phone" required name="phone" placeholder="Phone">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Verify Password:</label>
-              <input class="form-control" type="password" id="verify-password" required name="verify-password" placeholder="Verify Password">
-            </div>
-
-            <div style="clear:both;"></div>
--->
-            <div class="form-group">
-              <button class="btn btn-primary" id="submit">Submit</button>
-            </div>
-          </form>
+            <p>We are sorry but the username or email is already registered and taken.</p>
         </div>
       </div>
 
@@ -242,42 +171,7 @@
   <script src="{% static 'js/aos.js' %}"></script>
   <script src="{% static 'js/custom.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-  <script>
-    $(document).ready(function () {
-
-
-      document.getElementById("myText").value = "Johnny Bravo";
-
-      // Submit Button Logic
-      $('#submit').click(function () {  
-        var password = document.getElementById("password").value;
-        var verifyPassword = document.getElementById("verify-password").value
-        if (password != verifyPassword){
-          alert("Submit");
-        }
-        else{
-          alert("Submit123");
-        }
-        
-      });
-
-
-      $('#subscribe_button').click(function () {
-        console.log("CHANGE CLICKED");
-
-        var newsletterEmail = $("#newsletterEmail").val();
-        console.log("newsletterEmail: " + newsletterEmail);
-
-        $.ajax({
-          type: "POST",
-          url: "mailer.php",
-          data: { newsletterEmail: newsletterEmail, mailerStatus: "1" }
-        }).done(function (msg) {
-          console.log(msg);
-        });
-      });
-    });
-  </script>
+  
 </body>
 
 </html>

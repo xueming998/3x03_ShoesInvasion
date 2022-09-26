@@ -23,4 +23,6 @@ urlpatterns = [
     path('register', views.register, name='register'), 
     # Register Success
     path('registerSuccess', views.registerSuccess, name='registerSuccess'),
+    # Register Failed
+    path('registerFailed', views.registerFailed, name='registerFailed'),
 ]
