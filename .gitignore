@@ -1,0 +1,12 @@
+# ShoesInvasionApp Folders
+__pycache__
+/ShoesInvasionApp/__pycache__
+/ShoesInvasionApp/migrations
+
+# ShoesInvasion Folders
+/ShoesInvasion/__pycache__
+/ShoesInvasion/settings.py
+
+# Environments
+.venv
+.env

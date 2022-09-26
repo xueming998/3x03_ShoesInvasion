@@ -1,239 +1,341 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<title>W3.CSS Template</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-body {font-family: "Lato", sans-serif}
-.mySlides {display: none}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Muli:wght@400;700&display=swap" rel="stylesheet">
+
+{% load static %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
+  <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <title>Shoe Invasion</title>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<div class="w3-top">
-  <div class="w3-bar w3-black w3-card">
-    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
-    <a href="#" class="w3-bar-item w3-button w3-padding-large">HOME</a>
-    <a href="#band" class="w3-bar-item w3-button w3-padding-large w3-hide-small">BAND</a>
-    <a href="#tour" class="w3-bar-item w3-button w3-padding-large w3-hide-small">TOUR</a>
-    <a href="#contact" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CONTACT</a>
-    <div class="w3-dropdown-hover w3-hide-small">
-      <button class="w3-padding-large w3-button" title="More">MORE <i class="fa fa-caret-down"></i></button>     
-      <div class="w3-dropdown-content w3-bar-block w3-card-4">
-        <a href="#" class="w3-bar-item w3-button">Merchandise</a>
-        <a href="#" class="w3-bar-item w3-button">Extras</a>
-        <a href="#" class="w3-bar-item w3-button">Media</a>
-      </div>
-    </div>
-    <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>
-  </div>
-</div>
-
-<!-- Navbar on small screens (remove the onclick attribute if you want the navbar to always show on top of the content when clicking on the links) -->
-<div id="navDemo" class="w3-bar-block w3-black w3-hide w3-hide-large w3-hide-medium w3-top" style="margin-top:46px">
-  <a href="#band" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">BAND</a>
-  <a href="#tour" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">TOUR</a>
-  <a href="#contact" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">CONTACT</a>
-  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">MERCH</a>
-</div>
-
-<!-- Page content -->
-<div class="w3-content" style="max-width:2000px;margin-top:46px">
-
-  <!-- Automatic Slideshow Images -->
-  <div class="mySlides w3-display-container w3-center">
-    <img src="/w3images/la.jpg" style="width:100%">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>Los Angeles</h3>
-      <p><b>We had the best time playing at Venice Beach!</b></p>   
-    </div>
-  </div>
-  <div class="mySlides w3-display-container w3-center">
-    <img src="/w3images/ny.jpg" style="width:100%">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>New York</h3>
-      <p><b>The atmosphere in New York is lorem ipsum.</b></p>    
-    </div>
-  </div>
-  <div class="mySlides w3-display-container w3-center">
-    <img src="/w3images/chicago.jpg" style="width:100%">
-    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
-      <h3>Chicago</h3>
-      <p><b>Thank you, Chicago - A night we won't forget.</b></p>    
-    </div>
-  </div>
-
-  <!-- The Band Section -->
-  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
-    <h2 class="w3-wide">THE BAND</h2>
-    <p class="w3-opacity"><i>We love music</i></p>
-    <p class="w3-justify">We have created a fictional band website. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-      ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-    <div class="w3-row w3-padding-32">
-      <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round w3-margin-bottom" alt="Random Name" style="width:60%">
-      </div>
-      <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round w3-margin-bottom" alt="Random Name" style="width:60%">
-      </div>
-      <div class="w3-third">
-        <p>Name</p>
-        <img src="/w3images/bandmember.jpg" class="w3-round" alt="Random Name" style="width:60%">
-      </div>
-    </div>
-  </div>
-
-  <!-- The Tour Section -->
-  <div class="w3-black" id="tour">
-    <div class="w3-container w3-content w3-padding-64" style="max-width:800px">
-      <h2 class="w3-wide w3-center">TOUR DATES</h2>
-      <p class="w3-opacity w3-center"><i>Remember to book your tickets!</i></p><br>
-
-      <ul class="w3-ul w3-border w3-white w3-text-grey">
-        <li class="w3-padding">September <span class="w3-tag w3-red w3-margin-left">Sold out</span></li>
-        <li class="w3-padding">October <span class="w3-tag w3-red w3-margin-left">Sold out</span></li>
-        <li class="w3-padding">November <span class="w3-badge w3-right w3-margin-right">3</span></li>
-      </ul>
-
-      <div class="w3-row-padding w3-padding-32" style="margin:0 -16px">
-        <div class="w3-third w3-margin-bottom">
-          <img src="/w3images/newyork.jpg" alt="New York" style="width:100%" class="w3-hover-opacity">
-          <div class="w3-container w3-white">
-            <p><b>New York</b></p>
-            <p class="w3-opacity">Fri 27 Nov 2016</p>
-            <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
-            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('ticketModal').style.display='block'">Buy Tickets</button>
-          </div>
+  {% comment %} <div class="search-form" id="search-form">
+    <form action="">
+      <input type="search" class="form-control" placeholder="Enter keyword to search...">
+      <button class="button">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+          <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+        </svg>
+      </button>
+      <button class="button">
+        <div class="close-search">
+          <span class="icofont-close js-close-search"></span>
         </div>
-        <div class="w3-third w3-margin-bottom">
-          <img src="/w3images/paris.jpg" alt="Paris" style="width:100%" class="w3-hover-opacity">
-          <div class="w3-container w3-white">
-            <p><b>Paris</b></p>
-            <p class="w3-opacity">Sat 28 Nov 2016</p>
-            <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
-            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('ticketModal').style.display='block'">Buy Tickets</button>
-          </div>
-        </div>
-        <div class="w3-third w3-margin-bottom">
-          <img src="/w3images/sanfran.jpg" alt="San Francisco" style="width:100%" class="w3-hover-opacity">
-          <div class="w3-container w3-white">
-            <p><b>San Francisco</b></p>
-            <p class="w3-opacity">Sun 29 Nov 2016</p>
-            <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
-            <button class="w3-button w3-black w3-margin-bottom" onclick="document.getElementById('ticketModal').style.display='block'">Buy Tickets</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+      </button>
 
-  <!-- Ticket Modal -->
-  <div id="ticketModal" class="w3-modal">
-    <div class="w3-modal-content w3-animate-top w3-card-4">
-      <header class="w3-container w3-teal w3-center w3-padding-32"> 
-        <span onclick="document.getElementById('ticketModal').style.display='none'" 
-       class="w3-button w3-teal w3-xlarge w3-display-topright">×</span>
-        <h2 class="w3-wide"><i class="fa fa-suitcase w3-margin-right"></i>Tickets</h2>
-      </header>
-      <div class="w3-container">
-        <p><label><i class="fa fa-shopping-cart"></i> Tickets, $15 per person</label></p>
-        <input class="w3-input w3-border" type="text" placeholder="How many?">
-        <p><label><i class="fa fa-user"></i> Send To</label></p>
-        <input class="w3-input w3-border" type="text" placeholder="Enter email">
-        <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right">PAY <i class="fa fa-check"></i></button>
-        <button class="w3-button w3-red w3-section" onclick="document.getElementById('ticketModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
-        <p class="w3-right">Need <a href="#" class="w3-text-blue">help?</a></p>
-      </div>
-    </div>
-  </div>
+    </form>
+  </div> {% endcomment %}
 
-  <!-- The Contact Section -->
-  <div class="w3-container w3-content w3-padding-64" style="max-width:800px" id="contact">
-    <h2 class="w3-wide w3-center">CONTACT</h2>
-    <p class="w3-opacity w3-center"><i>Fan? Drop a note!</i></p>
-    <div class="w3-row w3-padding-32">
-      <div class="w3-col m6 w3-large w3-margin-bottom">
-        <i class="fa fa-map-marker" style="width:30px"></i> Chicago, US<br>
-        <i class="fa fa-phone" style="width:30px"></i> Phone: +00 151515<br>
-        <i class="fa fa-envelope" style="width:30px"> </i> Email: mail@mail.com<br>
-      </div>
-      <div class="w3-col m6">
-        <form action="/action_page.php" target="_blank">
-          <div class="w3-row-padding" style="margin:0 -16px 8px -16px">
-            <div class="w3-half">
-              <input class="w3-input w3-border" type="text" placeholder="Name" required name="Name">
-            </div>
-            <div class="w3-half">
-              <input class="w3-input w3-border" type="text" placeholder="Email" required name="Email">
+  {% comment %} To include navbar {% endcomment %}
+  {% include 'navbar.html' %}
+  
+  <div class="owl-carousel owl-single home-slider">
+    <div class="item">
+      <div class="untree_co-hero" style="background-image: url('images/hero_bg_5.jpg');">
+        <div class="container">
+          <div class="row align-items-center justify-content-center">
+            <div class="col-lg-8 text-center text-lg-center">
+
+              <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">The New Way To Display Product by <a href="https://Colorlib">Colorlib</a></h1>
+              <div class="mb-5 text-white desc mx-auto" data-aos="fade-up" data-aos-delay="200">
+              </div>
+
+              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="#" class="btn btn-outline-black">Explore now</a></p>
+
             </div>
           </div>
-          <input class="w3-input w3-border" type="text" placeholder="Message" required name="Message">
-          <button class="w3-button w3-black w3-section w3-right" type="submit">SEND</button>
-        </form>
-      </div>
+        </div>
+      </div> <!-- /.untree_co-hero -->
+    </div>
+    <div class="item">
+      <div class="untree_co-hero" style="background-image: url('images/hero_bg_6.jpg');">
+      </div> <!-- /.untree_co-hero -->
     </div>
   </div>
   
-<!-- End Page Content -->
-</div>
+  <div class="untree_co-section py-4 bg-light">
+    <div class="container">
+      <div class="row align-items-stretch">
+        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
+          <div class="feature h-100">
+            <div class="icon">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-truck" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5v7h-1v-7a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5v1A1.5 1.5 0 0 1 0 10.5v-7zM4.5 11h6v1h-6v-1z"/>
+                <path fill-rule="evenodd" d="M11 5h2.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4.5h-1V5zm-8 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                <path fill-rule="evenodd" d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+              </svg>
+            </div>
+            <h3>Worldwide Delivery</h3>
+            <p>Far far away, behind the word mountains, far from the countries.</p>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
+          <div class="feature h-100">
+            <div class="icon">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-shield-lock" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M5.443 1.991a60.17 60.17 0 0 0-2.725.802.454.454 0 0 0-.315.366C1.87 7.056 3.1 9.9 4.567 11.773c.736.94 1.533 1.636 2.197 2.093.333.228.626.394.857.5.116.053.21.089.282.11A.73.73 0 0 0 8 14.5c.007-.001.038-.005.097-.023.072-.022.166-.058.282-.111.23-.106.525-.272.857-.5a10.197 10.197 0 0 0 2.197-2.093C12.9 9.9 14.13 7.056 13.597 3.159a.454.454 0 0 0-.315-.366c-.626-.2-1.682-.526-2.725-.802C9.491 1.71 8.51 1.5 8 1.5c-.51 0-1.49.21-2.557.491zm-.256-.966C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815z"/>
+                <path d="M9.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                <path d="M7.411 8.034a.5.5 0 0 1 .493-.417h.156a.5.5 0 0 1 .492.414l.347 2a.5.5 0 0 1-.493.585h-.835a.5.5 0 0 1-.493-.582l.333-2z"/>
+              </svg>
+            </div>
+            <h3>Secure Payments</h3>
+            <p>Far far away, behind the word mountains, far from the countries.</p>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
+          <div class="feature h-100">
+            <div class="icon">
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-counterclockwise" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M12.83 6.706a5 5 0 0 0-7.103-3.16.5.5 0 1 1-.454-.892A6 6 0 1 1 2.545 5.5a.5.5 0 1 1 .91.417 5 5 0 1 0 9.375.789z"/>
+                <path fill-rule="evenodd" d="M7.854.146a.5.5 0 0 0-.708 0l-2.5 2.5a.5.5 0 0 0 0 .708l2.5 2.5a.5.5 0 1 0 .708-.708L5.707 3 7.854.854a.5.5 0 0 0 0-.708z"/>
+              </svg>
+            </div>
+            <h3>Simple Returns</h3>
+            <p>Far far away, behind the word mountains, far from the countries.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> <!-- /.untree_co-section -->
 
-<!-- Image of location/map -->
-<img src="/w3images/map.jpg" class="w3-image w3-greyscale-min" style="width:100%">
+  <div class="untree_co-section">
+    <div class="container">
 
-<!-- Footer -->
-<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
-  <i class="fa fa-facebook-official w3-hover-opacity"></i>
-  <i class="fa fa-instagram w3-hover-opacity"></i>
-  <i class="fa fa-snapchat w3-hover-opacity"></i>
-  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-  <i class="fa fa-twitter w3-hover-opacity"></i>
-  <i class="fa fa-linkedin w3-hover-opacity"></i>
-  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-</footer>
+      <div class="row">
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge new">New</span>
+              <img src="images/cloth_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Kiko Linen Slip Dress, Brown</a></h3>
+            <div class="price">
+              <span>£69.00</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Sleeve Dress, White</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <img src="images/watch_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Hodina Watch</a></h3>
+            <div class="price">
+              <span>£29.00</span>
+            </div>
+          </div>
+        </div>
 
-<script>
-// Automatic Slideshow - change image every 4 seconds
-var myIndex = 0;
-carousel();
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
 
-function carousel() {
-  var i;
-  var x = document.getElementsByClassName("mySlides");
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
-  }
-  myIndex++;
-  if (myIndex > x.length) {myIndex = 1}    
-  x[myIndex-1].style.display = "block";  
-  setTimeout(carousel, 4000);    
-}
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <img src="images/shoe_2.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Triangle Low White-Black</a></h3>
+            <div class="price">
+              <span>£29.00</span>
+            </div>
+          </div>
 
-// Used to toggle the menu on small screens when clicking on the menu button
-function myFunction() {
-  var x = document.getElementById("navDemo");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-  }
-}
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
 
-// When the user clicks anywhere outside of the modal, close it
-var modal = document.getElementById('ticketModal');
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-</script>
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/cloth_3.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Kid Dress, White</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
 
+
+        </div>
+        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
+
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/shoe_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Lady Shoes, Brown</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div> <!-- /.untree_co-section -->
+
+  
+  <div class="container">
+
+
+    <div class="deal-hero" style="background-image: url('images/hero_bg_1.jpg')"> 
+      <div class="deal-contents">
+        <span class="subtitle">Limited Offers 20% OFF</span>
+        <h2 class="title">Week Deal</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum fuga incidunt laboriosam voluptas iure, delectus dignissimos facilis neque nulla earum.</p>
+        <a href="#" class="btn btn-black">Shop Now</a>
+      </div>
+    </div> <!-- /.deal-hero -->
+
+  </div>
+
+  <div class="untree_co-section">
+    <div class="container">
+      <div class="row mb-5 align-items-center">
+        <div class="col-md-6">
+          <h2 class="h3">Popular Items</h2>        
+        </div>
+        <div class="col-sm-6 carousel-nav text-sm-right">
+          <a href="#" class="prev js-custom-prev-v2">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path fill-rule="evenodd" d="M8.354 11.354a.5.5 0 0 0 0-.708L5.707 8l2.647-2.646a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708 0z"/>
+              <path fill-rule="evenodd" d="M11.5 8a.5.5 0 0 0-.5-.5H6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 .5-.5z"/>
+            </svg>
+          </a>
+          <a href="#" class="next js-custom-next-v2">
+            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-right-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path fill-rule="evenodd" d="M7.646 11.354a.5.5 0 0 1 0-.708L10.293 8 7.646 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0z"/>
+              <path fill-rule="evenodd" d="M4.5 8a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+          </a>
+        </div>
+      </div> <!-- /.heading -->
+      <div class="owl-3-slider owl-carousel">
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge new">New</span>
+              <img src="images/cloth_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Kiko Linen Slip Dress, Brown</a></h3>
+            <div class="price">
+              <span>£69.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Sleeve Dress, White</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <img src="images/watch_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Hodina Watch</a></h3>
+            <div class="price">
+              <span>£29.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <img src="images/shoe_2.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Triangle Low White-Black</a></h3>
+            <div class="price">
+              <span>£29.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/cloth_3.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Kid Dress, White</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="shop-single.html" class="product-img">
+              <span class="custom-badge sale">Sale</span>
+              <img src="images/shoe_1.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Lady Shoes, Brown</a></h3>
+            <div class="price">
+              <del>£99.00</del> &mdash; <span>£69.00</span>
+            </div>
+          </div>
+        </div> <!-- /.item -->
+      </div>
+    </div> <!-- /.container -->
+  </div> <!-- /.untree_co-section -->  
+  
+{% include 'ShoesInvasionApp/footer.html' %}
+
+  <div id="overlayer"></div>
+  <div class="loader">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+{% load static %}
+  <script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
+  <script src="{% static 'js/popper.min.js'%}"></script>
+  <script src="{% static 'js/bootstrap.min.js'%}"></script>
+  <script src="{% static 'js/owl.carousel.min.js'%}"></script>
+  <script src="{% static 'js/jquery.animateNumber.min.js'%}"></script>
+  <script src="{% static 'js/jquery.waypoints.min.js'%}"></script>
+  <script src="{% static 'js/jquery.fancybox.min.js'%}"></script>
+  <script src="{% static 'js/jquery.sticky.js'%}"></script>
+  <script src="{% static 'js/aos.js'%}"></script>
+  <script src="{% static 'js/custom.js'%}"></script>
+  
 </body>
+
 </html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Muli:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %} ">
+  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css'  %}">
+  <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {
+      background-color: #ddd;
+    }
+
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+    .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+    }
+  </style>
+  <title>Ninja Sneakers</title>
+</head>
+
+<body>
+  {% comment %} To include navbar {% endcomment %}
+  {% include 'navbar.html' %}
+
+  <div class="page-heading bg-light"
+    style="background-image: url(../../static/images/pexels-madison-inouye-193694.jpg)">
+    <div class="container">
+      <div class="row align-items-end">
+        <div class="col-lg-7">
+          <h1>Verify your email!</h1>
+          <p>Already have an account? <a href="login">Member Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="untree_co-section">
+    <div class="container">
+      <div class="row mb-5">
+
+        <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
+
+            <p>We've sent an email to your account to verify your email address.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="site-footer">
+    <footer>
+      <div class="container">
+        <div class="row">
+
+          <div class="col-lg-2">
+            <div class="widget">
+              <h3>About</h3>
+              <ul class="list-unstyled">
+                <li><a href="index.php#aboutC">About us</a></li>
+                <li><a href="faq.php">FAQ</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-2">
+            <div class="widget">
+              <h3>Policies</h3>
+              <ul class="list-unstyled">
+                <li><a href="cookie_policy.php">Cookies Policy</a></li>
+                <li><a href="privacy_policy.php">Privacy Policy</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-2">
+            <div class="widget">
+              <h3>Shop</h3>
+              <ul class="list-unstyled">
+                <li><a href="product.php?gender=Men">Men's Store</a></li>
+                <li><a href="product.php?gender=Ladies">Ladies's Store</a></li>
+                <li><a href="terms_of_use.php">Terms of Use</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#TNCModalCenter">Terms and Condition</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="widget">
+              <h3>Join our list and receive exclusives</h3>
+              <div class="d-flex">
+                <label>
+                  <input type="email" class="form-control" placeholder="Email address" id="newsletterEmail"
+                    name="newsletterEmail" aria-label="newsletterEmail">
+                </label>
+                <label>
+                  <input type="submit" class="btn btn-black" value="Subscribe" id="subscribe_button"
+                    name="subscribe_button" aria-label="subscribe_button">
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- /.container -->
+    </footer> <!-- /.footer -->
+  </div> <!-- /.site-footer -->
+
+  <div id="overlayer"></div>
+  <div id="loader" class="loader">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  {% load static %}
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/popper.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+  <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+  <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+  <script src="{% static 'js/jquery.sticky.js' %}"></script>
+  <script src="{% static 'js/aos.js' %}"></script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+  
+</body>
+
+</html>
