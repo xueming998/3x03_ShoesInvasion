@@ -1,15 +1,9 @@
 # ShoesInvasionApp Folders
-__pycache__
-/ShoesInvasionApp/__pycache__
 /ShoesInvasionApp/migrations
 
 # ShoesInvasion Folders
 /ShoesInvasion/__pycache__
 /ShoesInvasion/settings.py
-
-# Environments
-.venv
-.env
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,django,windows,macos,visualstudio
