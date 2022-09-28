@@ -1,4 +1,6 @@
 from asyncio.windows_events import NULL
+# from math import prod
+from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
@@ -36,13 +38,49 @@ def cart(request):
     # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/cart.html')
 
+def shoeDetails(request):
+    return render(request, 'ShoesInvasionApp/details.html')
+
 def shop(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
-    # products.ProductsTable.objects.all()
-    # product = ProductsTable.object.all()
-    product = ProductsTable.objects.all
-    return render(request, 'ShoesInvasionApp/shop.html',{'product':product})
+    shoeType = request.GET.get('type', "All Products")
+    brand = request.GET.get('brand', "Any")
+    gender = request.GET.get('gender', "Any")
+    # product = ProductsTable.objects.all
+    # No Filter 
+    if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
+        product = ProductsTable.objects.all
+    
+    # Filter 
+    elif (shoeType == "All Products" and brand != "Any" and gender != "Any" ):
+        product = ProductsTable.objects.filter(product_brand = brand, gender_type = gender)
+    elif (shoeType == "All Products" and brand == "Any" and gender != "Any" ):
+        product = ProductsTable.objects.filter(gender_type = gender)
+    elif (shoeType == "All Products" and brand != "Any" and gender == "Any" ):
+        product = ProductsTable.objects.filter(product_brand = brand)
+
+    elif (shoeType != "All Products" and brand == "Any" and gender == "Any" ):
+        product = ProductsTable.objects.filter(product_category = shoeType)
+    elif (shoeType != "All Products" and brand != "Any" and gender == "Any"):
+        is_exist = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand).exists()
+        if (is_exist == False):
+            product = None
+        else:
+            product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand)
+
+    elif (shoeType != "All Products" and brand != "Any" and gender != "Any"):
+        product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, gender_type = gender)
+    elif (shoeType != "All Products" and brand == "Any" and gender != "Any"):
+        product = ProductsTable.objects.filter(product_category = shoeType,gender_type = gender)
+    else:
+        product = None
+
+    context = {
+        'product':product,
+        'type':shoeType,
+        'gender':brand,
+        'brand' : gender, 
+    }
+    return render(request, 'ShoesInvasionApp/shop.html',context)
 
 def login(request):
     # template = loader.get_template("/index.html")
