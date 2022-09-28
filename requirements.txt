@@ -1,0 +1,7 @@
+django==4.1.1
+pymysql==1.0.2
+cryptography==38.0.1
+mysqlclient==2.1.1
+mysql-connector-python==8.0.30
+bcrypt==4.0.0
+django-bootstrap4==22.2

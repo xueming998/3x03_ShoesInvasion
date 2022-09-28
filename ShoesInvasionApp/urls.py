@@ -19,4 +19,10 @@ urlpatterns = [
     path('shop', views.shop, name='shop'),
     # Login
     path('login', views.login, name='login'),
+    # Register
+    path('register', views.register, name='register'), 
+    # Register Success
+    path('registerSuccess', views.registerSuccess, name='registerSuccess'),
+    # Register Failed
+    path('registerFailed', views.registerFailed, name='registerFailed'),
 ]
