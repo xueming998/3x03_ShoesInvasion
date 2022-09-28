@@ -12,7 +12,7 @@ urlpatterns = [
     # About Page Routing
     path('about', views.about, name='about'),
     # Contact Page Routing
-    path('contact', views.contact, name='contact'),
+    path('home#contact', views.index, name='home'),
     # Shopping Cart Routing
     path('cart', views.cart, name='cart'),
      # Shop

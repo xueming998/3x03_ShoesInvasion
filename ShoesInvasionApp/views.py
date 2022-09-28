@@ -2,11 +2,18 @@ from asyncio.windows_events import NULL
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
+
+# from .models.products import ProductsTable
+# from ShoesInvasionApp.models import ProductsTable
+
+from .models.products import ProductsTable
+
 from django.contrib import messages
 
 from ShoesInvasionApp.forms import RegisterForm
 from .models.user import UserTable
 import bcrypt
+
 
 # Create your views here.
 def index(request):
@@ -22,7 +29,7 @@ def about(request):
 def contact(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/contact.html')
+    return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
     # template = loader.get_template("/index.html")
@@ -32,7 +39,10 @@ def cart(request):
 def shop(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/shop.html')
+    # products.ProductsTable.objects.all()
+    # product = ProductsTable.object.all()
+    product = ProductsTable.objects.all
+    return render(request, 'ShoesInvasionApp/shop.html',{'product':product})
 
 def login(request):
     # template = loader.get_template("/index.html")
