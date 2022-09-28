@@ -3,8 +3,10 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
-from ShoesInvasionApp.models import products
+# from .models.products import ProductsTable
+# from ShoesInvasionApp.models import ProductsTable
 
+from .models.products import ProductsTable
 
 from django.contrib import messages
 
@@ -37,7 +39,9 @@ def cart(request):
 def shop(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
-    product = products.objects.all()
+    # products.ProductsTable.objects.all()
+    # product = ProductsTable.object.all()
+    product = ProductsTable.objects.all
     return render(request, 'ShoesInvasionApp/shop.html',{'product':product})
 
 def login(request):
