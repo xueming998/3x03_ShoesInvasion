@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from ShoesInvasionApp.models import products
+
 
 # Create your views here.
 def index(request):
@@ -16,7 +18,7 @@ def about(request):
 def contact(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/contact.html')
+    return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
     # template = loader.get_template("/index.html")
@@ -26,7 +28,8 @@ def cart(request):
 def shop(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/shop.html')
+    product = products.objects.all()
+    return render(request, 'ShoesInvasionApp/shop.html',{'product':product})
 
 def login(request):
     # template = loader.get_template("/index.html")

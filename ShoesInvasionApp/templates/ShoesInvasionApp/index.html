@@ -1,228 +1,58 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
-  <meta name="description" content="" />
-  <meta name="keywords" content="" />
-
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Muli:wght@400;700&display=swap" rel="stylesheet">
-
-{% load static %}
-  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
-  <link rel="stylesheet" href="{% static 'css/jquery.fancybox.min.css' %}">
-  <link rel="stylesheet" href="{% static 'fonts/icomoon/style.css' %}">
-  <link rel="stylesheet" href="{% static 'fonts/flaticon/font/flaticon.css' %}">
-  <link rel="stylesheet" href="{% static 'css/aos.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
-  <title>Shoe Invasion</title>
+  {% include 'ShoesInvasionApp/head.html' %}
 </head>
-
 <body>
 
-  {% comment %} <div class="search-form" id="search-form">
-    <form action="">
-      <input type="search" class="form-control" placeholder="Enter keyword to search...">
-      <button class="button">
-        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
-          <path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
-        </svg>
-      </button>
-      <button class="button">
-        <div class="close-search">
-          <span class="icofont-close js-close-search"></span>
-        </div>
-      </button>
+{% comment %} To include navbar {% endcomment %}
+{% include 'navbar.html' %} 
+  <header>
+    <div class="owl-carousel owl-single home-slider">
 
-    </form>
-  </div> {% endcomment %}
+      <div class="item">
+        <div class="untree_co-hero" style="background-image: url('../../static/images/wengang-zhai-_fOL6ebfECQ-unsplash.jpg');">
+          <div class="container">
+              
+            <div class="row align-items-center justify-content-center">
+              <h1 class="mb-4 heading text-black head_text1" data-aos="fade-up" data-aos-delay="100"> Be Authentic At <a href="index.php" class="logo m-0">Shoe Invasion!</a>  </h1>
+              <!-- <?php if ($user_id == "") { ?>
+              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="product.php" class="btn btn-outline-black"> Shop Now! </a></p>
+              <?php } ?> -->
+              <div class="col-lg-8 text-center text-lg-center">
+            </div>
 
-  {% comment %} To include navbar {% endcomment %}
-  {% include 'navbar.html' %}
-  
-  <div class="owl-carousel owl-single home-slider">
-    <div class="item">
-      <div class="untree_co-hero" style="background-image: url('images/hero_bg_5.jpg');">
-        <div class="container">
-          <div class="row align-items-center justify-content-center">
-            <div class="col-lg-8 text-center text-lg-center">
+            </div>
+          </div>
+        </div> <!-- /.untree_co-hero -->
+      </div>
+      
+      <div class="item">
+        <div class="untree_co-hero" style="background-image: url('../../static/images/jeremy-alford-WzQU5rjb3AY-unsplash.jpg');">
+            <div class="container">
+              <div class="row align-items-center justify-content-center">
+                <div class="col-lg-8 text-center text-lg-center">
 
-              <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">The New Way To Display Product by <a href="https://Colorlib">Colorlib</a></h1>
-              <div class="mb-5 text-white desc mx-auto" data-aos="fade-up" data-aos-delay="200">
+                  <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">BLACK FRIDAY SALES!</h1>
+                  <h1 class="mb-4 heading text-white" data-aos="fade-up" data-aos-delay="100">SALES UP TO 80%!</h1>
+                  <div class="mb-5 text-white desc mx-auto" data-aos="fade-up" data-aos-delay="200">
+                  </div>
+
+                  <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="product.php" class="btn btn-outline-black">Shop now!</a></p>
+
+                </div>
               </div>
-
-              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="#" class="btn btn-outline-black">Explore now</a></p>
-
             </div>
-          </div>
-        </div>
-      </div> <!-- /.untree_co-hero -->
-    </div>
-    <div class="item">
-      <div class="untree_co-hero" style="background-image: url('images/hero_bg_6.jpg');">
-      </div> <!-- /.untree_co-hero -->
-    </div>
-  </div>
-  
-  <div class="untree_co-section py-4 bg-light">
-    <div class="container">
-      <div class="row align-items-stretch">
-        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
-          <div class="feature h-100">
-            <div class="icon">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-truck" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5v7h-1v-7a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5v1A1.5 1.5 0 0 1 0 10.5v-7zM4.5 11h6v1h-6v-1z"/>
-                <path fill-rule="evenodd" d="M11 5h2.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5h-1v-1h1a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4.5h-1V5zm-8 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-                <path fill-rule="evenodd" d="M12 13a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
-              </svg>
-            </div>
-            <h3>Worldwide Delivery</h3>
-            <p>Far far away, behind the word mountains, far from the countries.</p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
-          <div class="feature h-100">
-            <div class="icon">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-shield-lock" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M5.443 1.991a60.17 60.17 0 0 0-2.725.802.454.454 0 0 0-.315.366C1.87 7.056 3.1 9.9 4.567 11.773c.736.94 1.533 1.636 2.197 2.093.333.228.626.394.857.5.116.053.21.089.282.11A.73.73 0 0 0 8 14.5c.007-.001.038-.005.097-.023.072-.022.166-.058.282-.111.23-.106.525-.272.857-.5a10.197 10.197 0 0 0 2.197-2.093C12.9 9.9 14.13 7.056 13.597 3.159a.454.454 0 0 0-.315-.366c-.626-.2-1.682-.526-2.725-.802C9.491 1.71 8.51 1.5 8 1.5c-.51 0-1.49.21-2.557.491zm-.256-.966C6.23.749 7.337.5 8 .5c.662 0 1.77.249 2.813.525a61.09 61.09 0 0 1 2.772.815c.528.168.926.623 1.003 1.184.573 4.197-.756 7.307-2.367 9.365a11.191 11.191 0 0 1-2.418 2.3 6.942 6.942 0 0 1-1.007.586c-.27.124-.558.225-.796.225s-.526-.101-.796-.225a6.908 6.908 0 0 1-1.007-.586 11.192 11.192 0 0 1-2.417-2.3C2.167 10.331.839 7.221 1.412 3.024A1.454 1.454 0 0 1 2.415 1.84a61.11 61.11 0 0 1 2.772-.815z"/>
-                <path d="M9.5 6.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                <path d="M7.411 8.034a.5.5 0 0 1 .493-.417h.156a.5.5 0 0 1 .492.414l.347 2a.5.5 0 0 1-.493.585h-.835a.5.5 0 0 1-.493-.582l.333-2z"/>
-              </svg>
-            </div>
-            <h3>Secure Payments</h3>
-            <p>Far far away, behind the word mountains, far from the countries.</p>
-          </div>
-        </div>
-        <div class="col-12 col-sm-6 col-md-4 mb-3 mb-md-0">
-          <div class="feature h-100">
-            <div class="icon">
-              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-counterclockwise" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M12.83 6.706a5 5 0 0 0-7.103-3.16.5.5 0 1 1-.454-.892A6 6 0 1 1 2.545 5.5a.5.5 0 1 1 .91.417 5 5 0 1 0 9.375.789z"/>
-                <path fill-rule="evenodd" d="M7.854.146a.5.5 0 0 0-.708 0l-2.5 2.5a.5.5 0 0 0 0 .708l2.5 2.5a.5.5 0 1 0 .708-.708L5.707 3 7.854.854a.5.5 0 0 0 0-.708z"/>
-              </svg>
-            </div>
-            <h3>Simple Returns</h3>
-            <p>Far far away, behind the word mountains, far from the countries.</p>
-          </div>
-        </div>
+          </div> <!-- /.untree_co-hero -->
       </div>
     </div>
-  </div> <!-- /.untree_co-section -->
-
-  <div class="untree_co-section">
-    <div class="container">
-
-      <div class="row">
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge new">New</span>
-              <img src="images/cloth_1.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Kiko Linen Slip Dress, Brown</a></h3>
-            <div class="price">
-              <span>£69.00</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Sleeve Dress, White</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <img src="images/watch_1.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Hodina Watch</a></h3>
-            <div class="price">
-              <span>£29.00</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <img src="images/shoe_2.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Triangle Low White-Black</a></h3>
-            <div class="price">
-              <span>£29.00</span>
-            </div>
-          </div>
-
-        </div>
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/cloth_3.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Kid Dress, White</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-
-
-        </div>
-        <div class="col-6 col-sm-6 col-md-6 mb-4 col-lg-4">
-
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/shoe_1.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Lady Shoes, Brown</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-
-
-        </div>
-      </div>
-    </div>
-  </div> <!-- /.untree_co-section -->
-
-  
-  <div class="container">
-
-
-    <div class="deal-hero" style="background-image: url('images/hero_bg_1.jpg')"> 
-      <div class="deal-contents">
-        <span class="subtitle">Limited Offers 20% OFF</span>
-        <h2 class="title">Week Deal</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum fuga incidunt laboriosam voluptas iure, delectus dignissimos facilis neque nulla earum.</p>
-        <a href="#" class="btn btn-black">Shop Now</a>
-      </div>
-    </div> <!-- /.deal-hero -->
-
-  </div>
-
+  </header>
+<main>
   <div class="untree_co-section">
     <div class="container">
       <div class="row mb-5 align-items-center">
         <div class="col-md-6">
-          <h2 class="h3">Popular Items</h2>        
+          <h2 class="h3">Popular Brands</h2>        
         </div>
         <div class="col-sm-6 carousel-nav text-sm-right">
           <a href="#" class="prev js-custom-prev-v2">
@@ -244,98 +74,295 @@
       <div class="owl-3-slider owl-carousel">
         <div class="item">
           <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge new">New</span>
-              <img src="images/cloth_1.jpg" alt="Image" class="img-fluid">
+            <a href="product.php?brand=Nike" class="product-img">
+              <img src="../../static/images/jeff-tumale-SD9Jyl1xNQ4-unsplash.jpg" alt="Image" class="img-fluid">
             </a>
-            <h3 class="title"><a href="#">Kiko Linen Slip Dress, Brown</a></h3>
-            <div class="price">
-              <span>£69.00</span>
-            </div>
+            <h3 class="title"><a href="#">Nike</a></h3>
           </div>
         </div> <!-- /.item -->
+      
         <div class="item">
           <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/cloth_2.jpg" alt="Image" class="img-fluid">
+            <a href="product.php?brand=Vans" class="product-img">
+              <img src="../../static/images/paul-gaudriault-a-QH9MAAVNI-unsplash.jpg" alt="Image" class="img-fluid">
             </a>
-            <h3 class="title"><a href="#">Sleeve Dress, White</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-        </div> <!-- /.item -->
-        <div class="item">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <img src="images/watch_1.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Hodina Watch</a></h3>
-            <div class="price">
-              <span>£29.00</span>
-            </div>
-          </div>
-        </div> <!-- /.item -->
-        <div class="item">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <img src="images/shoe_2.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Triangle Low White-Black</a></h3>
-            <div class="price">
-              <span>£29.00</span>
-            </div>
-          </div>
-        </div> <!-- /.item -->
-        <div class="item">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/cloth_3.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Kid Dress, White</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-        </div> <!-- /.item -->
-        <div class="item">
-          <div class="product-item">
-            <a href="shop-single.html" class="product-img">
-              <span class="custom-badge sale">Sale</span>
-              <img src="images/shoe_1.jpg" alt="Image" class="img-fluid">
-            </a>
-            <h3 class="title"><a href="#">Lady Shoes, Brown</a></h3>
-            <div class="price">
-              <del>£99.00</del> &mdash; <span>£69.00</span>
-            </div>
-          </div>
-        </div> <!-- /.item -->
-      </div>
-    </div> <!-- /.container -->
-  </div> <!-- /.untree_co-section -->  
+            <h3 class="title"><a href="#">Vans</a></h3>
   
-{% include 'ShoesInvasionApp/footer.html' %}
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="product.php?brand=Balenciaga" class="product-img">
+              <img src="../../static/images/shoe_2.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="product.php?brand=Puma">Puma</a></h3>
+          </div>
+        </div> <!-- /.item -->
+        <div class="item">
+          <div class="product-item">
+            <a href="product.php?brand=Adidas" class="product-img">
+              <img src="../../static/images/matthew-hamilton-pO2bglTMJpo-unsplash.jpg" alt="Image" class="img-fluid">
+            </a>
+            <h3 class="title"><a href="#">Adidas</a></h3>
+          </div>
+        </div> <!-- /.item -->
+              </div>
+    </div> <!-- /.container -->
+  </div> <!-- /.untree_co-section --> 
 
-  <div id="overlayer"></div>
-  <div class="loader">
-    <div class="spinner-border" role="status">
+  {% include 'ShoesInvasionApp/about-container.html' %}  
+  {% include 'ShoesInvasionApp/founder-container.html' %}  
+
+    <div class="container" id="contact">
+      <div class="deal-hero" style="background-image: url('../../static/images/pexels-adrian-dorobantu-2300334.jpg')"> 
+        <div class="row">
+          <div class="deal-contents">
+            <h2 class="title">Contact Us</h2>
+            <p class="subtitle">Feel free to give us feedback!</p>
+            <div class="col-lg-12 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
+
+            <div class="row">
+                  <div class="col-6 mb-3">
+                    <div class="form-group">
+                    <input type="text" aria-label="contact_name" class="form-control" id="contact_name" required  placeholder="Your Name" name="contact_name">
+                    </div>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <div class="form-group">    
+                    <input type="email" aria-label="contact_email" class="form-control" id="contact_email" required placeholder="Your Email" name="contact_emai">
+                    </div>
+                  </div>
+                  <div class="col-12 mb-3">
+                    <div class="form-group">
+                    <input type="text" aria-label="contact_subject" class="form-control" id="contact_subject" required placeholder="Subject" name="contact_subject">
+                    </div>
+                  </div>
+                  <div class="col-12 mb-3">
+                    <div class="form-group">
+                    <textarea cols="30" rows="7" aria-label="message" class="form-control" id="contact_messloseage" required placeholder="Message" name="contact_text"></textarea>
+                    </div>    
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">  
+                    <button class="btn btn-primary" aria-label="send" type="submit" value="Send Message" id="contact_button">Send Message</button>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+        </div> <!-- ./row -->
+      </div> <!-- /.deal-hero -->
+    </div> <!-- /.Container -->
+</main>
+
+{% include 'ShoesInvasionApp/footer.html' %}  
+
+
+<div id="overlayer"></div>
+<div id="loader" class="loader">
+  <div class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="TNCModalCenter" tabindex="-1" role="dialog" aria-labelledby="TNCModalCenter" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><strong>Terms and Conditions</strong></h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+<p>Welcome to NinjaSneakers!</p>
+
+<p>These terms and conditions outline the rules and regulations for the use of Ninja Sneakers's Website, located at www.ninjasneakers.com.</p>
+
+<p>By accessing this website we assume you accept these terms and conditions. Do not continue to use NinjaSneakers if you do not agree to take all of the terms and conditions stated on this page.</p>
+
+<p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: "Client", "You" and "Your" refers to you, the person log on this website and compliant to the Company’s terms and conditions. "The Company", "Ourselves", "We", "Our" and "Us", refers to our Company. "Party", "Parties", or "Us", refers to both the Client and ourselves. All terms refer to the offer, acceptance and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client’s needs in respect of provision of the Company’s stated services, in accordance with and subject to, prevailing law of Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization and/or he/she or they, are taken as interchangeable and therefore as referring to same.</p>
+
+<h3><strong>Cookies</strong></h3>
+
+<p>We employ the use of cookies. By accessing NinjaSneakers, you agreed to use cookies in agreement with the Ninja Sneakers's Privacy Policy. </p>
+
+<p>Most interactive websites use cookies to let us retrieve the user’s details for each visit. Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website. Some of our affiliate/advertising partners may also use cookies.</p>
+
+<h3><strong>License</strong></h3>
+
+<p>Unless otherwise stated, Ninja Sneakers and/or its licensors own the intellectual property rights for all material on NinjaSneakers. All intellectual property rights are reserved. You may access this from NinjaSneakers for your own personal use subjected to restrictions set in these terms and conditions.</p>
+
+<p>You must not:</p>
+<ul>
+    <li>Republish material from NinjaSneakers</li>
+    <li>Sell, rent or sub-license material from NinjaSneakers</li>
+    <li>Reproduce, duplicate or copy material from NinjaSneakers</li>
+    <li>Redistribute content from NinjaSneakers</li>
+</ul>
+
+<p>This Agreement shall begin on the date hereof. Our Terms and Conditions were created with the help of the <a href="https://www.termsandconditionsgenerator.com">Terms And Conditions Generator</a> and the <a href="https://www.generateprivacypolicy.com">Privacy Policy Generator</a>.</p>
+
+<p>Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. Ninja Sneakers does not filter, edit, publish or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of Ninja Sneakers,its agents and/or affiliates. Comments reflect the views and opinions of the person who post their views and opinions. To the extent permitted by applicable laws, Ninja Sneakers shall not be liable for the Comments or for any liability, damages or expenses caused and/or suffered as a result of any use of and/or posting of and/or appearance of the Comments on this website.</p>
+
+<p>Ninja Sneakers reserves the right to monitor all Comments and to remove any Comments which can be considered inappropriate, offensive or causes breach of these Terms and Conditions.</p>
+
+<p>You warrant and represent that:</p>
+
+<ul>
+    <li>You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;</li>
+    <li>The Comments do not invade any intellectual property right, including without limitation copyright, patent or trademark of any third party;</li>
+    <li>The Comments do not contain any defamatory, libelous, offensive, indecent or otherwise unlawful material which is an invasion of privacy</li>
+    <li>The Comments will not be used to solicit or promote business or custom or present commercial activities or unlawful activity.</li>
+</ul>
+
+<p>You hereby grant Ninja Sneakers a non-exclusive license to use, reproduce, edit and authorize others to use, reproduce and edit any of your Comments in any and all forms, formats or media.</p>
+
+<h3><strong>Hyperlinking to our Content</strong></h3>
+
+<p>The following organizations may link to our Website without prior written approval:</p>
+
+<ul>
+    <li>Government agencies;</li>
+    <li>Search engines;</li>
+    <li>News organizations;</li>
+    <li>Online directory distributors may link to our Website in the same manner as they hyperlink to the Websites of other listed businesses; and</li>
+    <li>System wide Accredited Businesses except soliciting non-profit organizations, charity shopping malls, and charity fundraising groups which may not hyperlink to our Web site.</li>
+</ul>
+
+<p>These organizations may link to our home page, to publications or to other Website information so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products and/or services; and (c) fits within the context of the linking party’s site.</p>
+
+<p>We may consider and approve other link requests from the following types of organizations:</p>
+
+<ul>
+    <li>commonly-known consumer and/or business information sources;</li>
+    <li>dot.com community sites;</li>
+    <li>associations or other groups representing charities;</li>
+    <li>online directory distributors;</li>
+    <li>internet portals;</li>
+    <li>accounting, law and consulting firms; and</li>
+    <li>educational institutions and trade associations.</li>
+</ul>
+
+<p>We will approve link requests from these organizations if we decide that: (a) the link would not make us look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have any negative records with us; (c) the benefit to us from the visibility of the hyperlink compensates the absence of Ninja Sneakers; and (d) the link is in the context of general resource information.</p>
+
+<p>These organizations may link to our home page so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the linking party and its products or services; and (c) fits within the context of the linking party’s site.</p>
+
+<p>If you are one of the organizations listed in paragraph 2 above and are interested in linking to our website, you must inform us by sending an e-mail to Ninja Sneakers. Please include your name, your organization name, contact information as well as the URL of your site, a list of any URLs from which you intend to link to our Website, and a list of the URLs on our site to which you would like to link. Wait 2-3 weeks for a response.</p>
+
+<p>Approved organizations may hyperlink to our Website as follows:</p>
+
+<ul>
+    <li>By use of our corporate name; or</li>
+    <li>By use of the uniform resource locator being linked to; or</li>
+    <li>By use of any other description of our Website being linked to that makes sense within the context and format of content on the linking party’s site.</li>
+</ul>
+
+<p>No use of Ninja Sneakers's logo or other artwork will be allowed for linking absent a trademark license agreement.</p>
+
+<h3><strong>iFrames</strong></h3>
+
+<p>Without prior approval and written permission, you may not create frames around our Webpages that alter in any way the visual presentation or appearance of our Website.</p>
+
+<h3><strong>Content Liability</strong></h3>
+
+<p>We shall not be hold responsible for any content that appears on your Website. You agree to protect and defend us against all claims that is rising on your Website. No link(s) should appear on any Website that may be interpreted as libelous, obscene or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third party rights.</p>
+
+<h3><strong>Your Privacy</strong></h3>
+
+<p>Please read Privacy Policy</p>
+
+<h3><strong>Reservation of Rights</strong></h3>
+
+<p>We reserve the right to request that you remove all links or any particular link to our Website. You approve to immediately remove all links to our Website upon request. We also reserve the right to amen these terms and conditions and it’s linking policy at any time. By continuously linking to our Website, you agree to be bound to and follow these linking terms and conditions.</p>
+
+<h3><strong>Removal of links from our website</strong></h3>
+
+<p>If you find any link on our Website that is offensive for any reason, you are free to contact and inform us any moment. We will consider requests to remove links but we are not obligated to or so or to respond to you directly.</p>
+
+<p>We do not ensure that the information on this website is correct, we do not warrant its completeness or accuracy; nor do we promise to ensure that the website remains available or that the material on the website is kept up to date.</p>
+
+<h3><strong>Disclaimer</strong></h3>
+
+<p>To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions relating to our website and the use of this website. Nothing in this disclaimer will:</p>
+
+<ul>
+    <li>limit or exclude our or your liability for death or personal injury;</li>
+    <li>limit or exclude our or your liability for fraud or fraudulent misrepresentation;</li>
+    <li>limit any of our or your liabilities in any way that is not permitted under applicable law; or</li>
+    <li>exclude any of our or your liabilities that may not be excluded under applicable law.</li>
+</ul>
+
+<p>The limitations and prohibitions of liability set in this Section and elsewhere in this disclaimer: (a) are subject to the preceding paragraph; and (b) govern all liabilities arising under the disclaimer, including liabilities arising in contract, in tort and for breach of statutory duty.</p>
+
+<p>As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
+</div>
 {% load static %}
-  <script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
-  <script src="{% static 'js/popper.min.js'%}"></script>
-  <script src="{% static 'js/bootstrap.min.js'%}"></script>
-  <script src="{% static 'js/owl.carousel.min.js'%}"></script>
-  <script src="{% static 'js/jquery.animateNumber.min.js'%}"></script>
-  <script src="{% static 'js/jquery.waypoints.min.js'%}"></script>
-  <script src="{% static 'js/jquery.fancybox.min.js'%}"></script>
-  <script src="{% static 'js/jquery.sticky.js'%}"></script>
-  <script src="{% static 'js/aos.js'%}"></script>
-  <script src="{% static 'js/custom.js'%}"></script>
-  
+<script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+<script src="{% static 'js/popper.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+<script src="{% static 'js/jquery.sticky.js' %}"></script>
+<script src="{% static 'js/aos.js' %}"></script>
+<script src="{% static 'js/custom.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script>
+  $(document).ready(function () {
+
+      $('#subscribe_button').click(function () {
+          console.log("CHANGE CLICKED");
+
+          var newsletterEmail = $("#newsletterEmail").val();
+          console.log("newsletterEmail: " + newsletterEmail);
+
+          $.ajax({
+              type: "POST",
+              url: "mailer.php",
+              data: {newsletterEmail: newsletterEmail, mailerStatus: "1"}
+          }).done(function (msg) {
+              console.log(msg);
+          });
+      });
+  });
+</script>
+
+<script>
+    $(document).ready(function(){
+
+      $('#contact_button').click(function(){
+        console.log("CHANGE CLICKED");
+        var contactName = $("#contact_name").val();
+        var contactEmail = $("#contact_email").val();
+        var contactSubject = $("#contact_subject").val();
+        var contactText = $("#contact_message").val();
+        console.log("Contact Name: "+contactName);
+        console.log("Contact Email: "+contactEmail);
+        console.log("Contact Subject: "+contactSubject);
+        console.log("Contact Text: "+contactText);
+
+        $.ajax({
+            type: "POST",
+            url: "mailer.php",
+            data: {contactName:contactName,contactEmail:contactEmail,contactSubject:contactSubject,contactText:contactText, mailerStatus:"2"}
+        }).done(function( msg ) {
+            console.log(msg);
+            alert("Success");
+        });
+    });
+  });
+</script>
 </body>
 
 </html>

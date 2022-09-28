@@ -29,6 +29,7 @@ class admin_users(models.Model):
     admin_username = models.CharField(max_length=255)
     admin_password = models.CharField(max_length=255)
 
+
 # Transactions Table
 class transactions(models.Model):
     transaction_id = models.IntegerField(default=0, primary_key=True)
