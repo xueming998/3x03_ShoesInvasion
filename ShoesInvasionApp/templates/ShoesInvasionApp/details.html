@@ -1,78 +1,13 @@
-<?php
-include ("functions.php");
-session_start();
-
-if (isset($_SESSION['user_id']) != NULL)
-{
-  $user_id = $_SESSION['user_id'];
-}
-else
-{
-  $user_id = 0;
-}
-$product_id;
-$color=array();
-$quantity;
-$size=array();
-
-$product_name = NULL;
-$product_price = NULL;
-$review = NULL;
-$product_info = NULL;
-
-if (isset($_GET['id'])){
-  $product_id = $_GET['id'];
-}
-  // Should create a function for SQL connection
-$conn = startSQL();
-
-      // Check connection
-if($conn){
-
-  $stmt = $conn->prepare("SELECT * FROM Products JOIN Product_Quantity ON Products.product_id=Product_Quantity.product_id WHERE Products.product_id=?");
-  $stmt->bind_param("s", $product_id);
-
-  $stmt->execute();
-  $result = $stmt->get_result();
-  if(mysqli_num_rows($result)>0){
-
-    while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
-      if (!in_array($row['size'],$size)){
-        array_push($size,$row['size']);
-      }
-      if (!in_array($row['color'],$color)){
-        array_push($color,$row['color']);
-      }
-      sort($size);
-      sort($color);
-    }
-
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $row = mysqli_fetch_array($result);
-
-    $product_name = $row['product_name'];
-    $product_price = $row['product_price'];
-    $product_id = $row['product_id'];
-    $review = $row['review'];
-    $product_info = $row['product_info'];
-    $product_quantity = $row['quantity'];
-  }
-}
-
-?>
 <!doctype html>
 <html lang="en">
 
-<head>
-  <?php include "headers.php";?>
-</head>
+  <head>
+    {% include 'ShoesInvasionApp/head.html' %}
+  </head>
 
 <body>
-
-  <?php 
-  include "navbar.php";
-  ?>
+{% comment %} To include navbar {% endcomment %}
+{% include 'navbar.html' %} 
   <div class="untree_co-section">
     <div class="container">
       <div class="row">
@@ -80,13 +15,13 @@ if($conn){
           <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
               <div class="carousel-item active">
-                <img style="max-height:650px;" class="d-block w-100" src="images/products/detailspic/product<?php if($product_id){echo $product_id;} ?>/product<?php if($product_id){echo $product_id;} ?>.jpg" alt="First slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}.jpg" alt="First slide">
               </div>
               <div class="carousel-item">
-                <img style="max-height:650px;" class="d-block w-100" src="images/products/detailspic/product<?php if($product_id){echo $product_id;} ?>/product<?php if($product_id){echo $product_id;} ?>(1).jpg" alt="Second slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}(1).jpg" alt="Second slide">
               </div>
               <div class="carousel-item">
-                <img style="max-height:650px;" class="d-block w-100" src="images/products/detailspic/product<?php if($product_id){echo $product_id;} ?>/product<?php if($product_id){echo $product_id;} ?>(2).jpg" alt="Third slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}(2).jpg" alt="Third slide">
               </div>
             </div>
             <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
@@ -103,47 +38,43 @@ if($conn){
           <div class="col-lg-2 col-md-8">
             <div class="custom-block" data-aos="fade-up" data-aos-delay="100">
 
-              <h1 style="padding-top:30px;" class="section-title"><?php if($product_name){echo $product_name;}else{echo "None";}?></h1>
+              <h1 style="padding-top:30px;" class="section-title">{{product_name}}</h1>
               <div class="form-group">
-                <?php echo 'USD'.$product_price?>
+                USD ${{product_price}}
               </div>
               <div class="form-group">
-                <?php 
-                if ($review){
-                  for($i = 0; $i <(int)$review; $i++){
-                    echo "<span style='color:orange;'class='fa fa-star'></span>";
-                  }
-                  for($i = 0; $i <5-(int)$review;$i++){
-                    echo "<span class='fa fa-star'></span>";
-                  }
-                }?>
+                {% for i in reviewLoop %}
+                  <span style='color:orange;'class='fa fa-star'></span>
+                {% endfor %}
+                {% for x in range %}
+                <span class='fa fa-star'></span>
+                {% endfor %}
+                
               </div>
               <form class="contact-form" method="POST"> 
-                <input type='hidden' value='<?php echo $product_id;?>' name='product_id'>
+                <input type='hidden' value='shoeId' name='product_id'>
                 <div class="form-group">
                   <p>Color</p>
                   <select id="color" class="selectpicker q_select" name="color" data-placeholder="color">
-                    <?php
-                    foreach ($color as $shade){
-                      echo "<option value='".$shade."'>".$shade."</option>";
-                    }
-                    ?>
+                  {% for c in product_color %}
+                    <option value='{{c}}'>{{c}}</option>
+                  {% endfor %}
                   </select>
                 </div>
                 <div class="form-group">
                   <p>Size</p>
+
                   <select id="size" class="selectpicker q_select" name="size" data-placeholder="size">
-                    <?php
-                    foreach ($size as $s){
-                      echo "<option value='".$s."'>".$s."</option>";
-                    }
-                    ?>
+                  {% for b in product_size %}
+                    <option value="{{b}}">{{b}}</option>
+                  {% endfor %}
                   </select>
                 </div>
 
                 <div class="form-group">
                   <p>Quantities</p>
-                  <input id="quantity_count" type="number" name='quantity' min="1" max='<?php if($product_quantity){if((int)$product_quantity<=10){echo $product_quantity;}else{echo '10';}}else{echo '1';} ?>' value='1' step="1"/>
+                  <!-- Max quantity need to fix -->
+                  <input id="quantity_count" type="number" name='quantity' min="1" max='10' value='1' step="1"/>
                 </div>
 
                 <div class="form-group">
@@ -158,9 +89,9 @@ if($conn){
       <div class='row'>
         <div class="col-lg-10">
           <div class="card">
-            <h5 style="padding-top:30px; text-align: center;" class="card-title"><?php if($product_name){ echo $product_name;} else{echo "None";}?></h5>
+            <h5 style="padding-top:30px; text-align: center;" class="card-title">{{product_name}}</h5>
             <div class="card-body">
-              <p style="font-style:italic;" class="card-text"><?php echo $product_info;?></p>
+              <p style="font-style:italic;" class="card-text">{{product_info}}</p>
             </div>
           </div>
         </div>
@@ -168,37 +99,16 @@ if($conn){
     </div> <!-- /.container -->  
   </div> <!-- /.untree_co-section -->
 
-    <?php include "footer.php";?>
-    <script>
-      $(document).ready(function(){
-        $('.addToCart').click(function(){
-            
-            var product_id = <?php echo $product_id; ?>;
+  {% include 'ShoesInvasionApp/footer.html' %}  
+  <script>
+    $(document).ready(function(){
+      $('.addToCart').click(function(){
+          console.log("Hello World")
 
-            var user_id = <?php echo $user_id; ?>;
+          // Insert into DB 
 
-            if (user_id == '0' || user_id == '')
-            {
-              window.location.href = "login_user.php";
-            }
-            else
-            {
-                var color = document.getElementById('color');
-                var size = document.getElementById('size');
-                var quantity = document.getElementById("quantity_count").value;
-
-                $.ajax({
-                  type: "POST",
-                  url: "scripts/insertShoppingCartScript.php",
-                  data: {user_id:user_id,product_id:product_id,quantity:quantity,size:size.value,color:color.value}
-                }).done(function( msg ) {
-                  alert("Added to cart successfully.");
-                  location.reload(); 
-                });
-            }
-            
-          });
-      });
-    </script>
+        });
+    });
+  </script>
   </body>
   </html>
