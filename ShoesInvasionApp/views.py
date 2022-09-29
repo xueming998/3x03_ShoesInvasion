@@ -5,10 +5,13 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 
+from ShoesInvasionApp.models import productQuantity
+
 # from .models.products import ProductsTable
 # from ShoesInvasionApp.models import ProductsTable
 
 from .models.products import ProductsTable
+from .models.productQuantity import ProductQuantityTable
 
 from django.contrib import messages
 
@@ -39,7 +42,40 @@ def cart(request):
     return render(request, 'ShoesInvasionApp/cart.html')
 
 def shoeDetails(request):
-    return render(request, 'ShoesInvasionApp/details.html')
+    shoeId = request.GET.get('id', '1')
+    productQuery = ProductsTable.objects.filter(id = shoeId)
+    productSize = ProductQuantityTable.objects.filter(product = shoeId)
+    # Looping for product 
+    for e in productQuery:
+        # Looping for Quantity
+        rangeLoop = 5 - int(e.review)
+        product_size = []
+        product_quantity = []
+        product_color = []
+        for a in productSize:
+            if (a.color not in product_color):
+                product_color.append(a.color)
+            if (a.quantity not in product_quantity):
+                product_quantity.append(a.quantity)
+            if (a.size not in product_size):
+                product_size.append(a.size)
+
+        context = {
+            'shoeId':shoeId,
+            'product_name':e.product_name,
+            'product_brand':e.product_brand,
+            'product_category':e.product_category,
+            'product_info':e.product_info,
+            'product_price':e.product_price,
+            'product_review':e.review, 
+            'range':range(0,rangeLoop),
+            'reviewLoop':range(0,int(e.review)),
+            'product':productQuery, 
+            'product_size':product_size,
+            'product_quantity':product_quantity, 
+            'product_color':product_color,
+        }
+    return render(request, 'ShoesInvasionApp/details.html',context)
 
 def shop(request):
     shoeType = request.GET.get('type', "All Products")
