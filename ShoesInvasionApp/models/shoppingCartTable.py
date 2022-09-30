@@ -3,7 +3,7 @@ from .user import UserTable
 from .products import ProductsTable
 
 class ShoppingCartTable(models.Model):
-    user = models.ForeignKey(UserTable, on_delete = models.CASCADE)
+    user = models.ForeignKey(UserTable, to_field="unique_id", db_column="unique_id", on_delete = models.CASCADE, unique=True)
     product = models.ForeignKey(ProductsTable, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     size = models.CharField(max_length=10)
