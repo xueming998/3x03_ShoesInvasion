@@ -13,3 +13,15 @@ class ShoppingCartTable(models.Model):
 
     def __str__(self):
         return self.shopping_id
+    
+    @property
+    def getCurrentProductTotal(self):
+        total = self.product.product_price * self.quantity
+        return total
+    
+    @property
+    def getCartTotal(self):
+        orderItems = ShoppingCartTable.objects.filter(user=1)
+        total = sum([item.getCurrentProductTotal for item in orderItems])
+        return total
+    
