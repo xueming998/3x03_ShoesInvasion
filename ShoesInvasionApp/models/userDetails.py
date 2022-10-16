@@ -12,11 +12,9 @@ class UserDetailsTable(models.Model):
     ]
     
     address = models.CharField(max_length=150)
-    email = models.EmailField(max_length=255)
     date_of_birth = models.DateField(default=date.today)
     # gender = models.CharField(max_length=10)
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default=MALE)
-    phone = models.IntegerField()
     # Unique Identifier
     unique_id = models.ForeignKey(UserTable, to_field="unique_id", db_column="unique_id", on_delete=models.CASCADE, unique=True)
 

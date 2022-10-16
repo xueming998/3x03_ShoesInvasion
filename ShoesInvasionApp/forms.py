@@ -9,7 +9,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:  
         model = UserTable  
         fields = '__all__'
-        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType']
+        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType', 'unique_id']
         widgets = {
             'password': forms.PasswordInput(),
             'verify_password': forms.PasswordInput(),
@@ -20,6 +20,7 @@ class RegisterForm(forms.ModelForm):
             'lockedCounter': forms.HiddenInput(attrs={'value': 0}),
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
+            'unique_id': forms.HiddenInput(attrs={'value': '12345123'})
         }
 
     # Function used for validation
@@ -42,7 +43,7 @@ class RegisterForm(forms.ModelForm):
                     self.errors['verify_password'] = self.error_class(['Password does not match.'])
                 else:
                     salt = bcrypt.gensalt()
-                    encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-                    self.cleaned_data['password'] = encryptedPassword
-                    self.cleaned_data['verify_password'] = encryptedPassword
+                    # encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
+                    # self.cleaned_data['password'] = encryptedPassword
+                    # self.cleaned_data['verify_password'] = encryptedPassword
                     return self.cleaned_data

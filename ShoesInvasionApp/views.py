@@ -19,6 +19,10 @@ from ShoesInvasionApp.forms import RegisterForm
 from .models.user import UserTable
 import bcrypt
 
+# Import for login
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+
 
 # Create your views here.
 def index(request):
@@ -118,10 +122,28 @@ def shop(request):
     }
     return render(request, 'ShoesInvasionApp/shop.html',context)
 
-def login(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/login_user.html')
+def login_request(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        try:
+            account = UserTable.objects.get(username=username)
+            if checkPassword(password, account.password):
+                return render(request, 'ShoesInvasionApp/register_success.html')
+            else:
+                return render(request, 'ShoesInvasionApp/register_fail.html')
+
+        except UserTable.DoesNotExist:
+            return render(request, 'ShoesInvasionApp/index.html')
+    else:       
+        form = AuthenticationForm()
+        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+
+def checkPassword(password, hashedPassword):
+    if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
+        return True
+    else:
+        return False
 
 def register(request):
     if request.method == 'POST':

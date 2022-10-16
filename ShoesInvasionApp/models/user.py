@@ -9,6 +9,10 @@ class UserTable(models.Model):
     username = models.CharField(max_length=255)
     password = models.CharField(max_length=70)
     verify_password = models.CharField(max_length=255, null=True)
+    # Email
+    email = models.EmailField(max_length=255, default="")
+    # Phone
+    phone = models.IntegerField(default=1)
     # True = Banned, None/Null/False = Not Banned
     bannedStatus = models.BooleanField(default=False)
     # True = Verified, None/Null/False = Not Verified
