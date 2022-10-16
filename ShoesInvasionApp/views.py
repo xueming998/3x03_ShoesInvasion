@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 from decimal import Decimal
+import errno
 from multiprocessing import context
 from operator import truediv
 from re import T
@@ -8,10 +9,8 @@ from unicodedata import name
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-
 from ShoesInvasionApp.models import productQuantity, shoppingCartTable
 from ShoesInvasionApp.models import ShoppingCartTable
-
 from .models.products import ProductsTable
 from .models.productQuantity import ProductQuantityTable
 from .models.transaction import TransactionTable
@@ -19,7 +18,6 @@ from .models.transactionDetails import TransactionDetailsTable
 from datetime import datetime
 import json
 from django.http import JsonResponse
-
 from django.contrib import messages
 
 from ShoesInvasionApp.forms import RegisterForm
@@ -27,10 +25,12 @@ from .models.user import UserTable
 import bcrypt
 
 from ShoesInvasionApp.models import user
-
 from ShoesInvasionApp.models import transactionDetails
-
 from ShoesInvasionApp.models import transaction
+
+# Import for login
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 
 
 # Create your views here.
@@ -215,12 +215,30 @@ def shop(request):
     }
     return render(request, 'ShoesInvasionApp/shop.html',context)
 
-def login(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/login_user.html')
+def login_request(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        try:
+            account = UserTable.objects.get(username=username)
+            if checkPassword(password, account.password):
+                return render(request, 'ShoesInvasionApp/register_success.html')
+            else:
+                return render(request, 'ShoesInvasionApp/register_fail.html')
 
-def register(request):
+        except UserTable.DoesNotExist:
+            return render(request, 'ShoesInvasionApp/index.html')
+    else:       
+        form = AuthenticationForm()
+        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+
+def checkPassword(password, hashedPassword):
+    if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
+        return True
+    else:
+        return False
+
+def register_request(request):
     if request.method == 'POST':
         formDetails = RegisterForm(request.POST)
         if formDetails.is_valid():
@@ -234,49 +252,6 @@ def register(request):
     else:
         form = RegisterForm(None)
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
-
-    #     # Getting all data and save into a dictionary
-    #     login_data = request.POST.dict()
-
-    #     # Getting firstName
-    #     firstname = login_data.get('firstName')
-    #     lastName = login_data.get('lastName')
-    #     address = login_data.get('address')
-    #     email = login_data.get('email')
-    #     dob = login_data.get('dob')
-    #     gender = login_data.get('gender')
-    #     username = login_data.get('username')
-    #     password = login_data.get('password')
-    #     verifyPassword = login_data.get('verify-password')
-    #     phone = login_data.get('phone')
-        
-
-    #     if UserTable.objects.filter(username=username).exists():
-    #         return render(request, 'ShoesInvasionApp/register_fail.html')
-    #     else:
-    #         # Need check what encryption level is this
-    #         salt = bcrypt.gensalt()
-    #         ecryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-    #         data = UserTable(
-    #             fname=firstname, 
-    #             lname=lastName, 
-    #             address=address, 
-    #             email=email, 
-    #             dob=dob, 
-    #             gender=gender, 
-    #             username=username, 
-    #             password=ecryptedPassword, 
-    #             phone=phone, 
-    #             bannedStatus=False,
-    #             verifiedStatus=False,
-    #             verificationCode=None,
-    #             lockedStatus=False,
-    #             lockedCounter=None,
-    #             accountType="User"
-    #             )
-    #         data.save()
-    #         return HttpResponseRedirect('registerSuccess')
-    # return render(request, 'ShoesInvasionApp/register.html')
 
 def registerSuccess(request):
     # template = loader.get_template("/index.html")

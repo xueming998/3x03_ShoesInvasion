@@ -4,12 +4,14 @@ from django import forms
 from .models.user import UserTable  
 
 import bcrypt
+import secrets
+import string
   
 class RegisterForm(forms.ModelForm):  
     class Meta:  
         model = UserTable  
         fields = '__all__'
-        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType']
+        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType', 'unique_id']
         widgets = {
             'password': forms.PasswordInput(),
             'verify_password': forms.PasswordInput(),
@@ -20,6 +22,7 @@ class RegisterForm(forms.ModelForm):
             'lockedCounter': forms.HiddenInput(attrs={'value': 0}),
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
+            'unique_id': forms.HiddenInput(attrs={'value': '123321'})
         }
 
     # Function used for validation
@@ -38,11 +41,16 @@ class RegisterForm(forms.ModelForm):
             if UserTable.objects.filter(email=email).exists():
                 self.errors['email'] = self.error_class(['Email already taken/registered.'])
             else:
-                if (password != verifyPassword):
-                    self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                if UserTable.objects.filter(phone=phone).exists():
+                    self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
                 else:
-                    salt = bcrypt.gensalt()
-                    encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-                    self.cleaned_data['password'] = encryptedPassword
-                    self.cleaned_data['verify_password'] = encryptedPassword
-                    return self.cleaned_data
+                    if (password != verifyPassword):
+                        self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                    else:
+                        salt = bcrypt.gensalt()
+                        encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
+                        self.cleaned_data['password'] = encryptedPassword
+                        self.cleaned_data['verify_password'] = encryptedPassword
+                        unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                        self.cleaned_data['unique_id'] = unique
+                        return self.cleaned_data

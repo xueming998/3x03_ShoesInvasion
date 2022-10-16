@@ -20,9 +20,10 @@ urlpatterns = [
      # Shoe Product
     path('shoeDetails', views.shoeDetails, name='shoeDetails'),
     # Login
-    path('login', views.login, name='login'),
+    path('login/', views.login_request, name='login'),
+    path('login', views.login_request, name='login'),
     # Register
-    path('register', views.register, name='register'), 
+    path('register/', views.register_request, name='register'), 
     # Register Success
     path('registerSuccess', views.registerSuccess, name='registerSuccess'),
     # Register Failed 
