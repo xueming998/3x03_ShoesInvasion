@@ -7,7 +7,7 @@ class UserTable(models.Model):
     last_name = models.CharField(max_length=45)
     # gender = models.CharField(max_length=10)
     username = models.CharField(max_length=255)
-    password = models.BinaryField(max_length=60)
+    password = models.CharField(max_length=255)
     verify_password = models.CharField(max_length=255, null=True)
     # Email
     email = models.EmailField(max_length=255)
