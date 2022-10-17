@@ -31,6 +31,7 @@ from ShoesInvasionApp.models import transaction
 # Import for login
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.hashers import check_password
 
 
 # Create your views here.
@@ -233,15 +234,12 @@ def login_request(request):
         return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
 def checkPassword(password, hashedPassword):
-    if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
+    # if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
+    if check_password(password, hashedPassword):
+        print("True")
         return True
     else:
-        return False
-
-def checkPassword(password, hashedPassword):
-    if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
-        return True
-    else:
+        print("False")
         return False
 
 def register_request(request):
