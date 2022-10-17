@@ -7,12 +7,12 @@ class UserTable(models.Model):
     last_name = models.CharField(max_length=45)
     # gender = models.CharField(max_length=10)
     username = models.CharField(max_length=255)
-    password = models.CharField(max_length=70)
+    password = models.CharField(max_length=255)
     verify_password = models.CharField(max_length=255, null=True)
     # Email
-    email = models.EmailField(max_length=255, default="")
+    email = models.EmailField(max_length=255)
     # Phone
-    phone = models.IntegerField(default=1)
+    phone = models.IntegerField()
     # True = Banned, None/Null/False = Not Banned
     bannedStatus = models.BooleanField(default=False)
     # True = Verified, None/Null/False = Not Verified

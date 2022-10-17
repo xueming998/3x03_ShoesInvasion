@@ -24,9 +24,20 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     # path('login/', auth_views.LoginView.as_view(), name='login'),
     # Register
-    path('register', views.register, name='register'), 
+    path('register/', views.register_request, name='register'), 
     # Register Success
-    path('registerSuccess/', views.registerSuccess, name='registerSuccess'),
-    # Register Failed
-    path('registerFailed/', views.registerFailed, name='registerFailed'),
+    path('registerSuccess', views.registerSuccess, name='registerSuccess'),
+    # Register Failed 
+    path('registerFailed', views.registerFailed, name='registerFailed'),
+    # Thankyou.html (After Payment Successful )
+    path('paymentSuccess', views.paymentSuccess, name='paymentSuccess'),
+
+    # Updating Cart Items from Fetch Call on Shopping Cart 
+    path('update_cartItem/', views.update_cartItem, name='update_cartItem'),
+    # Updating Cart Items from Fetch Call on Shopping Cart  
+    path('del_cartItem/', views.del_cartItem, name='del_cartItem'),
+    # Updating Cart Items from Fetch Call on Shopping Cart 
+    path('checkout_cartItem/', views.checkout_cartItem, name='checkout_cartItem'),
+    # add_to_cart
+    path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
 ]

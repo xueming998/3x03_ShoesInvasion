@@ -1,23 +1,32 @@
 from asyncio.windows_events import NULL
-# from math import prod
+from decimal import Decimal
+import errno
 from multiprocessing import context
+from operator import truediv
+from re import T
+from telnetlib import STATUS
+from unicodedata import name
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-
-from ShoesInvasionApp.models import productQuantity
-
-# from .models.products import ProductsTable
-# from ShoesInvasionApp.models import ProductsTable
-
+from ShoesInvasionApp.models import productQuantity, shoppingCartTable
+from ShoesInvasionApp.models import ShoppingCartTable
 from .models.products import ProductsTable
 from .models.productQuantity import ProductQuantityTable
-
+from .models.transaction import TransactionTable
+from .models.transactionDetails import TransactionDetailsTable
+from datetime import datetime
+import json
+from django.http import JsonResponse
 from django.contrib import messages
 
 from ShoesInvasionApp.forms import RegisterForm
 from .models.user import UserTable
 import bcrypt
+
+from ShoesInvasionApp.models import user
+from ShoesInvasionApp.models import transactionDetails
+from ShoesInvasionApp.models import transaction
 
 # Import for login
 from django.contrib.auth import login, authenticate
@@ -41,9 +50,93 @@ def contact(request):
     return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/cart.html')
+    cart = ShoppingCartTable.objects.filter(user=1)
+    cartTotal = ShoppingCartTable.objects.filter(user=1).count()
+    total = 0
+    for i in cart:
+        total = i.getCartTotal
+        # subtotal = i.quantity * i.product.product_price
+        # i.total_price = subtotal
+        # total_price += subtotal
+
+    context = {
+        'cart':cart,
+        'cartTotal':total,
+    }
+    return render(request, 'ShoesInvasionApp/cart.html', context)
+
+# API CALL POINT 
+def update_cartItem(request):
+    data = json.loads(request.body)
+    shoppingCartID = data['shoppingCartID']
+    action = data['action']
+    print(shoppingCartID)
+    print(action)
+
+    cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
+    
+    if action == "add":
+        cartItem.quantity = (cartItem.quantity + 1)
+        cartItem.total_price += cartItem.product.product_price 
+    elif action == 'remove':
+        cartItem.quantity = (cartItem.quantity - 1)
+        cartItem.total_price -= cartItem.product.product_price 
+
+    cartItem.save()
+
+    if cartItem.quantity <= 0:
+        cartItem.delete()
+    
+    return JsonResponse('Item was added', safe=False)
+
+def del_cartItem(request):
+    data = json.loads(request.body)
+    shoppingCartID = data['shoppingCartID']
+    cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
+    cartItem.delete()
+
+    return JsonResponse('Item was deleted', safe=False)
+
+def checkout_cartItem(request):
+    data = json.loads(request.body)
+    user_id = data['user_id']
+    userObj = UserTable.objects.get(id=user_id)
+
+    t = TransactionTable.objects.create(user=userObj)
+    t.save
+
+    cartDetails = ShoppingCartTable.objects.filter(user = user_id)
+    for i in cartDetails:
+        shoe = ProductsTable.objects.get(id = i.product.id)
+        tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
+        tranDetails.save
+        # Removing from shopping cart
+        cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
+        cartItemToDel.delete()
+        
+    return JsonResponse('Shoes were sold', safe=False)
+
+def add_to_cart(request):
+    data = json.loads(request.body)
+    # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
+    color = data['color']
+    size = data['size']
+    quantity = data['quantity']
+    shoe_id = data['shoe_id']
+    user_id = data['user_id']
+
+    shoeObj = ProductsTable.objects.get(id=shoe_id)
+    userObj = UserTable.objects.get(id=user_id)
+    chosenTotalPrice = Decimal(shoeObj.product_price) * Decimal(quantity)
+    t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice)
+    t.save
+
+    # Insert Shoe here 
+    return JsonResponse('Shoe Added', safe=False)
+
+# Just to render Payment Success Page
+def paymentSuccess(request):
+    return render(request, 'ShoesInvasionApp/thankyou.html')
 
 def shoeDetails(request):
     shoeId = request.GET.get('id', '1')
@@ -145,7 +238,13 @@ def checkPassword(password, hashedPassword):
     else:
         return False
 
-def register(request):
+def checkPassword(password, hashedPassword):
+    if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
+        return True
+    else:
+        return False
+
+def register_request(request):
     if request.method == 'POST':
         formDetails = RegisterForm(request.POST)
         if formDetails.is_valid():
@@ -159,49 +258,6 @@ def register(request):
     else:
         form = RegisterForm(None)
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
-
-    #     # Getting all data and save into a dictionary
-    #     login_data = request.POST.dict()
-
-    #     # Getting firstName
-    #     firstname = login_data.get('firstName')
-    #     lastName = login_data.get('lastName')
-    #     address = login_data.get('address')
-    #     email = login_data.get('email')
-    #     dob = login_data.get('dob')
-    #     gender = login_data.get('gender')
-    #     username = login_data.get('username')
-    #     password = login_data.get('password')
-    #     verifyPassword = login_data.get('verify-password')
-    #     phone = login_data.get('phone')
-        
-
-    #     if UserTable.objects.filter(username=username).exists():
-    #         return render(request, 'ShoesInvasionApp/register_fail.html')
-    #     else:
-    #         # Need check what encryption level is this
-    #         salt = bcrypt.gensalt()
-    #         ecryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-    #         data = UserTable(
-    #             fname=firstname, 
-    #             lname=lastName, 
-    #             address=address, 
-    #             email=email, 
-    #             dob=dob, 
-    #             gender=gender, 
-    #             username=username, 
-    #             password=ecryptedPassword, 
-    #             phone=phone, 
-    #             bannedStatus=False,
-    #             verifiedStatus=False,
-    #             verificationCode=None,
-    #             lockedStatus=False,
-    #             lockedCounter=None,
-    #             accountType="User"
-    #             )
-    #         data.save()
-    #         return HttpResponseRedirect('registerSuccess')
-    # return render(request, 'ShoesInvasionApp/register.html')
 
 def registerSuccess(request):
     # template = loader.get_template("/index.html")

@@ -15,11 +15,8 @@
           <div class="container">
               
             <div class="row align-items-center justify-content-center">
-              <h1 class="mb-4 heading text-black head_text1" data-aos="fade-up" data-aos-delay="100"> Be Authentic At <a href="index.php" class="logo m-0">Shoe Invasion!</a>  </h1>
-              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="product.php" class="btn btn-outline-black"> Shop Now! </a></p>
-              <!-- <?php if ($user_id == "") { ?>
-              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="product.php" class="btn btn-outline-black"> Shop Now! </a></p>
-              <?php } ?> -->
+              <h1 class="mb-4 heading text-black head_text1" data-aos="fade-up" data-aos-delay="100"> Be Authentic At <a href="home" class="logo m-0">Shoe Invasion!</a>  </h1>
+              <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="shop" class="btn btn-outline-black"> Shop Now! </a></p>
               <div class="col-lg-8 text-center text-lg-center">
             </div>
 
@@ -39,7 +36,7 @@
                   <div class="mb-5 text-white desc mx-auto" data-aos="fade-up" data-aos-delay="200">
                   </div>
 
-                  <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="product.php" class="btn btn-outline-black">Shop now!</a></p>
+                  <p class="mb-0" data-aos="fade-up" data-aos-delay="300"><a href="shop" class="btn btn-outline-black">Shop now!</a></p>
 
                 </div>
               </div>
@@ -75,25 +72,25 @@
       <div class="owl-3-slider owl-carousel">
         <div class="item">
           <div class="product-item">
-            <a href="product.php?brand=Nike" class="product-img">
+            <a href="shop?brand=Nike" class="product-img">
               <img src="../../static/images/jeff-tumale-SD9Jyl1xNQ4-unsplash.jpg" alt="Image" class="img-fluid">
             </a>
-            <h3 class="title"><a href="#">Nike</a></h3>
+            <h3 class="title"><a href="shop?brand=Nike">Nike</a></h3>
           </div>
         </div> <!-- /.item -->
       
         <div class="item">
           <div class="product-item">
-            <a href="product.php?brand=Vans" class="product-img">
+            <a href="shop?brand=Vans" class="product-img">
               <img src="../../static/images/paul-gaudriault-a-QH9MAAVNI-unsplash.jpg" alt="Image" class="img-fluid">
             </a>
-            <h3 class="title"><a href="#">Vans</a></h3>
+            <h3 class="title"><a href="shop?brand=Vans">Vans</a></h3>
   
           </div>
         </div> <!-- /.item -->
         <div class="item">
           <div class="product-item">
-            <a href="product.php?brand=Balenciaga" class="product-img">
+            <a href="shop?brand=Puma" class="product-img">
               <img src="../../static/images/shoe_2.jpg" alt="Image" class="img-fluid">
             </a>
             <h3 class="title"><a href="product.php?brand=Puma">Puma</a></h3>
@@ -101,10 +98,10 @@
         </div> <!-- /.item -->
         <div class="item">
           <div class="product-item">
-            <a href="product.php?brand=Adidas" class="product-img">
+            <a href="shop?brand=Adidas" class="product-img">
               <img src="../../static/images/matthew-hamilton-pO2bglTMJpo-unsplash.jpg" alt="Image" class="img-fluid">
             </a>
-            <h3 class="title"><a href="#">Adidas</a></h3>
+            <h3 class="title"><a href="shop?brand=Adidas  ">Adidas</a></h3>
           </div>
         </div> <!-- /.item -->
               </div>
@@ -112,9 +109,8 @@
   </div> <!-- /.untree_co-section --> 
 
   {% include 'ShoesInvasionApp/about-container.html' %}  
-  {% include 'ShoesInvasionApp/founder-container.html' %}  
 
-    <div class="container" id="contact">
+    <!-- <div class="container" id="contact">
       <div class="deal-hero" style="background-image: url('../../static/images/pexels-adrian-dorobantu-2300334.jpg')"> 
         <div class="row">
           <div class="deal-contents">
@@ -152,9 +148,9 @@
 
             </div>
           </div>
-        </div> <!-- ./row -->
-      </div> <!-- /.deal-hero -->
-    </div> <!-- /.Container -->
+        </div> 
+      </div> 
+    </div>  -->
 </main>
 
 {% include 'ShoesInvasionApp/footer.html' %}  
@@ -319,51 +315,7 @@
 <script src="{% static 'js/aos.js' %}"></script>
 <script src="{% static 'js/custom.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-<script>
-  $(document).ready(function () {
 
-      $('#subscribe_button').click(function () {
-          console.log("CHANGE CLICKED");
-
-          var newsletterEmail = $("#newsletterEmail").val();
-          console.log("newsletterEmail: " + newsletterEmail);
-
-          $.ajax({
-              type: "POST",
-              url: "mailer.php",
-              data: {newsletterEmail: newsletterEmail, mailerStatus: "1"}
-          }).done(function (msg) {
-              console.log(msg);
-          });
-      });
-  });
-</script>
-
-<script>
-    $(document).ready(function(){
-
-      $('#contact_button').click(function(){
-        console.log("CHANGE CLICKED");
-        var contactName = $("#contact_name").val();
-        var contactEmail = $("#contact_email").val();
-        var contactSubject = $("#contact_subject").val();
-        var contactText = $("#contact_message").val();
-        console.log("Contact Name: "+contactName);
-        console.log("Contact Email: "+contactEmail);
-        console.log("Contact Subject: "+contactSubject);
-        console.log("Contact Text: "+contactText);
-
-        $.ajax({
-            type: "POST",
-            url: "mailer.php",
-            data: {contactName:contactName,contactEmail:contactEmail,contactSubject:contactSubject,contactText:contactText, mailerStatus:"2"}
-        }).done(function( msg ) {
-            console.log(msg);
-            alert("Success");
-        });
-    });
-  });
-</script>
 </body>
 
 </html>
