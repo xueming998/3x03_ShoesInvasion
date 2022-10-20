@@ -3,7 +3,7 @@
 ## How to set up environment
 1. Clone this repository into a desired folder.
 2. Open cmd and cd to 3x03_ShoesInvasion folder.
-3. Install virtual environment by `pip install virtualenv`, `virtualenv -p python3 env`.
+3. Install virtual environment by `pip install virtualenv`, `virtualenv -p python3 venv`.
 4. Activiate the virtual environment by `venv\Script\activate`.
 5. Install required libraries by `pip install -r requirements.txt`.
 6. Run the server by doing `python manage.py runserver`.
