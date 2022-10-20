@@ -46,23 +46,19 @@ def about(request):
     return render(request, 'ShoesInvasionApp/about.html')
 
 def contact(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
-    cart = ShoppingCartTable.objects.filter(user=1)
-    cartTotal = ShoppingCartTable.objects.filter(user=1).count()
+    cart = ShoppingCartTable.objects.filter(user='H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi')
     total = 0
     for i in cart:
         total = i.getCartTotal
-        # subtotal = i.quantity * i.product.product_price
-        # i.total_price = subtotal
-        # total_price += subtotal
+
 
     context = {
         'cart':cart,
         'cartTotal':total,
+        'user_id_string' : 'H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi',
     }
     return render(request, 'ShoesInvasionApp/cart.html', context)
 
@@ -101,7 +97,7 @@ def del_cartItem(request):
 def checkout_cartItem(request):
     data = json.loads(request.body)
     user_id = data['user_id']
-    userObj = UserTable.objects.get(id=user_id)
+    userObj = UserTable.objects.get(unique_id=user_id)
 
     t = TransactionTable.objects.create(user=userObj)
     t.save
