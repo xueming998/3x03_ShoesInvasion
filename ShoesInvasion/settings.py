@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
+    'ShoesInvasionAdmin.apps.ShoesInvasionAdminConfig',
+    'ShoesInvasionEditor.apps.ShoesInvasionEditorConfig',
     'django_forms_bootstrap',
     'bootstrap4',
     'crispy_forms',
@@ -91,7 +93,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'asif1234',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
