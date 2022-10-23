@@ -36,12 +36,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    # 'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    # 'django.contrib.messages',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
     'django_forms_bootstrap',
     'bootstrap4',
@@ -72,7 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                # 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -91,7 +90,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'asif1234',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
