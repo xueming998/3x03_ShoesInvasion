@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_forms_bootstrap',
     'bootstrap4',
     'crispy_forms',
+    'captcha',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -91,7 +92,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'asif1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -136,6 +137,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
+RECAPTCHA_PRIVATE_KEY = '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ'
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

@@ -21,12 +21,17 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 from ShoesInvasionApp.forms import RegisterForm
+from ShoesInvasionApp.forms import UserLoginForm
 from .models.user import UserTable
 import bcrypt
 
 from ShoesInvasionApp.models import user
 from ShoesInvasionApp.models import transactionDetails
 from ShoesInvasionApp.models import transaction
+
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Checkbox
+
 
 # Import for login
 from django.contrib.auth import login, authenticate
@@ -220,17 +225,31 @@ def login_request(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        # print(request.POST['data-sitekey'])
         try:
             account = UserTable.objects.get(username=username)
-            if checkPassword(password, account.password):
-                return render(request, 'ShoesInvasionApp/register_success.html')
+            if (account.accountType == 'User' and account.lockedStatus == 0):
+                if checkPassword(password, account.password):
+                    # Right Password | Change Locked Counter to 0
+                    account.lockedCounter = 0
+                    account.save()
+                    return render(request, 'ShoesInvasionApp/register_success.html')
+                else:
+                    # Wrong Password | Need to append into Locked Counter
+                    account.lockedCounter += 1
+                    # Once Locked Counter = 3, Lock Account 
+                    if (account.lockedCounter == 3):
+                        account.lockedStatus = 1
+                    account.save()
+                    return render(request, 'ShoesInvasionApp/register_fail.html')
             else:
+                # Wrong Account type. 
                 return render(request, 'ShoesInvasionApp/register_fail.html')
 
         except UserTable.DoesNotExist:
-            return render(request, 'ShoesInvasionApp/index.html')
+            return render(request, 'ShoesInvasionApp/register_fail.html')
     else:       
-        form = AuthenticationForm()
+        form = UserLoginForm()
         return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
 def checkPassword(password, hashedPassword):
