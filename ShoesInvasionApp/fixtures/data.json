@@ -1,0 +1,1264 @@
+[
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Grand Court Shoes",
+      "product_price": "114.32",
+      "review": "1",
+      "product_info": "A modern update to '70s style. These court-inspired shoes have a smooth leather-like upper with contrast 3-Stripes. A lightweight sockliner provides comfort as they take on their day.",
+      "product_brand": "Adidas",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Continental 80 Shoes White",
+      "product_price": "221.04",
+      "review": "2",
+      "product_info": "Revel in the nostalgia. These adidas Continental 80 shoes capture all the retro vibes of the classic '80s leather trainers. The split rubber cupsole and swooping two-tone stripe nail the look. French terry lining completes the throwback feel.",
+      "product_brand": "Adidas",
+      "product_category": "Formal",
+      "gender_type": "L",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Superstar Shoes White",
+      "product_price": "100.46",
+      "review": "3",
+      "product_info": "50 years of fame created the shell-toe, now it’s reworked to match the adidas Primegreen standard. An upper made out of 70% recycled materials, renewable and reclaimed rubber soles. These shoes are vegan.",
+      "product_brand": "Adidas",
+      "product_category": "Boots",
+      "gender_type": "L",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Superstar Shoes Black",
+      "product_price": "128.16",
+      "review": "3",
+      "product_info": "Originally made for basketball courts in the '70s. Celebrated by hip hop royalty in the '80s. The adidas Superstar shoe is now a lifestyle staple for streetwear enthusiasts. The world-famous shell toe feature remains, providing style and protection. Just like it did on the B-ball courts back in the day. Now, whether at a festival or walking in the street you can enjoy yourself without the fear of being stepped on. The serrated 3-Stripes detail and adidas Superstar box logo adds OG authenticity to your look.",
+      "product_brand": "Adidas",
+      "product_category": "Sneakers",
+      "gender_type": "L",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Superstar Shoes Black",
+      "product_price": "128.16",
+      "review": "3",
+      "product_info": "Originally made for basketball courts in the '70s. Celebrated by hip hop royalty in the '80s. The adidas Superstar shoe is now a lifestyle staple for streetwear enthusiasts. The world-famous shell toe feature remains, providing style and protection. Just like it did on the B-ball courts back in the day. Now, whether at a festival or walking in the street you can enjoy yourself without the fear of being stepped on. The serrated 3-Stripes detail and adidas Superstar box logo adds OG authenticity to your look.",
+      "product_brand": "Adidas",
+      "product_category": "Sneakers",
+      "gender_type": "L",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas FortaRun X",
+      "product_price": "92.82",
+      "review": "2",
+      "product_info": "Kids can pick up speed in these running-inspired shoes made just for girls. They feature a flexible mesh upper and a cushy midsole to keep her feet comfortable. A heel pull that says 'Ready . . . Steady . . . Girl!' brings enthusiasm to the playground. For easy on and off, the shoes have a single strap hook-and-loop closure system.",
+      "product_brand": "Adidas",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Adidas Ultraboost",
+      "product_price": "186.69",
+      "review": "3",
+      "product_info": "These running shoes combine comfort and high-performance technology for a best-ever-run feeling. They have a stretchy knit upper that adapts to the changing shape of your foot as you run. Responsive midsole cushioning and a flexible outsole deliver a smooth and energised ride.",
+      "product_brand": "Adidas",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Court Royale 2",
+      "product_price": "171.50",
+      "review": "1",
+      "product_info": "A flash from the past, the Nike Court Royale 2 features the same design that has rocked the streets since the late '70s. Leather on the upper looks crisp and is easy to wear, while the large retro Swoosh design adds throwback appeal. To top it off, the modernised herringbone sole puts a twist on the classic look.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Blazer Low",
+      "product_price": "171.70",
+      "review": "2",
+      "product_info": "Inspired by heritage basketball looks, the Nike Blazer Low features a leather upper and low-cut collar for comfort and durability. Autoclave construction fuses the outsole to the midsole for a streamlined look.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Air Jordan Mid SE 3",
+      "product_price": "208.98",
+      "review": "23",
+      "product_info": "No offers available",
+      "product_brand": "Nike",
+      "product_category": "Boots",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Court Vision Low",
+      "product_price": "150.19",
+      "review": "23",
+      "product_info": "The fastbreak style of '80s basketball meets the fast-paced culture of today's game, with the new Nike Court Vision Low. It features an upper inspired by old-school basketball sneakers and the classic rubber cupsole featured on some of the most iconic silhouettes of the past.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike SB Charge Canvas",
+      "product_price": "156.5",
+      "review": "2",
+      "product_info": "The Nike SB Charge Canvas pairs a low-top silhouette with flexible canvas for premium performance. A dual-density insole supports your feet while you skate and cushions you through big drops and tricks.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Air Force 1 LV8 Utility",
+      "product_price": "185.85",
+      "review": "23",
+      "product_info": "Putting a fresh spin on the '82 icon, these men's Air Force 1 LV8 Utility trainers from Nike add sketched details to the classic. In a black colourway, these low-profile sneaks have a premium leather upper with a tonal lace up fastening to lock you in. They're sat on a black midsole with Nike's encapsulated Air cushioning for supreme comfort. With a grippy rubber tread, these legendary sneakers are finished up with a sketched Swoosh logo to the sidewalls, sketching to the midsole and signature branding to the heel and tongue.",
+      "product_brand": "Nike",
+      "product_category": "Shoes",
+      "gender_type": "U",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike React Element 55 SE",
+      "product_price": "213.32",
+      "review": "4",
+      "product_info": "The Nike React Element 55 SE borrows design lines from heritage runners like the Nike Internationalist, adds reflective graphics, then places it all on Nike React technology.",
+      "product_brand": "Nike",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Air Max 1",
+      "product_price": "143.99",
+      "review": "4",
+      "product_info": "The Nike Air Max 1 reboots the legendary design that has reigned supreme since 1987. Crossing street fashion with sport, it takes the same lightweight cushioning and classic silhouette of the OG and boldly reworks it with salvaged materials, fresh colours and exposed stitching.",
+      "product_brand": "Nike",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Air Max 97",
+      "product_price": "140.02",
+      "review": "4",
+      "product_info": "Featuring the same ripple design of the OG that was inspired by Japanese bullet trains, the Nike Air Max 97 lets you push your style full-speed ahead. Taking the revolutionary full-length Nike Air unit that shook up the running world and adding fresh colours, it lets you ride in first-class comfort.",
+      "product_brand": "Nike",
+      "product_category": "Sports",
+      "gender_type": "L",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Kyrie 7 EP",
+      "product_price": "174.36",
+      "review": "4",
+      "product_info": "Kyrie Irving is a creative force on and off the court. He needs his shoes to keep up with his playmaking, but also sync with his boundary-pushing style and ethos. Tuned for the next generation of energy return, control and speed, the Kyrie 7 helps players at all levels take advantage of their quick first step by optimising the shoe's fit, court feel and banking ability.",
+      "product_brand": "Nike",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Clyde Hardwood Basketball Shoes",
+      "product_price": "154.58",
+      "review": "4",
+      "product_info": "PUMA Hoops foundaton is Clyde. 1970s Walt Clyde Frazier himself was the first player to truly embody the idea of on-court and off-court swagger. The OG Clyde was the first footwear product that followed this mindset – performance on court, style off court – all in the same shoe. In our first iteration of our modern Clyde we wanted to show that a basketball shoe does not have to scream performance to be playable at a professional level.",
+      "product_brand": "Puma",
+      "product_category": "Sports",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Air VaporMax 2020 Flyknit",
+      "product_price": "99.7",
+      "review": "4",
+      "product_info": "The Nike Air VaporMax 2020 Flyknit sets the stage for a new future with its brand-new VaporMax 2 Air cushioning—the first 1-piece Air-Sole to run the entire length of a shoe. The lightweight Flyknit upper has a linen-like appearance and airy feel. And that is just the beginning. Lace up, salvage your world and live your dreams.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Metcon 6",
+      "product_price": "164.94",
+      "review": "4",
+      "product_info": "The most breathable version yet, the Nike Metcon 6 helps keep your foot cool when you're going full steam. It stands up to the push and pull of heavily weighted and high-intensity workouts, delivering stability and durability.",
+      "product_brand": "Nike",
+      "product_category": "Casual",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductsTable",
+    "fields": {
+      "product_name": "Nike Challenger OG",
+      "product_price": "232.45",
+      "review": "4",
+      "product_info": "The Nike Challenger OG delivers a look like you just stepped off the track after a tough training session with Steve Prefontaine. This legend marries soft suede, a near 1-to-1 colourway match to the original design and breathable mesh. Look to the heel panel and you'll find a label tag, just like those found in our '70s footwear DNA. Plush padding around the ankle combines with its sleek, springy midsole to make it the comfy trendsetter—the diamond from underground.",
+      "product_brand": "Nike",
+      "product_category": "Sneakers",
+      "gender_type": "M",
+      "available": "Yes",
+      "status": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "96",
+      "color": "BLACK",
+      "product_id": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "89",
+      "color": "BLUE",
+      "product_id": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "78",
+      "color": "GREEN",
+      "product_id": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "90",
+      "color": "BLACK",
+      "product_id": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "52",
+      "color": "BLUE",
+      "product_id": "1"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "91",
+      "color": "BLACK",
+      "product_id": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "50",
+      "color": "RED",
+      "product_id": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "60",
+      "color": "RED",
+      "product_id": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "74",
+      "color": "BLUE",
+      "product_id": "2"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "78",
+      "color": "BLUE",
+      "product_id": "3"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "74",
+      "color": "GREEN",
+      "product_id": "3"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "90",
+      "color": "BLACK",
+      "product_id": "3"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "85",
+      "color": "RED",
+      "product_id": "3"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "63",
+      "color": "GREEN",
+      "product_id": "4"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "71",
+      "color": "BLACK",
+      "product_id": "4"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "54",
+      "color": "RED",
+      "product_id": "4"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "86",
+      "color": "BLUE",
+      "product_id": "4"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "60",
+      "color": "GREEN",
+      "product_id": "5"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "91",
+      "color": "RED",
+      "product_id": "5"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "52",
+      "color": "TEAL",
+      "product_id": "5"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "5"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "52",
+      "color": "BLUE",
+      "product_id": "5"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "6"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "6"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "6"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "6"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "6"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "7"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "7"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "7"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "7"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "7"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "8"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "8"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "8"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "8"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "8"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "9"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "9"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "9"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "9"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "9"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "10"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "10"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "10"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "10"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "10"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "11"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "11"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "11"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "GREEN",
+      "product_id": "11"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "11"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "12"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "12"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "12"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "12"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "12"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "13"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "13"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "13"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "13"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "13"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "14"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "14"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "14"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "14"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "14"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "15"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "15"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "15"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "15"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "15"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "16"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "16"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "16"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "16"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "16"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "17"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "17"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "17"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "17"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "17"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "18"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "18"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "18"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "18"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "18"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "19"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "19"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "19"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "58",
+      "color": "RED",
+      "product_id": "19"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "19"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "97",
+      "color": "BLUE",
+      "product_id": "20"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 7",
+      "quantity": "53",
+      "color": "ORANGE",
+      "product_id": "20"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 8",
+      "quantity": "76",
+      "color": "GREEN",
+      "product_id": "20"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "69",
+      "color": "BLACK",
+      "product_id": "20"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ProductQuantityTable",
+    "fields": {
+      "size": "UK 9",
+      "quantity": "55",
+      "color": "TEAL",
+      "product_id": "20"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.UserTable",
+    "fields": {
+      "first_name": "Asif",
+      "last_name": "Muhd",
+      "email": "1234@ma.com",
+      "username": "admin",
+      "password" : "pbkdf2_sha256$390000$rqbjzm6nJLrGXAb8SE6Ls2$Tz1I817obwdj6pfK1NZdSH8YZpAT/Bp20YCaVgu6cIQ=",
+      "phone": "88888888",
+      "verifiedStatus": "1",
+      "verificationCode": "0",
+      "lockedStatus": "0",
+      "lockedCounter": "0",
+      "accountType": "Admin",
+      "bannedStatus": "0",
+      "unique_id": "H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi",
+      "verify_password": "pbkdf2_sha256$390000$rqbjzm6nJLrGXAb8SE6Ls2$Tz1I817obwdj6pfK1NZdSH8YZpAT/Bp20YCaVgu6cIQ="
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.UserTable",
+    "fields": {
+      "first_name": "Nicole",
+      "last_name": "Tan",
+      "email": "098@ma.com",
+      "username": "editor",
+      "password" : "pbkdf2_sha256$390000$8al21tTmXJvcwxs8qFJbLM$fiEmTZnM9weJ0cZWW4qRaDMGBsgVvQZ1A544IKtjLq4=",
+      "phone": "77777777",
+      "verifiedStatus": "1",
+      "verificationCode": "0",
+      "lockedStatus": "0",
+      "lockedCounter": "0",
+      "accountType": "Editor",
+      "bannedStatus": "0",
+      "unique_id": "eajAUl8xkH96LzhWDZNuFTxNLrkaNBWgaB95kleWUSiCDC0fKx0fELXB2IA4Scc7i2t19x9bYTxXCQOKtekTJ5zqdRtyU8gh6UVHQ7RPrSZKoMTF1hubmolnRJRSx7nxsplPp0F2O4lX9IaMq8WknR5U8M2WCK7xcwOXEMPTp8uf96hbPaFCVeFuqKglKMl1blpQ6mxm",
+      "verify_password": "pbkdf2_sha256$390000$8al21tTmXJvcwxs8qFJbLM$fiEmTZnM9weJ0cZWW4qRaDMGBsgVvQZ1A544IKtjLq4="
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.UserTable",
+    "fields": {
+      "first_name": "Kendrick",
+      "last_name": "Lee",
+      "email": "123@ma.com",
+      "username": "test",
+      "password" : "pbkdf2_sha256$390000$gq7sN7GpF7AShQErCng5lV$Bb++midE9jWndnPD2xdMS4LdqX6dkKuTSIisuLyElFI=",
+      "phone": "99999999",
+      "verifiedStatus": "0",
+      "verificationCode": "0",
+      "lockedStatus": "0",
+      "lockedCounter": "0",
+      "accountType": "User",
+      "bannedStatus": "0",
+      "unique_id": "Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA",
+      "verify_password": "pbkdf2_sha256$390000$gq7sN7GpF7AShQErCng5lV$Bb++midE9jWndnPD2xdMS4LdqX6dkKuTSIisuLyElFI="
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.ShoppingCartTable",
+    "fields": {
+      "quantity": "1",
+      "size": "US 7",
+      "color": "BLACK",
+      "total_price": "96",
+      "status" : "1",
+      "product_id": "1",
+      "user_id": "Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.TransactionTable",
+    "fields": {
+      "createdDate": "2022-12-31",
+      "user": "Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA"
+    }
+  },
+  {
+    "model": "ShoesInvasionApp.TransactionDetailsTable",
+    "fields": {
+      "quantity": "1",
+      "size": "1",
+      "amount": "1",
+      "product_id": "1",
+      "transaction_id" : "1"
+    }
+  }
+]
