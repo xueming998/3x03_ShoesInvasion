@@ -36,12 +36,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    # 'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.contenttypes',
+    # 'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    # 'django.contrib.messages',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
     'ShoesInvasionAdmin.apps.ShoesInvasionAdminConfig',
     'ShoesInvasionEditor.apps.ShoesInvasionEditorConfig',
@@ -74,7 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+                # 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
