@@ -24,7 +24,7 @@ urlpatterns = [
     path('login/', views.login_request, name='login'),
     # path('login/', auth_views.LoginView.as_view(), name='login'),
     # Register
-    path('register/', views.register_request, name='register'), 
+    path('register', views.register_request, name='register'), 
     # Register Success
     path('registerSuccess', views.registerSuccess, name='registerSuccess'),
     # Register Failed 
