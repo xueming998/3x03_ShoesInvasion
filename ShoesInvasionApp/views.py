@@ -41,35 +41,33 @@ from django.contrib.auth.hashers import check_password
 
 # Create your views here.
 def index(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
+    unique_id = request.session['unique_id']
+    print("unique_id", unique_id)
     return render(request, 'ShoesInvasionApp/index.html')
 
 def about(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/about.html')
 
 def contact(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
-    cart = ShoppingCartTable.objects.filter(user=1)
-    cartTotal = ShoppingCartTable.objects.filter(user=1).count()
-    total = 0
-    for i in cart:
-        total = i.getCartTotal
-        # subtotal = i.quantity * i.product.product_price
-        # i.total_price = subtotal
-        # total_price += subtotal
+    if request.session.has_key('unique_id'):
+        print("Unique",request.session.get('unique_id'))
+        cart = ShoppingCartTable.objects.filter(user='H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi')
+        total = 0
+        for i in cart:
+            total = i.getCartTotal
 
-    context = {
-        'cart':cart,
-        'cartTotal':total,
-    }
-    return render(request, 'ShoesInvasionApp/cart.html', context)
+
+        context = {
+            'cart':cart,
+            'cartTotal':total,
+            'user_id_string' : 'H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi',
+        }
+        return render(request, 'ShoesInvasionApp/cart.html', context)
+    else:
+        return HttpResponseRedirect(request=request, template_name="ShoesInvasionApp/login_user.html")
 
 # API CALL POINT 
 def update_cartItem(request):
@@ -106,7 +104,7 @@ def del_cartItem(request):
 def checkout_cartItem(request):
     data = json.loads(request.body)
     user_id = data['user_id']
-    userObj = UserTable.objects.get(id=user_id)
+    userObj = UserTable.objects.get(unique_id=user_id)
 
     t = TransactionTable.objects.create(user=userObj)
     t.save
@@ -228,6 +226,7 @@ def login_request(request):
         # print(request.POST['data-sitekey'])
         try:
             account = UserTable.objects.get(username=username)
+
             if (account.accountType == 'User' and account.lockedStatus == 0):
                 if checkPassword(password, account.password):
                     # Right Password | Change Locked Counter to 0
@@ -242,6 +241,7 @@ def login_request(request):
                         account.lockedStatus = 1
                     account.save()
                     return render(request, 'ShoesInvasionApp/register_fail.html')
+
             else:
                 # Wrong Account type. 
                 return render(request, 'ShoesInvasionApp/register_fail.html')
@@ -253,7 +253,6 @@ def login_request(request):
         return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
 def checkPassword(password, hashedPassword):
-    # if bcrypt.checkpw(password.encode('utf-8'), bytes(hashedPassword, 'utf-8')):
     if check_password(password, hashedPassword):
         print("True")
         return True
