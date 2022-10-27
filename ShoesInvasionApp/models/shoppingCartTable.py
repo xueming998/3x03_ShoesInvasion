@@ -21,7 +21,7 @@ class ShoppingCartTable(models.Model):
     
     @property
     def getCartTotal(self):
-        orderItems = ShoppingCartTable.objects.filter(user='H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi')
+        orderItems = ShoppingCartTable.objects.filter(user=self.user.unique_id)
         total = sum([item.getCurrentProductTotal for item in orderItems])
         return total
     
