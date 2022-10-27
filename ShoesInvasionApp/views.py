@@ -25,7 +25,6 @@ from ShoesInvasionApp.forms import RegisterForm
 from ShoesInvasionApp.forms import UserLoginForm
 from .models.user import UserTable 
 from .models.userDetails import UserDetailsTable
-import bcrypt
 
 from ShoesInvasionApp.models import user
 from ShoesInvasionApp.models import transactionDetails
@@ -148,7 +147,6 @@ def checkout_cartItem(request):
             return redirect('login/')
     except:
         return redirect('login/')
-
 
 def add_to_cart(request):
     try:
@@ -345,44 +343,48 @@ def updateProfileDetails(request):
         # Log Error Message 
         return JsonResponse('Exception Error', safe=False)
 
-
 def login_request(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        print("username: " + username)
-        # print(request.POST['data-sitekey'])
-        try:
-            account = UserTable.objects.get(username=username)
+    if request.session.has_key('unique_id'):
+        return render(request, 'ShoesInvasionApp/index.html')
+    else:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            print("username: " + username)
+            # print(request.POST['data-sitekey'])
+            try:
+                account = UserTable.objects.get(username=username)
 
-            if (account.accountType == 'User' and account.lockedStatus == 0):
-                if checkPassword(password, account.password):
-                    # Right Password | Change Locked Counter to 0
-                    account.lockedCounter = 0
-                    account.save()
-                    # Store into Session
-                    request.session['unique_id'] = account.unique_id
-                    # print(request.session['unqiue_id'])
-                    # request.session['unqiue_id'] = account.unique_id
-                    return render(request, 'ShoesInvasionApp/register_success.html')
+                if (account.accountType == 'User' and account.lockedStatus == 0):
+                    if checkPassword(password, account.password):
+                        # Right Password | Change Locked Counter to 0
+                        account.lockedCounter = 0
+                        account.save()
+                        # Store into Session
+                        request.session['unique_id'] = account.unique_id
+                        request.session['accountType'] = account.accountType
+                        request.session.set_expiry(900)
+                        # print(request.session['unqiue_id'])
+                        # request.session['unqiue_id'] = account.unique_id
+                        return render(request, 'ShoesInvasionApp/index.html')
+                    else:
+                        # Wrong Password | Need to append into Locked Counter
+                        account.lockedCounter += 1
+                        # Once Locked Counter = 3, Lock Account 
+                        if (account.lockedCounter == 3):
+                            account.lockedStatus = 1
+                        account.save()
+                        return render(request, 'ShoesInvasionApp/login.html')
+
                 else:
-                    # Wrong Password | Need to append into Locked Counter
-                    account.lockedCounter += 1
-                    # Once Locked Counter = 3, Lock Account 
-                    if (account.lockedCounter == 3):
-                        account.lockedStatus = 1
-                    account.save()
-                    return render(request, 'ShoesInvasionApp/register_fail.html')
+                    # Wrong Account type. 
+                    return render(request, 'ShoesInvasionApp/index.html')
 
-            else:
-                # Wrong Account type. 
-                return render(request, 'ShoesInvasionApp/register_fail.html')
-
-        except UserTable.DoesNotExist:
-            return render(request, 'ShoesInvasionApp/register_fail.html')
-    else:       
-        form = UserLoginForm()
-        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+            except UserTable.DoesNotExist:
+                return render(request, 'ShoesInvasionApp/index.html')
+        else:       
+            form = UserLoginForm()
+            return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
@@ -416,3 +418,14 @@ def registerFailed(request):
     # template = loader.get_template("/index.html")
     # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/register_fail.html')
+
+def logout(request):
+   try:
+      del request.session['unique_id']
+      del request.session['accountType']
+    # Used to delete session from database so wont be able to access anymore
+    # If login again, it will create a new session
+      request.session.flush()
+   except:
+      pass
+   return render(request, 'ShoesInvasionApp/index.html')
