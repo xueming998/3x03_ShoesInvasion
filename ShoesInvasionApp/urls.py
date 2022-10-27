@@ -31,6 +31,10 @@ urlpatterns = [
     path('registerFailed', views.registerFailed, name='registerFailed'),
     # Thankyou.html (After Payment Successful )
     path('paymentSuccess', views.paymentSuccess, name='paymentSuccess'),
+    # User Profile Page 
+    path('profilePage', views.profilePage, name='profilePage'),
+    path('viewUpdateProfilePage', views.viewUpdateProfilePage, name='viewUpdateProfilePage'),
+    path('updateProfileDetails', views.updateProfileDetails, name='updateProfileDetails'),
 
     # Updating Cart Items from Fetch Call on Shopping Cart 
     path('update_cartItem/', views.update_cartItem, name='update_cartItem'),

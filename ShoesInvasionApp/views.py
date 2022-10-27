@@ -1,5 +1,6 @@
 from asyncio.windows_events import NULL
 from decimal import Decimal
+from enum import unique
 import errno
 from multiprocessing import context
 from operator import truediv
@@ -22,7 +23,8 @@ from django.contrib import messages
 
 from ShoesInvasionApp.forms import RegisterForm
 from ShoesInvasionApp.forms import UserLoginForm
-from .models.user import UserTable
+from .models.user import UserTable 
+from .models.userDetails import UserDetailsTable
 import bcrypt
 
 from ShoesInvasionApp.models import user
@@ -41,8 +43,8 @@ from django.contrib.auth.hashers import check_password
 
 # Create your views here.
 def index(request):
-    unique_id = request.session['unique_id']
-    print("unique_id", unique_id)
+    # unique_id = request.session['unique_id']
+    # print("unique_id", unique_id)
     return render(request, 'ShoesInvasionApp/index.html')
 
 def about(request):
@@ -219,10 +221,99 @@ def shop(request):
     }
     return render(request, 'ShoesInvasionApp/shop.html',context)
 
+def profilePage(request):
+    try:
+        if request.session.has_key('unique_id'):
+            # Logged In
+            uid = request.session['unique_id']
+            print(uid)
+            # uid = request.session.get('unique_id')
+            userObj = UserTable.objects.get(unique_id=uid)
+            userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
+            context = {
+                'firstname': userObj.first_name,
+                'lastname': userObj.last_name,
+                'username': userObj.username,
+                'email': userObj.email,
+                'phone': userObj.phone,
+                'address': userDetailsObj.address,
+            }
+            return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
+        else:
+            # Not Logged In
+            return redirect('login/')
+            #return HttpResponseRedirect(request=request,template_name="ShoesInvasionApp/login_user.html") | Cannot work
+    except:
+        # Log 
+        # Redirect cause some error occured.
+        return redirect('login/')
+
+def viewUpdateProfilePage(request):
+    try:
+        if request.session.has_key('unique_id'):
+            # Logged In
+            uid = request.session['unique_id']
+            print(uid)
+            # uid = request.session.get('unique_id')
+            userObj = UserTable.objects.get(unique_id=uid)
+            userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
+            context = {
+                'firstname': userObj.first_name,
+                'lastname': userObj.last_name,
+                'username': userObj.username,
+                'email': userObj.email,
+                'phone': userObj.phone,
+                'address': userDetailsObj.address,
+            }
+            return render(request, 'ShoesInvasionApp/update-profile.html', context=context)
+        else:
+            # Not Logged In
+            return redirect('login/')
+    except:
+        # Log 
+        # Redirect cause some error occured.
+        return redirect('login/')
+
+def updateProfileDetails(request):
+    # Check for session | Logged In or Not
+    try:
+        uid = ""
+        if request.session.has_key('unique_id'):
+            uid = request.session['unique_id']
+            data = json.loads(request.body)
+            fname = data['fname']
+            lname = data['lname']
+            phone = data['phone']
+            address = data['address']
+
+            if (fname == "" or lname == "" or phone == "" or address == ""):
+                return redirect('profilePage')
+
+
+            userDetailObj = UserDetailsTable.objects.get(unique_id = uid)
+            userObj = UserTable.objects.get(unique_id = uid)
+            userDetailObj.address = address
+            userDetailObj.save()
+
+            userObj.first_name = fname
+            userObj.last_name = lname
+            userObj.phone = phone
+            
+            userObj.save()
+            return JsonResponse('Update Success', safe=False)
+        else:
+            # No UID 
+            return redirect('login/')
+    except:
+        # Log Error Message 
+        return JsonResponse('Exception Error', safe=False)
+
+
 def login_request(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
+        print("username: " + username)
         # print(request.POST['data-sitekey'])
         try:
             account = UserTable.objects.get(username=username)
@@ -232,6 +323,10 @@ def login_request(request):
                     # Right Password | Change Locked Counter to 0
                     account.lockedCounter = 0
                     account.save()
+                    # Store into Session
+                    request.session['unique_id'] = account.unique_id
+                    # print(request.session['unqiue_id'])
+                    # request.session['unqiue_id'] = account.unique_id
                     return render(request, 'ShoesInvasionApp/register_success.html')
                 else:
                     # Wrong Password | Need to append into Locked Counter
