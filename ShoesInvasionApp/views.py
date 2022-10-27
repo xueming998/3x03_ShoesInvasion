@@ -77,35 +77,50 @@ def cart(request):
 
 # API CALL POINT 
 def update_cartItem(request):
-    data = json.loads(request.body)
-    shoppingCartID = data['shoppingCartID']
-    action = data['action']
-    print(shoppingCartID)
-    print(action)
+    try:
+        if request.session.has_key('unique_id'):
+            # Ensure deleting only when logged in. 
+            data = json.loads(request.body)
+            shoppingCartID = data['shoppingCartID']
+            action = data['action']
+            print(shoppingCartID)
+            print(action)
 
-    cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
-    
-    if action == "add":
-        cartItem.quantity = (cartItem.quantity + 1)
-        cartItem.total_price += cartItem.product.product_price 
-    elif action == 'remove':
-        cartItem.quantity = (cartItem.quantity - 1)
-        cartItem.total_price -= cartItem.product.product_price 
+            cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
+            
+            if action == "add":
+                cartItem.quantity = (cartItem.quantity + 1)
+                cartItem.total_price += cartItem.product.product_price 
+            elif action == 'remove':
+                cartItem.quantity = (cartItem.quantity - 1)
+                cartItem.total_price -= cartItem.product.product_price 
 
-    cartItem.save()
+            cartItem.save()
 
-    if cartItem.quantity <= 0:
-        cartItem.delete()
-    
-    return JsonResponse('Item was added', safe=False)
+            if cartItem.quantity <= 0:
+                cartItem.delete()
+            
+            return JsonResponse('Item was added', safe=False)
+        else:
+            return redirect('login/')
+
+    except:
+        return redirect('login/')
 
 def del_cartItem(request):
-    data = json.loads(request.body)
-    shoppingCartID = data['shoppingCartID']
-    cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
-    cartItem.delete()
+    try:
+        # Ensure only deleting when logged in
+        if request.session.has_key('unique_id'):
+            data = json.loads(request.body)
+            shoppingCartID = data['shoppingCartID']
+            cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
+            cartItem.delete()
 
-    return JsonResponse('Item was deleted', safe=False)
+            return JsonResponse('Item was deleted', safe=False)
+        else:
+            return redirect('login/')
+    except:
+        return redirect('login/')
 
 def checkout_cartItem(request):
     try:
