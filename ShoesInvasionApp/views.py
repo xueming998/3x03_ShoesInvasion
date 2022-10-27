@@ -54,22 +54,26 @@ def contact(request):
     return render(request, 'ShoesInvasionApp/index.html#contact')
 
 def cart(request):
-    if request.session.has_key('unique_id'):
-        print("Unique",request.session.get('unique_id'))
-        cart = ShoppingCartTable.objects.filter(user='H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi')
-        total = 0
-        for i in cart:
-            total = i.getCartTotal
+    try:
+        if request.session.has_key('unique_id'):
+            print("Unique",request.session.get('unique_id'))
+            uid = request.session['unique_id']
+            cart = ShoppingCartTable.objects.filter(user=uid)
+            total = 0
+            for i in cart:
+                total = i.getCartTotal
 
 
-        context = {
-            'cart':cart,
-            'cartTotal':total,
-            'user_id_string' : 'H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi',
-        }
-        return render(request, 'ShoesInvasionApp/cart.html', context)
-    else:
-        return HttpResponseRedirect(request=request, template_name="ShoesInvasionApp/login_user.html")
+            context = {
+                'cart':cart,
+                'cartTotal':total,
+                'user_id_string' : uid,
+            }
+            return render(request, 'ShoesInvasionApp/cart.html', context)
+        else:
+            return HttpResponseRedirect(request=request, template_name="ShoesInvasionApp/login_user.html")
+    except:
+        return redirect('login/')
 
 # API CALL POINT 
 def update_cartItem(request):
@@ -104,41 +108,59 @@ def del_cartItem(request):
     return JsonResponse('Item was deleted', safe=False)
 
 def checkout_cartItem(request):
-    data = json.loads(request.body)
-    user_id = data['user_id']
-    userObj = UserTable.objects.get(unique_id=user_id)
+    try:
+        if request.session.has_key('unique_id'):
+            print("Unique",request.session.get('unique_id'))
+            uid = request.session['unique_id']
+            data = json.loads(request.body)
+            user_id = data['user_id']
+            userObj = UserTable.objects.get(unique_id=user_id)
 
-    t = TransactionTable.objects.create(user=userObj)
-    t.save
+            t = TransactionTable.objects.create(user=userObj)
+            t.save
 
-    cartDetails = ShoppingCartTable.objects.filter(user = user_id)
-    for i in cartDetails:
-        shoe = ProductsTable.objects.get(id = i.product.id)
-        tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
-        tranDetails.save
-        # Removing from shopping cart
-        cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
-        cartItemToDel.delete()
-        
-    return JsonResponse('Shoes were sold', safe=False)
+            cartDetails = ShoppingCartTable.objects.filter(user = uid)
+            for i in cartDetails:
+                shoe = ProductsTable.objects.get(id = i.product.id)
+                tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
+                tranDetails.save
+                # Removing from shopping cart
+                cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
+                cartItemToDel.delete()
+                
+            return JsonResponse('Shoes were sold', safe=False)
+        else:
+            return redirect('login/')
+    except:
+        return redirect('login/')
+
 
 def add_to_cart(request):
-    data = json.loads(request.body)
-    # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
-    color = data['color']
-    size = data['size']
-    quantity = data['quantity']
-    shoe_id = data['shoe_id']
-    user_id = data['user_id']
+    try:
+        if request.session.has_key('unique_id'):
+            print("Unique",request.session.get('unique_id'))
+            uid = request.session['unique_id']
+            data = json.loads(request.body)
+            # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
+            color = data['color']
+            size = data['size']
+            quantity = data['quantity']
+            shoe_id = data['shoe_id']
+            # user_id = data['user_id'] # Redundant 
 
-    shoeObj = ProductsTable.objects.get(id=shoe_id)
-    userObj = UserTable.objects.get(id=user_id)
-    chosenTotalPrice = Decimal(shoeObj.product_price) * Decimal(quantity)
-    t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice)
-    t.save
+            shoeObj = ProductsTable.objects.get(id=shoe_id)
+            userObj = UserTable.objects.get(unique_id=uid)
+            chosenTotalPrice = Decimal(shoeObj.product_price) * Decimal(quantity)
+            t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice)
+            t.save
 
-    # Insert Shoe here 
-    return JsonResponse('Shoe Added', safe=False)
+            # Insert Shoe here 
+            return JsonResponse('Shoe Added', safe=False)
+        else:
+            # Not Logged In
+            return redirect('login/')
+    except:
+        return redirect('login/')
 
 # Just to render Payment Success Page
 def paymentSuccess(request):
