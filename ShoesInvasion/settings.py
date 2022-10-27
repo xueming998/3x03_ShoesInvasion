@@ -38,7 +38,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # 'django.contrib.admin',
     'django.contrib.auth',
-    # 'django.contrib.contenttypes',
+    'django.contrib.contenttypes',
     'django.contrib.sessions',
     # 'django.contrib.messages',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_forms_bootstrap',
     'bootstrap4',
     'crispy_forms',
+    'django.contrib.staticfiles', 
     'captcha',
 ]
 
