@@ -362,7 +362,6 @@ def login_request(request):
                         account.save()
                         # Store into Session
                         request.session['unique_id'] = account.unique_id
-                        request.session['accountType'] = account.accountType
                         request.session.set_expiry(900)
                         # print(request.session['unqiue_id'])
                         # request.session['unqiue_id'] = account.unique_id
@@ -422,7 +421,6 @@ def registerFailed(request):
 def logout(request):
    try:
       del request.session['unique_id']
-      del request.session['accountType']
     # Used to delete session from database so wont be able to access anymore
     # If login again, it will create a new session
       request.session.flush()
