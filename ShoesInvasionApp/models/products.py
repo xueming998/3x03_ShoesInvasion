@@ -9,6 +9,7 @@ class ProductsTable(models.Model):
     product_category = models.CharField(max_length=45)
     gender_type = models.CharField(max_length=10)
     available = models.CharField(max_length=3)
+    status = models.CharField(max_length=60, null=True)
 
     def __str__(self):
         return self.product_name

@@ -17,7 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('ShoesInvasionApp/', include('ShoesInvasionApp.urls')),
-    path('ShoesInvasionApp/index', include('ShoesInvasionApp.urls')),
+    path('ShoesInvasionAdmin/', include('ShoesInvasionAdmin.urls')),
+    path('ShoesInvasionEditor/', include('ShoesInvasionEditor.urls')),
+    # path('ShoesInvasionApp/index', include('ShoesInvasionApp.urls')),
 ]

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 from . import views
 
@@ -20,15 +21,20 @@ urlpatterns = [
      # Shoe Product
     path('shoeDetails', views.shoeDetails, name='shoeDetails'),
     # Login
-    path('login', views.login, name='login'),
+    path('login/', views.login_request, name='login'),
+    # path('login/', auth_views.LoginView.as_view(), name='login'),
     # Register
-    path('register', views.register, name='register'), 
+    path('register', views.register_request, name='register'), 
     # Register Success
     path('registerSuccess', views.registerSuccess, name='registerSuccess'),
     # Register Failed 
     path('registerFailed', views.registerFailed, name='registerFailed'),
     # Thankyou.html (After Payment Successful )
     path('paymentSuccess', views.paymentSuccess, name='paymentSuccess'),
+    # User Profile Page 
+    path('profilePage', views.profilePage, name='profilePage'),
+    path('viewUpdateProfilePage', views.viewUpdateProfilePage, name='viewUpdateProfilePage'),
+    path('updateProfileDetails', views.updateProfileDetails, name='updateProfileDetails'),
 
     # Updating Cart Items from Fetch Call on Shopping Cart 
     path('update_cartItem/', views.update_cartItem, name='update_cartItem'),

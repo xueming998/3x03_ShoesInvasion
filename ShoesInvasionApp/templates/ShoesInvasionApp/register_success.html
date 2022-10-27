@@ -69,7 +69,7 @@
 
 <body>
   {% comment %} To include navbar {% endcomment %}
-  {% include 'navbar.html' %}
+  {% include 'cus_navbar.html' %}
 
   <div class="page-heading bg-light"
     style="background-image: url(../../static/images/pexels-madison-inouye-193694.jpg)">
@@ -77,7 +77,7 @@
       <div class="row align-items-end">
         <div class="col-lg-7">
           <h1>Verify your email!</h1>
-          <p>Already have an account? <a href="login">Member Login</a></p>
+          <p>Already have an account? <a href="../login">Member Login</a></p>
         </div>
       </div>
     </div>
@@ -95,83 +95,13 @@
 
     </div>
   </div>
-
-  <div class="site-footer">
-    <footer>
-      <div class="container">
-        <div class="row">
-
-          <div class="col-lg-2">
-            <div class="widget">
-              <h3>About</h3>
-              <ul class="list-unstyled">
-                <li><a href="index.php#aboutC">About us</a></li>
-                <li><a href="faq.php">FAQ</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="col-lg-2">
-            <div class="widget">
-              <h3>Policies</h3>
-              <ul class="list-unstyled">
-                <li><a href="cookie_policy.php">Cookies Policy</a></li>
-                <li><a href="privacy_policy.php">Privacy Policy</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="col-lg-2">
-            <div class="widget">
-              <h3>Shop</h3>
-              <ul class="list-unstyled">
-                <li><a href="product.php?gender=Men">Men's Store</a></li>
-                <li><a href="product.php?gender=Ladies">Ladies's Store</a></li>
-                <li><a href="terms_of_use.php">Terms of Use</a></li>
-                <li><a href="#" data-toggle="modal" data-target="#TNCModalCenter">Terms and Condition</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="col-lg-6">
-            <div class="widget">
-              <h3>Join our list and receive exclusives</h3>
-              <div class="d-flex">
-                <label>
-                  <input type="email" class="form-control" placeholder="Email address" id="newsletterEmail"
-                    name="newsletterEmail" aria-label="newsletterEmail">
-                </label>
-                <label>
-                  <input type="submit" class="btn btn-black" value="Subscribe" id="subscribe_button"
-                    name="subscribe_button" aria-label="subscribe_button">
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> <!-- /.container -->
-    </footer> <!-- /.footer -->
-  </div> <!-- /.site-footer -->
-
+  {% include 'ShoesInvasionApp/footer.html' %}  
+ 
   <div id="overlayer"></div>
   <div id="loader" class="loader">
     <div class="spinner-border" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  {% load static %}
-  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-  <script src="{% static 'js/popper.min.js' %}"></script>
-  <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-  <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
-  <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-  <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
-  <script src="{% static 'js/jquery.sticky.js' %}"></script>
-  <script src="{% static 'js/aos.js' %}"></script>
-  <script src="{% static 'js/custom.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
-  
 </body>
-
 </html>

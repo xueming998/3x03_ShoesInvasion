@@ -3,7 +3,7 @@ from .user import UserTable
 from .products import ProductsTable
 
 class ShoppingCartTable(models.Model):
-    user = models.ForeignKey(UserTable, on_delete = models.CASCADE)
+    user = models.ForeignKey(UserTable, to_field="unique_id", db_column="unique_id", on_delete = models.CASCADE)
     product = models.ForeignKey(ProductsTable, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     size = models.CharField(max_length=10)
@@ -21,7 +21,7 @@ class ShoppingCartTable(models.Model):
     
     @property
     def getCartTotal(self):
-        orderItems = ShoppingCartTable.objects.filter(user=1)
+        orderItems = ShoppingCartTable.objects.filter(user='H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi')
         total = sum([item.getCurrentProductTotal for item in orderItems])
         return total
     
