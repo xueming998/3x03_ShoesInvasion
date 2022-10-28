@@ -9,9 +9,9 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 import requests
-import bcrypt
 import secrets
 import string
+import pyotp
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -31,6 +31,7 @@ class RegisterForm(forms.ModelForm):
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
+            'secret_key': forms.HiddenInput(attrs={'value': ''})
             # 'captcha': ReCaptchaField(widget=ReCaptchaV2Checkbox),
         }
         # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
@@ -77,6 +78,11 @@ class UserLoginForm(AuthenticationForm):
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
+
+    otpToken = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'OTP Token', 'oninput': 'limit_input()', 'id': 'otpToken'}),
+        label="OTP Token",
+        required=False)
 
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
