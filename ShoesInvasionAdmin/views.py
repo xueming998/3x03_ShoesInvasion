@@ -2,18 +2,72 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 import json
 from django.http import JsonResponse
+from http import HTTPStatus
+from django.urls import reverse
 from requests import request
 import requests
 from ShoesInvasionApp.models.user import UserTable 
 from ShoesInvasionApp.models.userDetails import UserDetailsTable 
 from django.contrib.auth.hashers import check_password
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers import serialize
+
 
 def login(request):
     return render(request, 'ShoesInvasionAdmin/login.html')
+    # if (check_login_status(request) == False):
+    #     return render(request, 'ShoesInvasionAdmin/login.html')
+    # elif (check_login_status(request) == True):
+    #     return redirect('manage')
+
+def manage(request):
+    # Check if logged in
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('login')
+
     
-def index(request):
-    return render(request, 'ShoesInvasionAdmin/index.html')
+    # Retrieve all User Info 
+    allUserObjs = UserTable.objects.all().exclude(accountType = "Admin")
     
+    dictArray = []
+    for user in allUserObjs:
+        # Store Required Data inside Dictionary 
+        if (user.accountType == "User" or user.accountType == "Editor"):
+            mydict = {
+                "uid": user.unique_id, 
+                "username":user.username, 
+                "lname":user.last_name, 
+                "verifiedStatus": user.verifiedStatus, 
+                "lockedStatus":user.lockedStatus, 
+                "accountType":user.accountType, 
+            }
+            dictArray.append(mydict)
+    print(dictArray)
+    context = {
+        'data':dictArray
+    }
+    return render(request, 'ShoesInvasionAdmin/user.html', context=context)
+    
+
+
+
+def check_login_status(request):
+    try:
+        if request.session.has_key('unique_id'):
+            uid = request.session['unique_id']
+            # Check if uid exist inside db and its admin
+            userObj = UserTable.objects.get(unique_id = uid)
+            if userObj.accountType == "Admin":
+                return True
+            else:
+                return False
+        else:
+            return False
+    except ObjectDoesNotExist:
+        # UID is wrong
+        return redirect('login')
+
+
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
         print("True")
@@ -38,6 +92,7 @@ def checkCaptcha(response_id):
 
 def admin_login(request):
     try:
+        # Check if Logined alr. Cannot Access here if so 
         data = json.loads(request.body)
         username = data['username']
         pw = data['pw']
@@ -47,6 +102,7 @@ def admin_login(request):
         else:
             # Check Code is valid or not
             valid_status = checkCaptcha(response)
+            print(valid_status)
             if valid_status != 0:
                 # Response Code Error
                 return JsonResponse('Login Failed', safe=False)
@@ -82,5 +138,44 @@ def admin_login(request):
                 # return render(request, 'ShoesInvasionAdmin/login.html')
         else:
             return JsonResponse('Login Failed', safe=False)
+    
+    except UserTable.DoesNotExist:
+        # Error 403
+        return JsonResponse('Login Failed', safe=False)
     except:
-        return redirect('login')
+        return JsonResponse('Login Failed', safe=False)
+
+def ban_unban(request):
+    try:
+        data = json.loads(request.body)
+        uid = data['uid']
+        accountObj = UserTable.objects.get(unique_id=uid)
+        if (accountObj.lockedStatus == 0):
+            # Ban
+            accountObj.lockedCounter = 3
+            accountObj.lockedStatus = 1
+            accountObj.save()
+        else:
+            # unban
+            accountObj.lockedStatus = 0
+            accountObj.lockedCounter = 0
+            accountObj.save()
+        data = {"status":"Success", "message":"Ban Successful"}
+        return JsonResponse(data, safe=False)
+    except UserTable.DoesNotExist:
+        # Error 403
+        return JsonResponse('Failed Does not exist', safe=False)
+    except:
+        return JsonResponse('Failed', safe=False)
+
+def logout(request):
+   try:
+      del request.session['unique_id']
+    # Used to delete session from database so wont be able to access anymore
+    # If login again, it will create a new session
+      request.session.flush()
+      return HttpResponseRedirect('../login')
+   except:
+      pass
+      return HttpResponseRedirect('../login')
+
