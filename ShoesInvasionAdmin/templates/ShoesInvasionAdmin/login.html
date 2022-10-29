@@ -38,6 +38,8 @@
                       <input type="text" class="form-control" id="InputUsername" 
                         placeholder="Enter Username">
                     </div>
+                    {% csrf_token %}
+
                     <div class="form-group">
                       <input type="password" class="form-control" id="InputPassword" placeholder="Password">
                     </div>
@@ -66,6 +68,8 @@
 
   {% include 'ShoesInvasionAdmin/footer.html' %}
   <script type="text/javascript">
+    console.log('newToken:', document.getElementsByName('csrfmiddlewaretoken')[0].value)
+    csrftoken =  document.getElementsByName('csrfmiddlewaretoken')[0].value
     var btnClose = document.getElementById('btnClose')
     btnClose.addEventListener('click', function(){
         var error_msg = document.getElementById('error_msg')
@@ -86,6 +90,7 @@
             document.getElementById('error_msg_content').textContent = "Username cannot be empty"
             error_msg.style.visibility = "visible"
             status = false
+            grecaptcha.reset();
         }else if (pw  == "" )
         {
             // Display Error Message Here
@@ -93,6 +98,7 @@
             document.getElementById('error_msg_content').textContent = "Password cannot be empty"
             error_msg.style.visibility = "visible"
             status = false
+            grecaptcha.reset();
         }else if (response.length == 0 )
         {
             var error_msg = document.getElementById('error_msg')
@@ -100,10 +106,12 @@
             document.getElementById('error_msg_content').textContent = "Captcha must be completed"
             error_msg.style.visibility = "visible"
             status = false
+            grecaptcha.reset();
         }else{
             // Run the fetch function here 
             if (status == true)
             {
+              console.log(csrftoken)
                 var url ='admin_login/'
                 // Run Login Call
             fetch(url,
@@ -122,12 +130,13 @@
                 .then((data) => {
                     if (data == "Login Success")
                     {
-                        window.location.replace('index')
+                        window.location.replace('manage')
                     }else{
                         console.log("Error")
                         var error_msg = document.getElementById('error_msg')
                         document.getElementById('error_msg_content').textContent = "Incorrect Username or Password"
                         error_msg.style.visibility = "visible"
+                        grecaptcha.reset();
 
                     }
                 });
