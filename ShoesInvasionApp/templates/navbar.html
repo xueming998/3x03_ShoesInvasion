@@ -17,6 +17,7 @@
           <ul class="js-clone-nav pl-0 d-none d-lg-inline-block site-menu">
             <li {% if request.resolver_match.url_name == 'index' %}class="active" {% endif %}><a href="home">Home</a></li>
             <li {% if request.resolver_match.url_name == 'shop' %}class="active" {% endif %}><a href="shop">Shoes</a></li>
+            <li {% if request.resolver_match.url_name == 'preOrder' %}class="active" {% endif %}><a href="preOrder">Pre-Order</a></li>
             <li {% if request.resolver_match.url_name == 'about' %}class="active" {% endif %}><a href="about">About</a></li>
           </ul>
           

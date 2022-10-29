@@ -12,10 +12,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from ShoesInvasionApp.models import productQuantity, shoppingCartTable
 from ShoesInvasionApp.models import ShoppingCartTable
+from ShoesInvasionApp.models.preorder import PreOrderTable
 from .models.products import ProductsTable
 from .models.productQuantity import ProductQuantityTable
 from .models.transaction import TransactionTable
 from .models.transactionDetails import TransactionDetailsTable
+from .models.preorder import PreOrderTable
 from datetime import datetime
 import json
 from django.http import JsonResponse
@@ -138,6 +140,10 @@ def checkout_cartItem(request):
                 shoe = ProductsTable.objects.get(id = i.product.id)
                 tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
                 tranDetails.save
+                # Adding pre-order shoes into pre-order table
+                if (i.status == 2):
+                    preOrderDetails = PreOrderTable.objects.create(product = 10, unique_id = 'Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA')
+                    preOrderDetails.save()
                 # Removing from shopping cart
                 cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
                 cartItemToDel.delete()
@@ -154,17 +160,19 @@ def add_to_cart(request):
             print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
-            # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
+            print("Unique", data)
+            # {'color': 'BLUE', 'size': 'UK 7', 'quantity': '1', 'shoe_id': '3', 'user_id': 1, 'status': '1'}
             color = data['color']
             size = data['size']
             quantity = data['quantity']
             shoe_id = data['shoe_id']
+            status = data['status']
             # user_id = data['user_id'] # Redundant 
 
             shoeObj = ProductsTable.objects.get(id=shoe_id)
             userObj = UserTable.objects.get(unique_id=uid)
             chosenTotalPrice = Decimal(shoeObj.product_price) * Decimal(quantity)
-            t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice)
+            t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice, status = status)
             t.save
 
             # Insert Shoe here 
@@ -212,6 +220,7 @@ def shoeDetails(request):
             'product_size':product_size,
             'product_quantity':product_quantity, 
             'product_color':product_color,
+            'status':e.status,
         }
     return render(request, 'ShoesInvasionApp/details.html',context)
 
@@ -222,29 +231,29 @@ def shop(request):
     # product = ProductsTable.objects.all
     # No Filter 
     if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
-        product = ProductsTable.objects.all
+        product = ProductsTable.objects.filter(status=1)
     
     # Filter 
     elif (shoeType == "All Products" and brand != "Any" and gender != "Any" ):
-        product = ProductsTable.objects.filter(product_brand = brand, gender_type = gender)
+        product = ProductsTable.objects.filter(product_brand = brand, gender_type = gender, status=1)
     elif (shoeType == "All Products" and brand == "Any" and gender != "Any" ):
-        product = ProductsTable.objects.filter(gender_type = gender)
+        product = ProductsTable.objects.filter(gender_type = gender, status=1)
     elif (shoeType == "All Products" and brand != "Any" and gender == "Any" ):
-        product = ProductsTable.objects.filter(product_brand = brand)
+        product = ProductsTable.objects.filter(product_brand = brand, status=1)
 
     elif (shoeType != "All Products" and brand == "Any" and gender == "Any" ):
-        product = ProductsTable.objects.filter(product_category = shoeType)
+        product = ProductsTable.objects.filter(product_category = shoeType, status=1)
     elif (shoeType != "All Products" and brand != "Any" and gender == "Any"):
-        is_exist = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand).exists()
+        is_exist = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, status=1).exists()
         if (is_exist == False):
             product = None
         else:
-            product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand)
+            product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, status=1)
 
     elif (shoeType != "All Products" and brand != "Any" and gender != "Any"):
-        product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, gender_type = gender)
+        product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, gender_type = gender, status=1)
     elif (shoeType != "All Products" and brand == "Any" and gender != "Any"):
-        product = ProductsTable.objects.filter(product_category = shoeType,gender_type = gender)
+        product = ProductsTable.objects.filter(product_category = shoeType,gender_type = gender, status=1)
     else:
         product = None
 
@@ -427,3 +436,23 @@ def logout(request):
    except:
       pass
    return render(request, 'ShoesInvasionApp/index.html')
+
+def preOrder(request):
+    shoeType = request.GET.get('type', "All Products")
+    brand = request.GET.get('brand', "Any")
+    gender = request.GET.get('gender', "Any")
+    # product = ProductsTable.objects.all
+    # No Filter 
+    if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
+        product = ProductsTable.objects.filter(status= 2)
+    else:
+        product = None
+
+    context = {
+        'product':product,
+        'type':shoeType,
+        'gender':brand,
+        'brand' : gender, 
+        'status': 2,
+    }
+    return render(request, 'ShoesInvasionApp/preorder.html',context)
