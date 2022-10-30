@@ -13,4 +13,5 @@ urlpatterns = [
     path('manage', views.manage, name='manage'),    
     path('ban_unban/', views.ban_unban, name='ban_unban'),
     path('logout/', views.logout, name='logout'),
+    path('twoFA', views.twoFA, name='twoFA' )
 ]

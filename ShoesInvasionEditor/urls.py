@@ -17,4 +17,5 @@ urlpatterns = [
     path('create', views.create, name='create'), 
     path('logout/', views.logout, name='logout'),
     path('updateProduct/<str:pk>/', views.updateProduct, name='updateProduct'),
+    path('twoFA', views.twoFA, name='twoFA' )
 ]
