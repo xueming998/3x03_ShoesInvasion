@@ -43,6 +43,8 @@ urlpatterns = [
     path('checkout_cartItem/', views.checkout_cartItem, name='checkout_cartItem'),
     # add_to_cart
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+     # PreOrder
+    path('preOrder', views.preOrder, name='preOrder'),
     # Logout
     path('logout/', views.logout, name='logout'),
     # 2FA
