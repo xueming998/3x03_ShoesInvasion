@@ -96,67 +96,6 @@
           <form style="width: 1000px;" method="POST" id="MyForm">
         {% csrf_token %}
         {% bootstrap_form form %}
-          <label hidden id="incorrectPassword">Password does not match</label>
-          <!-- 
-            <div class="form-group" style="float:left; min-width: 490px">
-              <input type="hidden" id="roletype" name="roletype" value="1">
-              <label>First Name:</label>
-              <input class="form-control" type="text" id="firstName" required name="firstName" placeholder="First Name">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Last Name:</label>
-              <input class="form-control" type="text" id="lastName" required name="lastName" placeholder="Last Name">
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Address:</label>
-              <input class="form-control" type="text" id="address" required name="address" placeholder="Address">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Email:</label>
-              <input class="form-control" type="email" id="email" required name="email" placeholder="Email">
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Date of Birth:</label>
-              <input class="form-control" type="date" id="dob" required name="dob" placeholder="Date of Birth">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Gender:</label>
-              <br>
-              <select name="gender" id="gender" style="min-height:48px; min-width: 490px;">
-                <option value="m">Male</option>
-                <option value="f">Female</option>
-              </select>
-            </div>
-
-            <div style="clear:both;"></div>
-
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Username:</label>
-              <input class="form-control" type="text" id="username" required name="username" placeholder="Username">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Password:</label>
-              <input class="form-control" type="password" id="password" required name="password" placeholder="Password">
-            </div>
-
-            <div style="clear:both;"></div>
-            <div class="form-group" style="float:left; min-width: 490px;">
-              <label>Phone:</label>
-              <input class="form-control" type="number" id="phone" required name="phone" placeholder="Phone">
-            </div>
-            <div class="form-group" style="float:right; min-width: 490px;">
-              <label>Verify Password:</label>
-              <input class="form-control" type="password" id="verify-password" required name="verify-password" placeholder="Verify Password">
-            </div>
-
-            <div style="clear:both;"></div>
--->
             <div class="form-group">
               <button class="btn btn-primary" id="submit">Submit</button>
             </div>
@@ -174,37 +113,6 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
-  <!-- {% load static %}
-  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-  <script src="{% static 'js/popper.min.js' %}"></script>
-  <script src="{% static 'js/bootstrap.min.js' %}"></script>
-  <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-  <script src="{% static 'js/jquery.animateNumber.min.js' %}"></script>
-  <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-  <script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
-  <script src="{% static 'js/jquery.sticky.js' %}"></script>
-  <script src="{% static 'js/aos.js' %}"></script>
-  <script src="{% static 'js/custom.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script> -->
-  <script>
-    $(document).ready(function () {
-
-
-      document.getElementById("myText").value = "Johnny Bravo";
-
-      // Submit Button Logic
-      $('#submit').click(function () {  
-        var password = document.getElementById("password").value;
-        var verifyPassword = document.getElementById("verify-password").value
-        if (password != verifyPassword){
-          alert("Submit");
-        }
-        else{
-          alert("Submit123");
-        }
-      });
-    });
-  </script>
 </body>
 
 </html>
