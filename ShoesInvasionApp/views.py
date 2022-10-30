@@ -2,6 +2,7 @@ from asyncio.windows_events import NULL
 from decimal import Decimal
 from enum import unique
 import errno
+from itertools import product
 from multiprocessing import context
 from operator import truediv
 from re import T
@@ -57,7 +58,6 @@ def contact(request):
 def cart(request):
     try:
         if request.session.has_key('unique_id'):
-            print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             cart = ShoppingCartTable.objects.filter(user=uid)
             total = 0
@@ -126,33 +126,33 @@ def del_cartItem(request):
 def checkout_cartItem(request):
     try:
         if request.session.has_key('unique_id'):
-            print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
             user_id = data['user_id']
             userObj = UserTable.objects.get(unique_id=user_id)
-
+            cartDetails = ShoppingCartTable.objects.filter(user = uid)
             t = TransactionTable.objects.create(user=userObj)
             t.save
-
-            cartDetails = ShoppingCartTable.objects.filter(user = uid)
             for i in cartDetails:
                 shoe = ProductsTable.objects.get(id = i.product.id)
                 tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
                 tranDetails.save
                 # Adding pre-order shoes into pre-order table
-                if (i.status == 2):
-                    preOrderDetails = PreOrderTable.objects.create(product = 10, unique_id = 'Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA')
-                    preOrderDetails.save()
+                if (i.status == "2"):
+                    save = ""
+                    save = PreOrderTable.objects.create(product = shoe, unique_id = userObj)
+                    save.save()
+                else:
+                    pass
                 # Removing from shopping cart
                 cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
                 cartItemToDel.delete()
                 
             return JsonResponse('Shoes were sold', safe=False)
         else:
-            return redirect('login/')
+            return redirect("login/")
     except:
-        return redirect('login/')
+        return redirect("login/")
 
 def add_to_cart(request):
     try:
@@ -179,9 +179,9 @@ def add_to_cart(request):
             return JsonResponse('Shoe Added', safe=False)
         else:
             # Not Logged In
-            return redirect('login/')
+            return render(request, 'ShoesInvasionApp/login_user.html')
     except:
-        return redirect('login/')
+        return render(request, 'ShoesInvasionApp/login_user.html')
 
 # Just to render Payment Success Page
 def paymentSuccess(request):
