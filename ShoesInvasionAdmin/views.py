@@ -10,16 +10,56 @@ from ShoesInvasionApp.models.user import UserTable
 from ShoesInvasionApp.models.userDetails import UserDetailsTable 
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
+from ShoesInvasionEditor.forms import UserLoginForm
 from django.core.serializers import serialize
 
 
 def login(request):
-    return render(request, 'ShoesInvasionAdmin/login.html')
-    # if (check_login_status(request) == False):
-    #     return render(request, 'ShoesInvasionAdmin/login.html')
-    # elif (check_login_status(request) == True):
-    #     return redirect('manage')
-
+    try:
+        if (check_login_status(request) == False):
+            if request.method == 'POST':
+                username = request.POST['username']
+                password = request.POST['password']
+                response = request.POST['g-recaptcha-response']
+                if len(response) == 0:
+                        form = UserLoginForm()
+                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
+                account = UserTable.objects.get(username=username)
+                
+                if (account.accountType == 'Admin' and account.lockedStatus == 0):
+                    if checkPassword(password, account.password):
+                        # Right Password | Change Locked Counter to 0
+                        account.lockedCounter = 0
+                        account.save()
+                        # Store into Session
+                        request.session['unique_id'] = account.unique_id
+                        return HttpResponseRedirect('manage')
+                    else:
+                        # Wrong Password | Need to append into Locked Counter
+                        account.lockedCounter += 1
+                        # Once Locked Counter = 3, Lock Account 
+                        if (account.lockedCounter == 3):
+                            account.lockedStatus = 1
+                        account.save()
+                        form = UserLoginForm()
+                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                else:
+                    # Wrong Account type. 
+                    form = UserLoginForm()
+                    return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+            else:
+                form = UserLoginForm()
+                return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
+        else:
+            # Already Logged in but trying to access login page again
+            return HttpResponseRedirect('manage')
+    except UserTable.DoesNotExist:
+            form = UserLoginForm()
+            return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+    except:
+            form = UserLoginForm()
+            return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+ 
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
