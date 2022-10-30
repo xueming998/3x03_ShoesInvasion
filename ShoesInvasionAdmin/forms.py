@@ -11,21 +11,28 @@ from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 import requests
 
-class UserLoginForm(AuthenticationForm):
+class AdminLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
+        super(AdminLoginForm, self).__init__(*args, **kwargs)
 
     username = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Username or Email'}),
-        label="Username or Email*")
+        label="Username or Email")
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
 
+    otpToken = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'OTP Token', 'oninput': 'limit_input()', 'id': 'otpToken'}),
+        label="OTP Token",
+        required=False)
+
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
+    
+
     def clean(self):
-        super(UserLoginForm, self).clean()
+        super(AdminLoginForm, self).clean()
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {

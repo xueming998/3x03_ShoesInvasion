@@ -78,9 +78,9 @@ class updateProductForm(ModelForm):
     status = forms.ChoiceField(label="Availability*", choices=statusChoice)
     product_category = forms.ChoiceField(label="Category*", choices=categoryChoice)
 
-class UserLoginForm(AuthenticationForm):
+class EditorLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
-        super(UserLoginForm, self).__init__(*args, **kwargs)
+        super(EditorLoginForm, self).__init__(*args, **kwargs)
 
     username = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Username or Email'}),
@@ -89,10 +89,15 @@ class UserLoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
 
+    otpToken = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'OTP Token', 'oninput': 'limit_input()', 'id': 'otpToken'}),
+        label="OTP Token",
+        required=False)
+
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
     def clean(self):
-        super(UserLoginForm, self).clean()
+        super(EditorLoginForm, self).clean()
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
