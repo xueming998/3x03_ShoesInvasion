@@ -30,23 +30,23 @@ class createProductForm(forms.Form):
 
     product_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Puma Balanced'}),
-        label="Product Name*")
+        label="Product Name")
 
     product_price = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': '$150', 'type':'number'}),
-        label="Product Price*")
+        label="Product Price")
     
     product_info = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Sample information about product.'}),
-        label="Product Info*")
+        label="Product Info")
 
     product_brand = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'E.g. Nike, Adidas'}),
-        label="Product Brand*")
+        label="Product Brand")
 
-    gender = forms.ChoiceField(label="Gender*", choices=genderChoice)
-    status = forms.ChoiceField(label="Availability*", choices=statusChoice)
-    category = forms.ChoiceField(label="Category*", choices=categoryChoice)
+    gender = forms.ChoiceField(label="Gender", choices=genderChoice)
+    status = forms.ChoiceField(label="Availability", choices=statusChoice)
+    category = forms.ChoiceField(label="Category", choices=categoryChoice)
     
     # Function used for validation
     def clean(self):
@@ -60,23 +60,23 @@ class updateProductForm(ModelForm):
 
     product_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Puma Balanced'}),
-        label="Product Name*")
+        label="Product Name")
 
     product_price = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': '$150', 'type':'number'}),
-        label="Product Price*")
+        label="Product Price")
     
     product_info = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'placeholder': 'Sample information about product.'}),
-        label="Product Info*")
+        label="Product Info")
 
     product_brand = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'E.g. Nike, Adidas'}),
-        label="Product Brand*")
+        label="Product Brand")
 
-    gender_type = forms.ChoiceField(label="Gender*", choices=genderChoice)
-    status = forms.ChoiceField(label="Availability*", choices=statusChoice)
-    product_category = forms.ChoiceField(label="Category*", choices=categoryChoice)
+    gender_type = forms.ChoiceField(label="Gender", choices=genderChoice)
+    status = forms.ChoiceField(label="Availability", choices=statusChoice)
+    product_category = forms.ChoiceField(label="Category", choices=categoryChoice)
 
 class EditorLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -84,7 +84,7 @@ class EditorLoginForm(AuthenticationForm):
 
     username = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Username or Email'}),
-        label="Username or Email*")
+        label="Username")
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
