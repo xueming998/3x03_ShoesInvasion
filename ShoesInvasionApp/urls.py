@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-
+from django.urls import re_path
 from . import views
 
 app_name = 'ShoesInvasionApp'
@@ -45,4 +45,8 @@ urlpatterns = [
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
      # PreOrder
     path('preOrder', views.preOrder, name='preOrder'),
+    # Logout
+    path('logout/', views.logout, name='logout'),
+    # 2FA
+    path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]

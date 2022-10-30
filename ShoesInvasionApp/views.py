@@ -3,6 +3,7 @@ from decimal import Decimal
 from enum import unique
 import errno
 from itertools import product
+from mimetypes import init
 from multiprocessing import context
 from operator import truediv
 from re import T
@@ -42,12 +43,15 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.hashers import check_password
 
+# Import for 2FA
+import pyotp
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
 
 # Create your views here.
 def index(request):
-    # unique_id = request.session['unique_id']
-    # print("unique_id", unique_id)
-    return render(request, 'ShoesInvasionApp/index.html')
+        return render(request, 'ShoesInvasionApp/index.html')
 
 def about(request):
     return render(request, 'ShoesInvasionApp/about.html')
@@ -359,22 +363,41 @@ def login_request(request):
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
-            print("username: " + username)
-            # print(request.POST['data-sitekey'])
+            otpToken = request.POST['otpToken']
             try:
                 account = UserTable.objects.get(username=username)
 
                 if (account.accountType == 'User' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
-                        # Right Password | Change Locked Counter to 0
-                        account.lockedCounter = 0
-                        account.save()
-                        # Store into Session
-                        request.session['unique_id'] = account.unique_id
-                        request.session.set_expiry(900)
-                        # print(request.session['unqiue_id'])
-                        # request.session['unqiue_id'] = account.unique_id
-                        return render(request, 'ShoesInvasionApp/index.html')
+                        # 2FA not enabled, can login
+                        if (account.secret_key == ""):
+                            # Right Password | Change Locked Counter to 0
+                            account.lockedCounter = 0
+                            account.save()
+                            # Store into Session
+                            request.session['unique_id'] = account.unique_id
+                            request.session.set_expiry(900)
+                            request.session['secret_key'] = account.secret_key
+                            return render(request, 'ShoesInvasionApp/index.html')
+                        # Got 2FA Enabled
+                        else:
+                            otpToken = request.POST['otpToken']
+                            if (otpToken == None):
+                                return render(request, 'ShoesInvasionApp/index.html')
+                            else:
+                                userSecretKey = pyotp.TOTP(account.secret_key)
+                                if (userSecretKey.verify(otpToken)):
+                                    # Right Password | Change Locked Counter to 0
+                                    account.lockedCounter = 0
+                                    account.save()
+                                    # Store into Session
+                                    request.session['unique_id'] = account.unique_id
+                                    request.session.set_expiry(900)
+                                    request.session['secret_key'] = account.secret_key
+                                    return render(request, 'ShoesInvasionApp/index.html')
+                                else:
+                                    form = UserLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
                     else:
                         # Wrong Password | Need to append into Locked Counter
                         account.lockedCounter += 1
@@ -382,14 +405,15 @@ def login_request(request):
                         if (account.lockedCounter == 3):
                             account.lockedStatus = 1
                         account.save()
-                        return render(request, 'ShoesInvasionApp/login.html')
+                        form = UserLoginForm()
+                        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
                 else:
                     # Wrong Account type. 
                     return render(request, 'ShoesInvasionApp/index.html')
 
             except UserTable.DoesNotExist:
-                return render(request, 'ShoesInvasionApp/index.html')
+                return render(request, 'ShoesInvasionApp/register.html')
         else:       
             form = UserLoginForm()
             return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
@@ -423,8 +447,6 @@ def registerSuccess(request):
     return render(request, 'ShoesInvasionApp/register_success.html')
 
 def registerFailed(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/register_fail.html')
 
 def logout(request):
@@ -456,3 +478,27 @@ def preOrder(request):
         'status': 2,
     }
     return render(request, 'ShoesInvasionApp/preorder.html',context)
+def user_2fa(request):
+    context = {}
+    if request.method == "POST":
+        # Checked
+        if 'enable2FA' in request.POST:
+            # Get user unique ID
+            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+            # pyotp generates a random key that is assigned to user and save in db
+            userSecretKey = pyotp.random_base32()
+            userDetails.secret_key = userSecretKey
+            userDetails.save()
+            # Create url for qrcode
+            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+            factory = qrcode.image.svg.SvgImage
+            img = qrcode.make(url, image_factory=factory, box_size=20)
+            stream = BytesIO()
+            img.save(stream)
+            context["svg"] = stream.getvalue().decode()
+            return render(request,"ShoesInvasionApp/user-2fa.html", context=context)
+        # Not checked
+        else:
+            return render(request, 'ShoesInvasionApp/user-2fa.html')
+    else:
+        return render(request, 'ShoesInvasionApp/user-2fa.html')
