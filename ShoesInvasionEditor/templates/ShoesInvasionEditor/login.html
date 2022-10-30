@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'ShoesInvasionEditor/head.html' %}
+  <title>ShoesInvasionEditor - Login</title>
+  <script type="text/javascript">
+    var onloadCallback = function() {
+      grecaptcha.render('html_element', {
+        'sitekey' : '6LeT_rciAAAAAAAYEsWKXL_WUJ2-e9PHa76liKIL'
+      });
+    };
+  </script>
+</head>
+
+<body class="bg-gradient-login">
+  {% load crispy_forms_tags %}
+
+  <!-- Login Content -->
+  <div class="container-login">
+    
+    <div class="row justify-content-center">
+      <div class="col-xl-6 col-lg-12 col-md-9">
+        <div class="card shadow-sm my-5">
+          <div class="card-body p-0">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="login-form">
+                  {% if status ==  "Failed" %}
+                  <div id="error_msg" style="visibility: visible;">
+                    <div class ="alert alert-danger alert-dismissible fade show" role="alert">
+                      <strong>Error! <p id="error_msg_content">{{message}}</p></strong>
+                      <button type="button" class="close" id="btnClose">&times;</button>
+                    </div>
+                  </div>
+                  {% endif %}
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Login</h1>
+                  </div>
+                  <form method="POST">
+                    {% csrf_token %}
+                    {{ login_form|crispy }}
+                    
+                    <div class="form-group">
+                        <button class="btn btn-primary mb-1 submitBtn">Submit</button>
+                    </div>
+                </form>
+                </div>
+                <!-- <div class="login-form">
+                    <div id="error_msg" style="visibility: hidden;">
+                        <div class ="alert alert-danger alert-dismissible fade show" role="alert">
+                          <strong>Error! <p id="error_msg_content"></p></strong>
+                          <button type="button" class="close" id="btnClose">&times;</button>
+                        </div>
+                      </div>
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Login</h1>
+                  </div>
+                    
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="InputUsername" 
+                        placeholder="Enter Username">
+                    </div>
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                      <input type="password" class="form-control" id="InputPassword" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <div id="html_element"></div>
+                    </div>
+                    <div class="form-group">
+
+                        <button class="btn btn-primary btn-block" id="btnLogin">Login </button>
+                       <a href="login" class="btn btn-primary btn-block">Login</a> 
+                    </div>
+                  </form>
+                  <div class="text-center">
+                  </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Login Content -->
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer></script> 
+
+  {% include 'ShoesInvasionEditor/footer.html' %}
+  <script type="text/javascript">
+    console.log('newToken:', document.getElementsByName('csrfmiddlewaretoken')[0].value)
+    csrftoken =  document.getElementsByName('csrfmiddlewaretoken')[0].value
+    var btnClose = document.getElementById('btnClose')
+    btnClose.addEventListener('click', function(){
+        var error_msg = document.getElementById('error_msg')
+        error_msg.style.visibility = "hidden"
+    })
+    var loginBtn = document.getElementById('btnLogin')
+    loginBtn.addEventListener('click', function(){
+        console.log("Login Clicked")
+        var username = document.getElementById("InputUsername").value;
+        var pw = document.getElementById("InputPassword").value;
+        var response = grecaptcha.getResponse();
+        console.log(response)
+        var status = true
+
+        if (username == ""){
+            // Display Error Message Here
+            var error_msg = document.getElementById('error_msg')
+            document.getElementById('error_msg_content').textContent = "Username cannot be empty"
+            error_msg.style.visibility = "visible"
+            status = false
+            grecaptcha.reset();
+        }else if (pw  == "" )
+        {
+            // Display Error Message Here
+            var error_msg = document.getElementById('error_msg')
+            document.getElementById('error_msg_content').textContent = "Password cannot be empty"
+            error_msg.style.visibility = "visible"
+            status = false
+            grecaptcha.reset();
+        }else if (response.length == 0 )
+        {
+            var error_msg = document.getElementById('error_msg')
+            
+            document.getElementById('error_msg_content').textContent = "Captcha must be completed"
+            error_msg.style.visibility = "visible"
+            status = false
+            grecaptcha.reset();
+        }else{
+            // Run the fetch function here 
+            if (status == true)
+            {
+              console.log(csrftoken)
+                var url ='admin_login/'
+                // Run Login Call
+            fetch(url,
+                {
+                method:'POST',
+                headers:{
+                'Content-Type':'application/json',
+                        'X-CSRFToken':csrftoken, 
+                }, 
+                body:JSON.stringify({'username':username, 'pw':pw,'g-recaptcha-response':response})
+                })
+                .then((respose) => {
+                console.log(respose)
+                return respose.json();
+                })
+                .then((data) => {
+                    if (data == "Login Success")
+                    {
+                        window.location.replace('manage')
+                    }else{
+                        console.log("Error")
+                        var error_msg = document.getElementById('error_msg')
+                        document.getElementById('error_msg_content').textContent = "Incorrect Username or Password"
+                        error_msg.style.visibility = "visible"
+                        grecaptcha.reset();
+
+                    }
+                });
+            }
+        }
+
+    })
+  </script>
+</body>
+
+</html>
