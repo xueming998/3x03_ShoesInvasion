@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'ShoesInvasionEditor/head.html' %}
+  <title>ShoesInvasion Editor - Products</title>
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+    {% include 'ShoesInvasionEditor/sidebar.html' %}
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        {% include 'ShoesInvasionEditor/navbar.html' %}
+        <!-- Container Fluid-->
+        <div class="container-fluid" id="container-wrapper">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Manage Products</h1>
+            <ol class="breadcrumb">
+              <!-- <li class="breadcrumb-item"><a href="home">Home</a></li> -->
+              <li class="breadcrumb-item">Manage Products</li>
+              <!-- <li class="breadcrumb-item active" aria-current="page">Blank Page</li> -->
+            </ol>
+          </div>
+
+          <div class="row">
+            <!-- Datatables -->
+            <div class="col-lg-12">
+              <div class="card mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary"></h6>
+                <!-- <a href="create"><button type="button" id="btnRemove" class="btn btn-success ban" >Create Product</button></a>  -->
+                <button type="button" id="btnRemove" class="btn btn-success ban" onclick="create()" >Create Product</button>
+                </div>
+                <div class="table-responsive p-3">
+                  <table class="table align-items-center table-flush" id="dataTable">
+                    <thead class="thead-light">
+                      {% csrf_token %}
+                      <tr>
+                        <th>Product Name</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Available</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                        <th>Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %} 
+                        <tr id="{{item.product_id}}">
+                          <td class="row-data">{{item.name}}</td>
+                          <td class="row-data">{{item.brand}}</td>
+                          <td class="row-data">{{item.price}}</td>
+                          <td class="row-data">{{item.category}}</td>
+                          <td class="row-data">{{item.available}}</td>
+                          {% if item.status ==  '1' %}
+                            <td class="row-data">Available</td>
+                          {% else %}
+                            <td class="row-data">PreOrder</td>
+                          {% endif %}
+
+                          <td><a href="updateProduct/{{item.product_id}}/" class="btn btn-danger ban" >Update</a></td>
+                          {% if item.available ==  "Yes" %}
+                            <td><button type="button" id="btnRemove" class="btn btn-danger ban" onclick="remove()">Remove</button></td>
+                          {% else %}
+                          <td><button type="button" id="btnRemove" class="btn btn-success ban" onclick="remove()">Make Available</button></td>
+                          {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </form>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <!---Container Fluid-->
+      </div>
+      {% include 'ShoesInvasionEditor/logout-container.html' %}
+    </div>
+  </div>
+
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  {% include 'ShoesInvasionEditor/footer.html' %}
+  <script>
+    function create()
+    {
+      window.location.href = "create";
+    }
+    function update()
+    {
+      console.log("Update Clicked")
+    }
+    function remove()
+    {
+      console.log("Remove Clicked")
+      var rowId = event.target.parentNode.parentNode.id;
+      csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+      var data = document.getElementById(rowId).querySelectorAll(".row-data"); 
+      var url ='remove/'
+      fetch(url,{
+          method:'POST',
+          headers:{
+          'Content-Type':'application/json',
+                  'X-CSRFToken':csrftoken, 
+          },
+          body:JSON.stringify({'product_id':rowId }) 
+        }).then((response) => {
+          console.log(response)
+          return response.json();
+          })
+          .then((data) => {
+            console.log(data)
+            alert("Success! " + data['message'] )
+            location.reload() 
+          })
+    }
+  </script>
+
+</body>
+
+</html>
