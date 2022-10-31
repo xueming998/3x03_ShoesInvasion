@@ -43,4 +43,6 @@ urlpatterns = [
     path('checkout_cartItem/', views.checkout_cartItem, name='checkout_cartItem'),
     # add_to_cart
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    # email_verification_activate
+    path('activate/<verificationcode>/<token>', views.activate, name='activate'),
 ]
