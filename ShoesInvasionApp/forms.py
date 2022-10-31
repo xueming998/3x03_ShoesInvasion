@@ -2,16 +2,11 @@ from ctypes.wintypes import SIZE
 from dataclasses import field
 from unittest.util import _MAX_LENGTH
 from django import forms  
-# from captcha.fields import ReCaptchaField
-# from captcha.widgets import ReCaptchaV2Checkbox
 from .models.user import UserTable  
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-import requests
-import bcrypt
-import secrets
-import string
+import requests, secrets, string
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -19,7 +14,6 @@ class RegisterForm(forms.ModelForm):
     class Meta:  
         model = UserTable  
         fields = '__all__'
-        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType', 'unique_id']
         widgets = {
             'password': forms.PasswordInput(),
             'verify_password': forms.PasswordInput(),
@@ -31,9 +25,7 @@ class RegisterForm(forms.ModelForm):
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
-            # 'captcha': ReCaptchaField(widget=ReCaptchaV2Checkbox),
         }
-        # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
 
 
     # Function used for validation
@@ -58,13 +50,12 @@ class RegisterForm(forms.ModelForm):
                     if (password != verifyPassword):
                         self.errors['verify_password'] = self.error_class(['Password does not match.'])
                     else:
-                        # salt = bcrypt.gensalt()
-                        # encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-                        # print("Password: ", make_password(password))
                         self.cleaned_data['password'] = make_password(password)
                         self.cleaned_data['verify_password'] = make_password(password)
                         unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                         self.cleaned_data['unique_id'] = unique
+                        vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
+                        self.cleaned_data['verificationCode'] = vCode
                         return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):

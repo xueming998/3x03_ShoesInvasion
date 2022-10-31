@@ -155,7 +155,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #EMAIL Backend
 DEFAULT_FROM_EMAIL="marisschool@outlook.com"
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST="smtp.office365.com"
 EMAIL_FROM = 'marisschool@outlook.com'
 EMAIL_HOST_USER = 'marisschool@outlook.com'

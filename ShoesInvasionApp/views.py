@@ -48,8 +48,6 @@ from django.core.mail import EmailMessage
 
 # Create your views here.
 def index(request):
-    # unique_id = request.session['unique_id']
-    # print("unique_id", unique_id)
     return render(request, 'ShoesInvasionApp/index.html')
 
 def about(request):
@@ -67,7 +65,6 @@ def cart(request):
             total = 0
             for i in cart:
                 total = i.getCartTotal
-
 
             context = {
                 'cart':cart,
@@ -160,12 +157,10 @@ def add_to_cart(request):
             print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
-            # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
             color = data['color']
             size = data['size']
             quantity = data['quantity']
             shoe_id = data['shoe_id']
-            # user_id = data['user_id'] # Redundant 
 
             shoeObj = ProductsTable.objects.get(id=shoe_id)
             userObj = UserTable.objects.get(unique_id=uid)
@@ -225,7 +220,6 @@ def shop(request):
     shoeType = request.GET.get('type', "All Products")
     brand = request.GET.get('brand', "Any")
     gender = request.GET.get('gender', "Any")
-    # product = ProductsTable.objects.all
     # No Filter 
     if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
         product = ProductsTable.objects.all
@@ -267,8 +261,6 @@ def profilePage(request):
         if request.session.has_key('unique_id'):
             # Logged In
             uid = request.session['unique_id']
-            print(uid)
-            # uid = request.session.get('unique_id')
             userObj = UserTable.objects.get(unique_id=uid)
             userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
             context = {
@@ -283,7 +275,6 @@ def profilePage(request):
         else:
             # Not Logged In
             return redirect('login/')
-            #return HttpResponseRedirect(request=request,template_name="ShoesInvasionApp/login_user.html") | Cannot work
     except:
         # Log 
         # Redirect cause some error occured.
@@ -357,7 +348,6 @@ def login_request(request):
             username = request.POST['username']
             password = request.POST['password']
             print("username: " + username)
-            # print(request.POST['data-sitekey'])
             try:
                 account = UserTable.objects.get(username=username)
 
@@ -369,8 +359,6 @@ def login_request(request):
                         # Store into Session
                         request.session['unique_id'] = account.unique_id
                         request.session.set_expiry(900)
-                        # print(request.session['unqiue_id'])
-                        # request.session['unqiue_id'] = account.unique_id
                         return render(request, 'ShoesInvasionApp/index.html')
                     else:
                         # Wrong Password | Need to append into Locked Counter
@@ -398,21 +386,13 @@ def checkPassword(password, hashedPassword):
     else:
         print("False")
         return False  
-    #user.email_user(subject,message,html_message=message)
     
-def activate(request, verificationcode,token):
-    print ("uid is:", verificationcode) #results is just their user ID
-    all_entries = UserTable.objects.all()
-    print(all_entries)
-    
+def activate(request, verificationcode,token):    
     try:
         user = UserTable.objects.get(verificationCode=verificationcode)
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     
-    print('user is',user)
-    #print("User verification code:", verificationcode)
-    print ("results",account_activation_token.check_token(user, token))
     if user is not None and account_activation_token.check_token(user, token):
         user.verifiedStatus = 1
         user.save()
@@ -421,19 +401,15 @@ def activate(request, verificationcode,token):
     else:
         messages.error(request, 'Activation link is invalid!')
         return render(request, 'ShoesInvasionApp/register_fail.html')
-        
-    return render(request, 'ShoesInvasionApp/index.html')
 
 def activateEmail(request, user,to_email):
     current_site = get_current_site(request)
-    print("activate email user status:", user.verifiedStatus)
     subject = 'Activate your ShoesInvasion account today.'
     message = render_to_string('ShoesInvasionApp/email-template.html',
                                 {'user': user,
                                 'domain':current_site.domain,
                                 'uid':user.verificationCode,
-                                #'uid':user.unique_id,
-                                'token':account_activation_token.make_token(user),
+                                'token': account_activation_token.make_token(user),
                                 'protocol': 'https' if request.is_secure() else 'http'})
     email = EmailMessage(subject, message, to=[to_email])
     if email.send():
@@ -448,9 +424,6 @@ def register_request(request):
         if formDetails.is_valid():
             post = formDetails.save(commit = False)
             post.save()
-            print("post data:",post)
-            #current_sitwe: 127.0.0.1:8000
-            print("Request post:",request.POST)
             activateEmail(request,post, formDetails.cleaned_data.get('email'))
             return render(request, 'ShoesInvasionApp/register_success.html')
         
@@ -462,13 +435,9 @@ def register_request(request):
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
 
 def registerSuccess(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/register_success.html')
 
 def registerFailed(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/register_fail.html')
 
 def logout(request):
