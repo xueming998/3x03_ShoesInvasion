@@ -13,8 +13,13 @@ from ShoesInvasionApp.models.productQuantity import ProductQuantityTable
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers import serialize
-from ShoesInvasionEditor.forms import createProductForm, updateProductForm, UserLoginForm
+from ShoesInvasionEditor.forms import createProductForm, updateProductForm, EditorLoginForm
 
+# Import for 2FA
+import pyotp
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
 
 def login(request):
     try:
@@ -24,18 +29,40 @@ def login(request):
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
                 if len(response) == 0:
-                        form = UserLoginForm()
+                        form = EditorLoginForm()
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 account = UserTable.objects.get(username=username)
                 
                 if (account.accountType == 'Editor' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
-                        # Right Password | Change Locked Counter to 0
-                        account.lockedCounter = 0
-                        account.save()
-                        # Store into Session
-                        request.session['unique_id'] = account.unique_id
-                        return HttpResponseRedirect('manage')
+                        # 2FA not enabled, can login
+                            if (account.secret_key == ""):
+                                # Right Password | Change Locked Counter to 0
+                                account.lockedCounter = 0
+                                account.save()
+                                # Store into Session
+                                request.session['unique_id'] = account.unique_id
+                                request.session.set_expiry(900)
+                                return HttpResponseRedirect('manage')
+                            # Got 2FA Enabled
+                            else:
+                                otpToken = request.POST['otpToken']
+                                if (otpToken == None):
+                                    form = EditorLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Enabled OTP cannot be empty."})
+                                else:
+                                    userSecretKey = pyotp.TOTP(account.secret_key)
+                                    if (userSecretKey.verify(otpToken)):
+                                        # Right Password | Change Locked Counter to 0
+                                        account.lockedCounter = 0
+                                        account.save()
+                                        # Store into Session
+                                        request.session['unique_id'] = account.unique_id
+                                        request.session.set_expiry(900)
+                                        return HttpResponseRedirect('manage')
+                                    else:
+                                        form = EditorLoginForm()
+                                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                     else:
                         # Wrong Password | Need to append into Locked Counter
                         account.lockedCounter += 1
@@ -43,23 +70,23 @@ def login(request):
                         if (account.lockedCounter == 3):
                             account.lockedStatus = 1
                         account.save()
-                        form = UserLoginForm()
+                        form = EditorLoginForm()
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                 else:
                     # Wrong Account type. 
-                    form = UserLoginForm()
+                    form = EditorLoginForm()
                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
-                form = UserLoginForm()
+                form = EditorLoginForm()
                 return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
         else:
             # Already Logged in but trying to access login page again
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
-            form = UserLoginForm()
+            form = EditorLoginForm()
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
-            form = UserLoginForm()
+            form = EditorLoginForm()
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
         
 def manage(request):
@@ -216,69 +243,38 @@ def checkCaptcha(response_id):
     else:
         return 0
 
-def admin_login(request):
-    try:
-        # Check if Logined alr. Cannot Access here if so 
-        data = json.loads(request.body)
-        username = data['username']
-        pw = data['pw']
-        response = data['g-recaptcha-response']
-        if len(response) == 0:
-            return JsonResponse('Login Failed', safe=False)
-        else:
-            # Check Code is valid or not
-            valid_status = checkCaptcha(response)
-            print(valid_status)
-            if valid_status != 0:
-                # Response Code Error
-                return JsonResponse('Login Failed', safe=False)
-
-            # Empty 
-        print("username: "+ username)
-        print("pw: "+ pw) 
-        # print("g-recaptcha-response: "+  data['g-recaptcha-response'] )
-        # Simple Validation if empty string is passed
-        if (username == "" or pw == ""):
-                return redirect('login')
-
-        account = UserTable.objects.get(username=username)
-        print(account.unique_id)
-        if (account.accountType == 'Editor' and account.lockedStatus == 0):
-            if checkPassword(pw, account.password):
-                # Right Password | Change Locked Counter to 0
-                    account.lockedCounter = 0
-                    account.save()
-                    # Store into Session
-                    request.session['unique_id'] = account.unique_id
-                    # Render to index page
-                    return JsonResponse('Login Success', safe=False)
-                    # return render(request, 'ShoesInvasionAdmin/index.html')
-            else:
-                # Wrong Password | Need to append into Locked Counter
-                account.lockedCounter += 1
-                # Once Locked Counter = 3, Lock Account 
-                if (account.lockedCounter == 3):
-                    account.lockedStatus = 1
-                account.save()
-                return JsonResponse('Login Failed', safe=False)
-                # return render(request, 'ShoesInvasionAdmin/login.html')
-        else:
-            return JsonResponse('Login Failed', safe=False)
-    
-    except UserTable.DoesNotExist:
-        # Error 403
-        return JsonResponse('Login Failed', safe=False)
-    except:
-        return JsonResponse('Login Failed', safe=False)
-
 def logout(request):
    try:
       del request.session['unique_id']
     # Used to delete session from database so wont be able to access anymore
     # If login again, it will create a new session
       request.session.flush()
-      return HttpResponseRedirect('../login')
+      return HttpResponseRedirect('../index')
    except:
       pass
-      return HttpResponseRedirect('../login')
+      return HttpResponseRedirect('../index')
 
+def twoFA(request):
+    context = {}
+    if request.method == "POST":
+        # Checked
+        if 'enable2FA' in request.POST:
+            # Get user unique ID
+            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+            # pyotp generates a random key that is assigned to user and save in db
+            userSecretKey = pyotp.random_base32()
+            userDetails.secret_key = userSecretKey
+            userDetails.save()
+            # Create url for qrcode
+            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+            factory = qrcode.image.svg.SvgImage
+            img = qrcode.make(url, image_factory=factory, box_size=20)
+            stream = BytesIO()
+            img.save(stream)
+            context["svg"] = stream.getvalue().decode()
+            return render(request,"ShoesInvasionEditor/twoFA.html", context=context)
+        # Not checked
+        else:
+            return render(request, 'ShoesInvasionEditor/twoFA.html')
+    else:
+        return render(request, 'ShoesInvasionEditor/twoFA.html')

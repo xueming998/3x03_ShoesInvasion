@@ -26,6 +26,8 @@ class UserTable(models.Model):
     accountType = models.CharField(max_length=10, default="User")
     # Unique Identifier
     unique_id = models.CharField(max_length=255, unique=True, null=False, default="")
+    # Secret Key for 2FA
+    secret_key = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.username
