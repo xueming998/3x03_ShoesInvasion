@@ -14,8 +14,10 @@ class UserTable(models.Model):
     # Phone
     phone = models.IntegerField()
     # True = Banned, None/Null/False = Not Banned
-    bannedStatus = models.BooleanField(default=False)
+    # bannedStatus = models.BooleanField(default=False)
+    bannedStatus = models.BooleanField()
     # True = Verified, None/Null/False = Not Verified
+    # verifiedStatus = models.BooleanField(default=False)
     verifiedStatus = models.BooleanField()
     # Used to store random generated verify code, empty it when account verified
     verificationCode = models.PositiveSmallIntegerField(null=True)
