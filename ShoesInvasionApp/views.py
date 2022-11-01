@@ -486,12 +486,12 @@ def register_request(request):
         formDetails = RegisterForm(request.POST)
         if formDetails.is_valid():
             post = formDetails.save(commit = False)
+            post.save()
+            activateEmail(request,post, formDetails.cleaned_data.get('email'))
             context = {}
             registerEmail = formDetails.cleaned_data['email']
             context['email'] = registerEmail
-            post.save()
-            activateEmail(request,post, formDetails.cleaned_data.get('email'))
-            return render(request, 'ShoesInvasionApp/register_success.html')
+            return render(request, 'ShoesInvasionApp/register_success.html', context)
         
         else:
             return render(request, 'ShoesInvasionApp/register.html', {'form': formDetails})
