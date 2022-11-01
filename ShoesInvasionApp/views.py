@@ -30,7 +30,7 @@ from ShoesInvasionApp.forms import UserLoginForm
 from .models.user import UserTable 
 from .models.userDetails import UserDetailsTable
 
-from ShoesInvasionApp.models import user
+from ShoesInvasionApp.models import user as helps
 from ShoesInvasionApp.models import transactionDetails
 from ShoesInvasionApp.models import transaction
 
@@ -43,6 +43,16 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.hashers import check_password
 
+#Import for Email Validation
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from .tokens import account_activation_token
+from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
+
+# Create your views here.
+def index(request):
+    return render(request, 'ShoesInvasionApp/index.html')
 # Import for 2FA
 import pyotp
 import qrcode
@@ -68,7 +78,6 @@ def cart(request):
             total = 0
             for i in cart:
                 total = i.getCartTotal
-
 
             context = {
                 'cart':cart,
@@ -165,7 +174,10 @@ def add_to_cart(request):
             print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
+<<<<<<< HEAD
+=======
             print("Unique", data)
+>>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
             color = data['color']
             size = data['size']
             quantity = data['quantity']
@@ -282,8 +294,6 @@ def profilePage(request):
         if request.session.has_key('unique_id'):
             # Logged In
             uid = request.session['unique_id']
-            print(uid)
-            # uid = request.session.get('unique_id')
             userObj = UserTable.objects.get(unique_id=uid)
             userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
             context = {
@@ -297,7 +307,11 @@ def profilePage(request):
             return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
         else:
             # Not Logged In
+<<<<<<< HEAD
+            return redirect('login/')
+=======
             return HttpResponseRedirect('login')
+>>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
     except:
         # Log 
         # Redirect cause some error occured.
@@ -385,6 +399,7 @@ def login_request(request):
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
+            print("username: " + username)
             otpToken = request.POST['otpToken']
             try:
                 account = UserTable.objects.get(username=username)
@@ -440,8 +455,39 @@ def checkPassword(password, hashedPassword):
         return True
     else:
         print("False")
-        return False
+        return False  
+    
+def activate(request, verificationcode,token):    
+    try:
+        user = UserTable.objects.get(verificationCode=verificationcode)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    if user is not None and account_activation_token.check_token(user, token):
+        user.verifiedStatus = 1
+        user.save()
+        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        return render(request,'ShoesInvasionApp/activation_success.html')
+    else:
+        messages.error(request, 'Activation link is invalid!')
+        return render(request, 'ShoesInvasionApp/register_fail.html')
 
+def activateEmail(request, user,to_email):
+    current_site = get_current_site(request)
+    subject = 'Activate your ShoesInvasion account today.'
+    message = render_to_string('ShoesInvasionApp/email-template.html',
+                                {'user': user,
+                                'domain':current_site.domain,
+                                'uid':user.verificationCode,
+                                'token': account_activation_token.make_token(user),
+                                'protocol': 'https' if request.is_secure() else 'http'})
+    email = EmailMessage(subject, message, to=[to_email])
+    if email.send():
+        messages.success(request, f'Dear <b>{user}</b>, please go to you email <b>{to_email}</b> inbox and click on \
+            received activation link to confirm and complete the registration. <b>Note:</b> Check your spam folder.')
+    else:
+        messages.error(request, f'Problem sending confirmation email to {to_email}, check if you typed it correctly.')
+    
 def register_request(request):
     if request.method == 'POST':
         formDetails = RegisterForm(request.POST)
@@ -451,7 +497,12 @@ def register_request(request):
             registerEmail = formDetails.cleaned_data['email']
             context['email'] = registerEmail
             post.save()
+<<<<<<< HEAD
+            activateEmail(request,post, formDetails.cleaned_data.get('email'))
+            return render(request, 'ShoesInvasionApp/register_success.html')
+=======
             return render(request, 'ShoesInvasionApp/register_success.html', context)
+>>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
         
         else:
             return render(request, 'ShoesInvasionApp/register.html', {'form': formDetails})
@@ -461,6 +512,9 @@ def register_request(request):
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
 
 def registerSuccess(request):
+<<<<<<< HEAD
+    return render(request, 'ShoesInvasionApp/register_success.html')
+=======
     # Generating QR Code for 2FA
     context = {}
     if request.method == "POST":
@@ -481,6 +535,7 @@ def registerSuccess(request):
             return render(request,"ShoesInvasionApp/register_success.html", context=context)
     else:
         return render(request, 'ShoesInvasionApp/register.html')
+>>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
 
 def registerFailed(request):
     return render(request, 'ShoesInvasionApp/register_fail.html')
