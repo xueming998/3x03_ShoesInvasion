@@ -377,6 +377,7 @@ def updateProfileDetails(request):
         return JsonResponse('Exception Error', safe=False)
 
 def login_request(request):
+
     if request.session.has_key('unique_id'):
            return HttpResponseRedirect('home')
         # return render(request, 'ShoesInvasionApp/index.html')
@@ -389,27 +390,18 @@ def login_request(request):
                 account = UserTable.objects.get(username=username)
 
                 if (account.accountType == 'User' and account.lockedStatus == 0):
-                    if checkPassword(password, account.password):
-                        # 2FA not enabled, can login
-                        if (account.secret_key == ""):
-                            # Right Password | Change Locked Counter to 0
-                            account.lockedCounter = 0
-                            account.save()
-                            # Store into Session
-                            request.session['unique_id'] = account.unique_id
-                            request.session.set_expiry(900)
-                            request.session['secret_key'] = account.secret_key
-                            return HttpResponseRedirect('home')
-
-                        # Got 2FA Enabled
+                    if (len(password) < 12):
+                        form = UserLoginForm()
+                        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Password have to be at least 12 characters long."})
+                    else:
+                        if (len(otpToken) != 6):
+                            form = UserLoginForm()
+                            return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "OTP Token has to be 6 numbers."})
                         else:
-                            otpToken = request.POST['otpToken']
-                            if (otpToken == None):
-                                return HttpResponseRedirect('home')
-
-                            else:
+                            if checkPassword(password, account.password):
                                 userSecretKey = pyotp.TOTP(account.secret_key)
                                 if (userSecretKey.verify(otpToken)):
+                                    print("3")
                                     # Right Password | Change Locked Counter to 0
                                     account.lockedCounter = 0
                                     account.save()
@@ -420,23 +412,24 @@ def login_request(request):
                                     return HttpResponseRedirect('home')
                                 else:
                                     form = UserLoginForm()
-                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
-                    else:
-                        # Wrong Password | Need to append into Locked Counter
-                        account.lockedCounter += 1
-                        # Once Locked Counter = 3, Lock Account 
-                        if (account.lockedCounter == 3):
-                            account.lockedStatus = 1
-                        account.save()
-                        form = UserLoginForm()
-                        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Incorrect or Expired OTP"})
+                            else:
+                                # Wrong Password | Need to append into Locked Counter
+                                account.lockedCounter += 1
+                                # Once Locked Counter = 3, Lock Account 
+                                if (account.lockedCounter == 3):
+                                    account.lockedStatus = 1
+                                account.save()
+                                form = UserLoginForm()
+                                return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Incorrect Password"})
 
                 else:
                     # Wrong Account type. 
                     return HttpResponseRedirect('home')
 
             except UserTable.DoesNotExist:
-                return render(request, 'ShoesInvasionApp/register_fail.html')
+                form = UserLoginForm()
+                return render(request, 'ShoesInvasionApp/login_user.html', context={"login_form":form, "error": "Username does not exist."})
         else:       
             form = UserLoginForm()
             return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
@@ -454,8 +447,11 @@ def register_request(request):
         formDetails = RegisterForm(request.POST)
         if formDetails.is_valid():
             post = formDetails.save(commit = False)
+            context = {}
+            registerEmail = formDetails.cleaned_data['email']
+            context['email'] = registerEmail
             post.save()
-            return render(request, 'ShoesInvasionApp/register_success.html')
+            return render(request, 'ShoesInvasionApp/register_success.html', context)
         
         else:
             return render(request, 'ShoesInvasionApp/register.html', {'form': formDetails})
@@ -465,9 +461,26 @@ def register_request(request):
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
 
 def registerSuccess(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
-    return render(request, 'ShoesInvasionApp/register_success.html')
+    # Generating QR Code for 2FA
+    context = {}
+    if request.method == "POST":
+            # Get user unique ID
+            userDetails = UserTable.objects.get(email=request.POST['email'])
+            # pyotp generates a random key that is assigned to user and save in db
+            userSecretKey = pyotp.random_base32()
+            userDetails.secret_key = userSecretKey
+            userDetails.save()
+            # Create url for qrcode
+            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+            factory = qrcode.image.svg.SvgImage
+            img = qrcode.make(url, image_factory=factory, box_size=20)
+            stream = BytesIO()
+            img.save(stream)
+            context["svg"] = stream.getvalue().decode()
+            context["email"] = request.POST['email']
+            return render(request,"ShoesInvasionApp/register_success.html", context=context)
+    else:
+        return render(request, 'ShoesInvasionApp/register.html')
 
 def registerFailed(request):
     return render(request, 'ShoesInvasionApp/register_fail.html')
@@ -501,27 +514,23 @@ def preOrder(request):
         'status': 2,
     }
     return render(request, 'ShoesInvasionApp/preorder.html',context)
-def user_2fa(request):
-    context = {}
-    if request.method == "POST":
-        # Checked
-        if 'enable2FA' in request.POST:
-            # Get user unique ID
-            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
-            # pyotp generates a random key that is assigned to user and save in db
-            userSecretKey = pyotp.random_base32()
-            userDetails.secret_key = userSecretKey
-            userDetails.save()
-            # Create url for qrcode
-            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
-            factory = qrcode.image.svg.SvgImage
-            img = qrcode.make(url, image_factory=factory, box_size=20)
-            stream = BytesIO()
-            img.save(stream)
-            context["svg"] = stream.getvalue().decode()
-            return render(request,"ShoesInvasionApp/user-2fa.html", context=context)
-        # Not checked
-        else:
-            return render(request, 'ShoesInvasionApp/user-2fa.html')
-    else:
-        return render(request, 'ShoesInvasionApp/user-2fa.html')
+
+# def user_2fa(request):
+#     context = {}
+#     if request.method == "POST":
+#             # Get user unique ID
+#             userDetails = UserTable.objects.get(email=request.POST['email'])
+#             # pyotp generates a random key that is assigned to user and save in db
+#             userSecretKey = pyotp.random_base32()
+#             userDetails.secret_key = userSecretKey
+#             userDetails.save()
+#             # Create url for qrcode
+#             url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+#             factory = qrcode.image.svg.SvgImage
+#             img = qrcode.make(url, image_factory=factory, box_size=20)
+#             stream = BytesIO()
+#             img.save(stream)
+#             context["svg"] = stream.getvalue().decode()
+#             return render(request,"ShoesInvasionApp/register_success.html", context=context)
+#     else:
+#         return render(request, 'ShoesInvasionApp/register.html')

@@ -48,5 +48,5 @@ urlpatterns = [
     # Logout
     path('logout', views.logout, name='logout'),
     # 2FA
-    path('user_2fa/', views.user_2fa, name='user_2fa'),
+    # path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]

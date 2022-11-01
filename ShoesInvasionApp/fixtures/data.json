@@ -1182,7 +1182,7 @@
       "last_name": "Muhd",
       "email": "1234@ma.com",
       "username": "admin",
-      "password" : "pbkdf2_sha256$390000$rqbjzm6nJLrGXAb8SE6Ls2$Tz1I817obwdj6pfK1NZdSH8YZpAT/Bp20YCaVgu6cIQ=",
+      "password" : "pbkdf2_sha256$390000$RhUgAGDipLB22BH9N4scGr$jlWQdlV+y9w06jiiIGA/rV86SfX2QVzhJCBY5ZxoPSg=",
       "phone": "88888888",
       "verifiedStatus": "1",
       "verificationCode": "0",
@@ -1191,7 +1191,7 @@
       "accountType": "Admin",
       "bannedStatus": "0",
       "unique_id": "H6XZ2K2UpHfrRODM0ghtD0A7KkoXEd5aM8UGNWpBFZfBHtTRDBZkObabVYwWKptSDRKOHKzCRWhRJeqGA4hFftxoC0NK12bePgnPzvmI5VN34XAXZUjzX80ncst3sFybtxjuD0bNuxKECD0xf0Vb3PTZtFkCYE7pbJIIaY7dXm3h0hLfHbbAedq0L1CmatxduzSAydTi",
-      "verify_password": "pbkdf2_sha256$390000$rqbjzm6nJLrGXAb8SE6Ls2$Tz1I817obwdj6pfK1NZdSH8YZpAT/Bp20YCaVgu6cIQ=",
+      "verify_password": "pbkdf2_sha256$390000$RhUgAGDipLB22BH9N4scGr$jlWQdlV+y9w06jiiIGA/rV86SfX2QVzhJCBY5ZxoPSg=",
       "secret_key": ""
     }
   },
@@ -1202,7 +1202,7 @@
       "last_name": "Tan",
       "email": "098@ma.com",
       "username": "editor",
-      "password" : "pbkdf2_sha256$390000$8al21tTmXJvcwxs8qFJbLM$fiEmTZnM9weJ0cZWW4qRaDMGBsgVvQZ1A544IKtjLq4=",
+      "password" : "pbkdf2_sha256$390000$JIToyeKknwwX8tK47GOM2K$SW+yTDUBI/bR0SP4Sl7ip0F5sHPCZ5mV9cRQFp5bmmg=",
       "phone": "77777777",
       "verifiedStatus": "1",
       "verificationCode": "0",
@@ -1211,7 +1211,7 @@
       "accountType": "Editor",
       "bannedStatus": "0",
       "unique_id": "eajAUl8xkH96LzhWDZNuFTxNLrkaNBWgaB95kleWUSiCDC0fKx0fELXB2IA4Scc7i2t19x9bYTxXCQOKtekTJ5zqdRtyU8gh6UVHQ7RPrSZKoMTF1hubmolnRJRSx7nxsplPp0F2O4lX9IaMq8WknR5U8M2WCK7xcwOXEMPTp8uf96hbPaFCVeFuqKglKMl1blpQ6mxm",
-      "verify_password": "pbkdf2_sha256$390000$8al21tTmXJvcwxs8qFJbLM$fiEmTZnM9weJ0cZWW4qRaDMGBsgVvQZ1A544IKtjLq4=",
+      "verify_password": "pbkdf2_sha256$390000$JIToyeKknwwX8tK47GOM2K$SW+yTDUBI/bR0SP4Sl7ip0F5sHPCZ5mV9cRQFp5bmmg=",
       "secret_key": ""
     }
   },
@@ -1221,8 +1221,8 @@
       "first_name": "Kendrick",
       "last_name": "Lee",
       "email": "123@ma.com",
-      "username": "test",
-      "password" : "pbkdf2_sha256$390000$gq7sN7GpF7AShQErCng5lV$Bb++midE9jWndnPD2xdMS4LdqX6dkKuTSIisuLyElFI=",
+      "username": "user3x03",
+      "password" : "pbkdf2_sha256$390000$eQ7pwT6Duhz92amevNEVLH$0TOBdP3hXmqziPssnHPh4+ZHQkN1SWtPoke3EtBrE3A=",
       "phone": "99999999",
       "verifiedStatus": "0",
       "verificationCode": "0",
@@ -1231,7 +1231,7 @@
       "accountType": "User",
       "bannedStatus": "0",
       "unique_id": "Ryw8SE1XKXb81Yv3GaxuodHDuKDKDCatvi4dimYNT9lGRYPfHUyAO2dtvbjzodngEGcRs7Lk9YUJa5vimUjQDuVDWEREGf1zJJxWoVi9i3ZCoaQeRlv8uELcdzSFbvaJuf5Mb84GliyFzLuV2cHdRxXc5iA9jmXRRh2yNKO8tmccH2s8E5dD0l5Y8NHjWyAIzWrZ7xPA",
-      "verify_password": "pbkdf2_sha256$390000$gq7sN7GpF7AShQErCng5lV$Bb++midE9jWndnPD2xdMS4LdqX6dkKuTSIisuLyElFI=",
+      "verify_password": "pbkdf2_sha256$390000$eQ7pwT6Duhz92amevNEVLH$0TOBdP3hXmqziPssnHPh4+ZHQkN1SWtPoke3EtBrE3A=",
       "secret_key": ""
     }
   },

@@ -33,44 +33,48 @@ def login(request):
                 account = UserTable.objects.get(username=username)
                 
                 if (account.accountType == 'Admin' and account.lockedStatus == 0):
-                    if checkPassword(password, account.password):
-                        # 2FA not enabled, can login
-                        if (account.secret_key == ""):
-                            # Right Password | Change Locked Counter to 0
-                            account.lockedCounter = 0
-                            account.save()
-                            # Store into Session
-                            request.session['unique_id'] = account.unique_id
-                            request.session.set_expiry(900)
-                            request.session['secret_key'] = account.secret_key
-                            return HttpResponseRedirect('manage')
-                        # Got 2FA Enabled
-                        else:
-                            otpToken = request.POST['otpToken']
-                            if (otpToken == None):
-                                return render(request, 'ShoesInvasionAdmin/login.html')
-                            else:
-                                adminSecretKey = pyotp.TOTP(account.secret_key)
-                                if (adminSecretKey.verify(otpToken)):
-                                    # Right Password | Change Locked Counter to 0
-                                    account.lockedCounter = 0
-                                    account.save()
-                                    # Store into Session
-                                    request.session['unique_id'] = account.unique_id
-                                    request.session.set_expiry(900)
-                                    return HttpResponseRedirect('manage')
-                                else:     
-                                    form = AdminLoginForm()
-                                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
-                    else:
-                        # Wrong Password | Need to append into Locked Counter
-                        account.lockedCounter += 1
-                        # Once Locked Counter = 3, Lock Account 
-                        if (account.lockedCounter == 3):
-                            account.lockedStatus = 1
-                        account.save()
+                    if (len(password) < 12):
                         form = AdminLoginForm()
-                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                        return render(request=request, template_name="ShoesInvasionApp/login.html", context={"login_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
+                    else:
+                        if checkPassword(password, account.password):
+                            # 2FA not enabled, can login
+                            if (account.secret_key == ""):
+                                # Right Password | Change Locked Counter to 0
+                                account.lockedCounter = 0
+                                account.save()
+                                # Store into Session
+                                request.session['unique_id'] = account.unique_id
+                                request.session.set_expiry(900)
+                                request.session['secret_key'] = account.secret_key
+                                return HttpResponseRedirect('manage')
+                            # Got 2FA Enabled
+                            else:
+                                otpToken = request.POST['otpToken']
+                                if (otpToken == None):
+                                    return render(request, 'ShoesInvasionAdmin/login.html')
+                                else:
+                                    adminSecretKey = pyotp.TOTP(account.secret_key)
+                                    if (adminSecretKey.verify(otpToken)):
+                                        # Right Password | Change Locked Counter to 0
+                                        account.lockedCounter = 0
+                                        account.save()
+                                        # Store into Session
+                                        request.session['unique_id'] = account.unique_id
+                                        request.session.set_expiry(900)
+                                        return HttpResponseRedirect('manage')
+                                    else:     
+                                        form = AdminLoginForm()
+                                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
+                        else:
+                            # Wrong Password | Need to append into Locked Counter
+                            account.lockedCounter += 1
+                            # Once Locked Counter = 3, Lock Account 
+                            if (account.lockedCounter == 3):
+                                account.lockedStatus = 1
+                            account.save()
+                            form = AdminLoginForm()
+                            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                     
                     
                 else:
@@ -228,38 +232,48 @@ def createEditorAccount(request):
         verify_password = request.POST['verify_password']
         email = request.POST['email']
         phone = request.POST['phone']
-        if UserTable.objects.filter(username=username).exists():
+        if (len(password) < 12):
             form = RegisterEditorForm()
             return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
-            context={"create_form":form, "status":"Failed", "message":"Username already exist."})
+            context={"create_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
         else:
-            if UserTable.objects.filter(email=email).exists():
+            if (len(verify_password) < 12):
                 form = RegisterEditorForm()
                 return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
-                context={"create_form":form, "status":"Failed", "message":"Email already exist."})
+                context={"create_form":form, "status":"Failed", "message":"Verify Password have to be at least 12 characters long."})
             else:
-                if UserTable.objects.filter(phone=phone).exists():
+                if UserTable.objects.filter(username=username).exists():
                     form = RegisterEditorForm()
                     return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
-                    context={"create_form":form, "status":"Failed", "message":"Phone Number already registered."})
+                    context={"create_form":form, "status":"Failed", "message":"Username already exist."})
                 else:
-                    if (password != verify_password):
+                    if UserTable.objects.filter(email=email).exists():
                         form = RegisterEditorForm()
                         return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
-                        context={"create_form":form, "status":"Failed", "message":"Password does not match."})
+                        context={"create_form":form, "status":"Failed", "message":"Email already exist."})
                     else:
-                        unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
-                        hashedPW = make_password(password)
-                        hashedVPW = make_password(verify_password)
-                        # Create Account obj
-                        accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW, 
-                        verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
-                        lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
-                        # Save 
-                        accountObj.save()
-                        # data = {"status":"Success", "message":"Insert Successful"}
-                        # return JsonResponse(data, safe=False)
-                        return HttpResponseRedirect('manage')
+                        if UserTable.objects.filter(phone=phone).exists():
+                            form = RegisterEditorForm()
+                            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                            context={"create_form":form, "status":"Failed", "message":"Phone Number already registered."})
+                        else:
+                            if (password != verify_password):
+                                form = RegisterEditorForm()
+                                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                                context={"create_form":form, "status":"Failed", "message":"Password does not match."})
+                            else:
+                                unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                                hashedPW = make_password(password)
+                                hashedVPW = make_password(verify_password)
+                                # Create Account obj
+                                accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW, 
+                                verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
+                                lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
+                                # Save 
+                                accountObj.save()
+                                # data = {"status":"Success", "message":"Insert Successful"}
+                                # return JsonResponse(data, safe=False)
+                                return HttpResponseRedirect('manage')
 
     else:
         form = RegisterEditorForm()
