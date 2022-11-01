@@ -100,6 +100,7 @@
         </div>
 
         <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
+          <p style="color:red;">{{error}}</p>
           <form method="POST">
             {% csrf_token %}
             {{ login_form|crispy }}
