@@ -1,11 +1,15 @@
 from ctypes.wintypes import SIZE
 from dataclasses import field
+from faulthandler import disable
+from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
 # from captcha.fields import ReCaptchaField
 # from captcha.widgets import ReCaptchaV2Checkbox
 from .models.user import UserTable  
 from django.contrib.auth.hashers import make_password
+from django.forms import ModelForm
+from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 import requests
@@ -98,3 +102,38 @@ class UserLoginForm(AuthenticationForm):
                 code='invalid',
             )
         print("status = " + status)
+
+class updateProfileForm(ModelForm):
+    class Meta:
+            # model = UserDetailsTable
+            # fields = ['address', ]
+            model = UserTable
+            fields = ['first_name', 'last_name', 'email', 'phone', 'username']
+
+
+    def __init__(self, *args, **kwargs):
+        super(updateProfileForm, self).__init__(*args, **kwargs)
+
+    first_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter First Name'}),
+        label="First Name")
+    
+    last_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'}),
+        label="Last Name")
+    
+    # address = forms.CharField(widget=forms.TextInput(
+    #     attrs={'class': 'form-control', 'placeholder': 'Enter Address'}),
+    #     label="Address")
+    
+    email = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Email'}),
+        label="Email")
+    email.disabled = True
+    
+    phone = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Phone Number'}),
+        label="Phone Number")
+    
+    def clean(self):
+        super(updateProfileForm, self).clean()
