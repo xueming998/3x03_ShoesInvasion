@@ -21,6 +21,10 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 
+#Import for Logging
+import logging
+logger=logging.getLogger('user')
+
 def login(request):
     try:
         if (check_login_status(request) == False):
@@ -28,11 +32,19 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+                # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         form = EditorLoginForm()
+                        logger.info(f"Failed login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
-                account = UserTable.objects.get(username=username)
-                
+                try:
+                    account = UserTable.objects.get(username=username)
+                    id = account.unique_id
+                except ObjectDoesNotExist:
+                    account = None
+                    logger.info(f"Failed login attempt with non-registered user: {username} from {client_ip} at")
                 if (account.accountType == 'Editor' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
                         # 2FA not enabled, can login
@@ -43,12 +55,14 @@ def login(request):
                                 # Store into Session
                                 request.session['unique_id'] = account.unique_id
                                 request.session.set_expiry(900)
+                                logger.info(f"Successful login by {id} from {client_ip} at")
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
                                 otpToken = request.POST['otpToken']
                                 if (otpToken == None):
                                     form = EditorLoginForm()
+                                    logger.info(f"Login attempt by {id} from {client_ip} with missing OTP at")
                                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Enabled OTP cannot be empty."})
                                 else:
                                     userSecretKey = pyotp.TOTP(account.secret_key)
@@ -59,9 +73,11 @@ def login(request):
                                         # Store into Session
                                         request.session['unique_id'] = account.unique_id
                                         request.session.set_expiry(900)
+                                        logger.info(f"Successful login by {id} from {client_ip} at")
                                         return HttpResponseRedirect('manage')
                                     else:
                                         form = EditorLoginForm()
+                                        logger.info(f"Failed login attempt by {id} from {client_ip} with incorrect OTP at")
                                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                     else:
                         # Wrong Password | Need to append into Locked Counter
@@ -71,19 +87,23 @@ def login(request):
                             account.lockedStatus = 1
                         account.save()
                         form = EditorLoginForm()
+                        logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                 else:
                     # Wrong Account type. 
                     form = EditorLoginForm()
+                    logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter})")
                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
                 form = EditorLoginForm()
+                logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                 return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
         else:
             # Already Logged in but trying to access login page again
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = EditorLoginForm()
+            logger.info(f"Failed login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = EditorLoginForm()

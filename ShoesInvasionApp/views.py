@@ -52,6 +52,7 @@ from io import BytesIO
 #Import for Logging
 import logging
 logger=logging.getLogger('user')
+validationlogger=logging.getLogger('inputvalidation')
 #from ShoesInvasionApp import signals
 
 # Create your views here.

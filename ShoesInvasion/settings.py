@@ -175,6 +175,10 @@ LOGGING = {
         'user':{
             'handlers':['file'],
             'level':'INFO'
+        },
+        'inputvalidation':{
+            'handlers':['file'],
+            'level':'INFO'
 
         }
     },
