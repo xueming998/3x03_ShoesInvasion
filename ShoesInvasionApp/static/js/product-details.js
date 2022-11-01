@@ -32,13 +32,18 @@ addToCart.addEventListener('click', function(){
             'Content-Type':'application/json',
             'X-CSRFToken':csrftoken, 
         }, 
-        body:JSON.stringify({'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1,'status':status})
+        body:JSON.stringify({'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'status':status})
         })
         .then((respose) => {
             return respose.json();
         })
         .then((data) => {
-        // Either Reload or change the variable. Decide later. 
-            location.reload()
+            if (data == "Shoe Failed")
+            {
+                window.location.href = "login";
+            }else{
+                // Either Reload or change the variable. Decide later. 
+                location.reload()
+            }
         });
 });

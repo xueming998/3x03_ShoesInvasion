@@ -182,7 +182,8 @@ def add_to_cart(request):
             return JsonResponse('Shoe Added', safe=False)
         else:
             # Not Logged In
-            return HttpResponseRedirect('login')
+            return JsonResponse('Shoe Failed', safe=False)
+            # return HttpResponseRedirect('login')
     except:
         return HttpResponseRedirect('login')
 
@@ -208,9 +209,13 @@ def shoeDetails(request):
                 product_quantity.append(a.quantity)
             if (a.size not in product_size):
                 product_size.append(a.size)
-
+        list_for_random = range(20)
+        list_for_random2 = range(1,3)
+        print(shoeId)
+        print(type(shoeId))
         context = {
             'shoeId':shoeId,
+            'shoeIdInt':int(shoeId),
             'product_name':e.product_name,
             'product_brand':e.product_brand,
             'product_category':e.product_category,
@@ -224,6 +229,8 @@ def shoeDetails(request):
             'product_quantity':product_quantity, 
             'product_color':product_color,
             'status':e.status,
+            'list_for_random': list_for_random,
+            'list_for_random2': list_for_random2,
         }
     return render(request, 'ShoesInvasionApp/details.html',context)
 
@@ -231,7 +238,6 @@ def shop(request):
     shoeType = request.GET.get('type', "All Products")
     brand = request.GET.get('brand', "Any")
     gender = request.GET.get('gender', "Any")
-    # product = ProductsTable.objects.all
     # No Filter 
     if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
         product = ProductsTable.objects.filter(status=1)
@@ -260,11 +266,14 @@ def shop(request):
     else:
         product = None
 
+    list_for_random = range(20)
+
     context = {
         'product':product,
         'type':shoeType,
-        'gender':brand,
-        'brand' : gender, 
+        'gender':gender,
+        'brand' : brand, 
+        'list_for_random': list_for_random,
     }
     return render(request, 'ShoesInvasionApp/shop.html',context)
 

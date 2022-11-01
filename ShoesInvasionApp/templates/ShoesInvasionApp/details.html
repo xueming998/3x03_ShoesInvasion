@@ -14,15 +14,28 @@
         <div class="col-lg-10">
           <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
+              {% if shoeIdInt < 21 %}
               <div class="carousel-item active">
-                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}.jpg" alt="First slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product.jpg" alt="First slide">
               </div>
               <div class="carousel-item">
-                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}(1).jpg" alt="Second slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product(1).jpg" alt="Second slide">
               </div>
               <div class="carousel-item">
-                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product{{shoeId}}(2).jpg" alt="Third slide">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{shoeId}}/product(2).jpg" alt="Third slide">
               </div>
+              {% else %}
+              <div class="carousel-item active">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{list_for_random | random}}/product.jpg" alt="First slide">
+              </div>
+              <div class="carousel-item">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{list_for_random | random}}/product(1).jpg" alt="Second slide">
+              </div>
+              <div class="carousel-item">
+                <img style="max-height:650px;" class="d-block w-100" src="../../static/images/products/detailspic/product{{list_for_random | random}}/product(2).jpg" alt="Third slide">
+              </div>
+              {% endif %}
+
             </div>
             <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
