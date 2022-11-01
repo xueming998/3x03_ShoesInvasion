@@ -50,8 +50,12 @@
           {% for prod in product %} 
             <div class="col-md-4">
               <div class="card mb-4">
+                  {% if prod.id <= 21 %}
                   <a href="shoeDetails?id={{prod.id}}"><img style="border-bottom: 1px solid #C0C0C0;" class="card-img-top" src="../../static/images/products/figcaption/product{{prod.id}}.jpg" alt="Card image cap"></a>
-                <div class="card-body">
+                  {% else %}
+                  <a href="shoeDetails?id={{prod.id}}"><img style="border-bottom: 1px solid #C0C0C0;" class="card-img-top" src="../../static/images/products/figcaption/product{{list_for_random | random}}.jpg" alt="Card image cap"></a>
+                  {% endif %}
+                  <div class="card-body">
                   <h5 class="card-title text-truncate">{{prod.product_name}}</h5>
                   <p style="font-style:italic;" class="card-text">${{ prod.product_price }}</p>
                   <p class="card-text text-truncate">{{prod.product_info}}</p>
