@@ -14,12 +14,13 @@ class RegisterForm(forms.ModelForm):
     class Meta:  
         model = UserTable  
         fields = '__all__'
+        exclude = ['secret_key']
         widgets = {
             'password': forms.PasswordInput(),
             'verify_password': forms.PasswordInput(),
             'phone': forms.NumberInput(attrs={'min': 60000000, 'max': 99999999}),
-            'bannedStatus': forms.HiddenInput(attrs={'value': 0}),
-            'verifiedStatus': forms.HiddenInput(attrs={'value': 0}),
+            'bannedStatus': forms.HiddenInput(attrs={'value': False}),
+            'verifiedStatus': forms.HiddenInput(attrs={'value': False}),
             'lockedStatus': forms.HiddenInput(attrs={'value': 0}),
             'lockedCounter': forms.HiddenInput(attrs={'value': 0}),
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
@@ -39,6 +40,7 @@ class RegisterForm(forms.ModelForm):
         phone = self.cleaned_data.get('phone')
 
         if UserTable.objects.filter(username=username).exists():
+            print("verifiedStatus")
             self.errors['username'] = self.error_class(['Username already taken.'])
         else:
             if UserTable.objects.filter(email=email).exists():
@@ -68,6 +70,11 @@ class UserLoginForm(AuthenticationForm):
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
+
+    otpToken = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'OTP Token', 'oninput': 'limit_input()', 'id': 'otpToken'}),
+        label="OTP Token",
+        required=False)
 
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 

@@ -125,3 +125,13 @@
 </body>
 
 </html>
+
+<script type="text/javascript">
+  function limit_input() {
+      var field = document.getElementById("otpToken");
+      var max_length = 6;
+      if (field.value.length > max_length) {
+          field.value = field.value.slice(0, max_length); 
+      }
+  }
+</script>
