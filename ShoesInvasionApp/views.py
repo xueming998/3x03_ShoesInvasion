@@ -49,6 +49,11 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 
+#Import for Logging
+import logging
+logger=logging.getLogger('user')
+#from ShoesInvasionApp import signals
+
 # Create your views here.
 def index(request):
         return render(request, 'ShoesInvasionApp/index.html')
@@ -364,9 +369,12 @@ def login_request(request):
             username = request.POST['username']
             password = request.POST['password']
             otpToken = request.POST['otpToken']
+            # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+            # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+            client_ip=request.META.get('REMOTE_ADDR')
             try:
                 account = UserTable.objects.get(username=username)
-
+                id = account.unique_id
                 if (account.accountType == 'User' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
                         # 2FA not enabled, can login
@@ -378,6 +386,8 @@ def login_request(request):
                             request.session['unique_id'] = account.unique_id
                             request.session.set_expiry(900)
                             request.session['secret_key'] = account.secret_key
+                            print(client_ip, "passsss")
+                            logger.info(f"Successful login by {id} from {client_ip} at time:")
                             return render(request, 'ShoesInvasionApp/index.html')
                         # Got 2FA Enabled
                         else:
@@ -394,6 +404,7 @@ def login_request(request):
                                     request.session['unique_id'] = account.unique_id
                                     request.session.set_expiry(900)
                                     request.session['secret_key'] = account.secret_key
+                                    logger.info(f"Successful login by {id} from {client_ip} at time:")
                                     return render(request, 'ShoesInvasionApp/index.html')
                                 else:
                                     form = UserLoginForm()
@@ -406,6 +417,7 @@ def login_request(request):
                             account.lockedStatus = 1
                         account.save()
                         form = UserLoginForm()
+                        logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
                         return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
                 else:
