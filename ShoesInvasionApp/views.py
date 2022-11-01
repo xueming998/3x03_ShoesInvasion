@@ -174,10 +174,7 @@ def add_to_cart(request):
             print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
-<<<<<<< HEAD
-=======
             print("Unique", data)
->>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
             color = data['color']
             size = data['size']
             quantity = data['quantity']
@@ -307,11 +304,7 @@ def profilePage(request):
             return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
         else:
             # Not Logged In
-<<<<<<< HEAD
-            return redirect('login/')
-=======
             return HttpResponseRedirect('login')
->>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
     except:
         # Log 
         # Redirect cause some error occured.
@@ -497,12 +490,8 @@ def register_request(request):
             registerEmail = formDetails.cleaned_data['email']
             context['email'] = registerEmail
             post.save()
-<<<<<<< HEAD
             activateEmail(request,post, formDetails.cleaned_data.get('email'))
             return render(request, 'ShoesInvasionApp/register_success.html')
-=======
-            return render(request, 'ShoesInvasionApp/register_success.html', context)
->>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
         
         else:
             return render(request, 'ShoesInvasionApp/register.html', {'form': formDetails})
@@ -512,9 +501,6 @@ def register_request(request):
         return render(request, 'ShoesInvasionApp/register.html', {'form':form})
 
 def registerSuccess(request):
-<<<<<<< HEAD
-    return render(request, 'ShoesInvasionApp/register_success.html')
-=======
     # Generating QR Code for 2FA
     context = {}
     if request.method == "POST":
@@ -535,7 +521,6 @@ def registerSuccess(request):
             return render(request,"ShoesInvasionApp/register_success.html", context=context)
     else:
         return render(request, 'ShoesInvasionApp/register.html')
->>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
 
 def registerFailed(request):
     return render(request, 'ShoesInvasionApp/register_fail.html')

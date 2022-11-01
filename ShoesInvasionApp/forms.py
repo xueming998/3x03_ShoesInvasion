@@ -55,15 +55,6 @@ class RegisterForm(forms.ModelForm):
                     if UserTable.objects.filter(email=email).exists():
                         self.errors['email'] = self.error_class(['Email already taken/registered.'])
                     else:
-<<<<<<< HEAD
-                        self.cleaned_data['password'] = make_password(password)
-                        self.cleaned_data['verify_password'] = make_password(password)
-                        unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
-                        self.cleaned_data['unique_id'] = unique
-                        vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
-                        self.cleaned_data['verificationCode'] = vCode
-                        return self.cleaned_data
-=======
                         if UserTable.objects.filter(phone=phone).exists():
                             self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
                         else:
@@ -74,8 +65,9 @@ class RegisterForm(forms.ModelForm):
                                 self.cleaned_data['verify_password'] = make_password(password)
                                 unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                                 self.cleaned_data['unique_id'] = unique
+                                vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
+                                self.cleaned_data['verificationCode'] = vCode
                                 return self.cleaned_data
->>>>>>> ab21b74e6d64eb5d862cbd95efbda1150ecf5d80
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
