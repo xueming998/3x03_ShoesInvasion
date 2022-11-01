@@ -19,3 +19,12 @@ urlpatterns = [
     path('updateProduct/<str:pk>/', views.updateProduct, name='updateProduct'),
     path('twoFA', views.twoFA, name='twoFA' )
 ]
+
+# For error 404 pages
+handler404 = "ShoesInvasionApp.views.page_not_found_view"
+
+# for error 500 pages
+handler500 = "ShoesInvasionApp.views.server_error_view"
+
+# for error 401 pages
+handler401 = "ShoesInvasionApp.views.unauthorized_view"

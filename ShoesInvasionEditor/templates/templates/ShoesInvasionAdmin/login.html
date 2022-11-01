@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'ShoesInvasionAdmin/head.html' %}
+  <title>ShoesInvasionAdmin - Login</title>
+  <script type="text/javascript">
+    var onloadCallback = function() {
+      grecaptcha.render('html_element', {
+        'sitekey' : '6LeT_rciAAAAAAAYEsWKXL_WUJ2-e9PHa76liKIL'
+      });
+    };
+  </script>
+</head>
+
+<body class="bg-gradient-login">
+  {% load crispy_forms_tags %}
+
+  <!-- Login Content -->
+  <div class="container-login">
+    
+    <div class="row justify-content-center">
+      <div class="col-xl-6 col-lg-12 col-md-9">
+        <div class="card shadow-sm my-5">
+          <div class="card-body p-0">
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="login-form">
+                  {% if status ==  "Failed" %}
+                  <div id="error_msg" style="visibility: visible;">
+                    <div class ="alert alert-danger alert-dismissible fade show" role="alert">
+                      <strong>Error! <p id="error_msg_content">{{message}}</p></strong>
+                      <button type="button" class="close" id="btnClose">&times;</button>
+                    </div>
+                  </div>
+                  {% endif %}
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Login</h1>
+                  </div>
+                  <p style="color:red;">{{error}}</p>
+                  <form method="POST">
+                    {% csrf_token %}
+                    {{ login_form|crispy }}
+                    
+                    <div class="form-group">
+                        <button class="btn btn-primary mb-1 submitBtn">Submit</button>
+                    </div>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Login Content -->
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer></script> 
+
+  {% include 'ShoesInvasionEditor/footer.html' %}
+
+</body>
+
+</html>
