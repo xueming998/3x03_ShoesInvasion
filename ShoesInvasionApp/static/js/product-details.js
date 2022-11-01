@@ -23,6 +23,7 @@ addToCart.addEventListener('click', function(){
     var quantity = document.getElementById("quantity_count").value;
     var url ='add_to_cart/'
     var productID = document.getElementById('product_id').value;
+    var status = document.getElementById('status').value;
 
     fetch(url,
         {
@@ -31,7 +32,7 @@ addToCart.addEventListener('click', function(){
             'Content-Type':'application/json',
             'X-CSRFToken':csrftoken, 
         }, 
-        body:JSON.stringify({'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1})
+        body:JSON.stringify({'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1,'status':status})
         })
         .then((respose) => {
             return respose.json();

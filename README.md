@@ -8,7 +8,6 @@
 5. Install required libraries by `pip install -r requirements.txt`.
 6. Run the server by doing `python manage.py runserver`.
 7. It should run at 127.0.0.1:8000 by default, but use '127.0.0.1:8000/ShoesInvasionApp' to access the website.
-8. '127.0.0.1:8000/admin' is the admin portal for Django.
 
 
 ## Setup Database
