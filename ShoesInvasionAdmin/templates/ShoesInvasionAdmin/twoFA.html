@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'ShoesInvasionAdmin/head.html' %}
+  <title>ShoesInvasion Admin - User</title>
+</head>
+
+<body id="page-top">
+  <div id="wrapper">
+    {% include 'ShoesInvasionAdmin/sidebar.html' %}
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        {% include 'ShoesInvasionAdmin/navbar.html' %}
+        <!-- Container Fluid-->
+        <div class="container-fluid" id="container-wrapper">
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">User Accounts</h1>
+            <ol class="breadcrumb">
+              <!-- <li class="breadcrumb-item"><a href="home">Home</a></li> -->
+              <li class="breadcrumb-item">2 Factor Authentication</li>
+              <!-- <li class="breadcrumb-item active" aria-current="page">Blank Page</li> -->
+            </ol>
+          </div>
+          <div class="card-body">
+            <form method="POST" action={% url 'ShoesInvasionAdmin:twoFA' %}>
+                {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>
+                            <label>Enable 2FA</label>
+                            <input type="checkbox" id="enable2FA" name="enable2FA">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Save"></td>
+                    </tr>
+                    </table>
+          </form>
+          {{ svg|safe }}
+        </div>
+
+
+        </div>
+        <!---Container Fluid-->
+      </div>
+      {% include 'ShoesInvasionAdmin/logout-container.html' %}
+    </div>
+  </div>
+
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  {% include 'ShoesInvasionAdmin/footer.html' %}
+  <script>
+    function show() {
+      var rowId = event.target.parentNode.parentNode.id;
+      csrftoken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+    //this gives id of tr whose button was clicked
+      var data = document.getElementById(rowId).querySelectorAll(".row-data"); 
+      var username = data[0].innerHTML;
+      var age = data[1].innerHTML;
+      var url ='ban_unban/'
+      fetch(url,{
+          method:'POST',
+          headers:{
+          'Content-Type':'application/json',
+                  'X-CSRFToken':csrftoken, 
+          },
+          body:JSON.stringify({'uid':rowId }) 
+        })
+        .then((response) => {
+          // console.log(response)
+          return response.json();
+          })
+          .then((data) => {
+            // console.log(data)
+            location. reload() 
+          })
+        }
+    
+  </script>
+
+</body>
+
+</html>

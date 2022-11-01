@@ -5,21 +5,91 @@ from django.http import JsonResponse
 from http import HTTPStatus
 from django.urls import reverse
 from requests import request
-import requests
+import requests, string, secrets
 from ShoesInvasionApp.models.user import UserTable 
 from ShoesInvasionApp.models.userDetails import UserDetailsTable 
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
+from ShoesInvasionAdmin.forms import AdminLoginForm, RegisterEditorForm
 from django.core.serializers import serialize
+from django.contrib.auth.hashers import make_password
 
+# Import for 2FA
+import pyotp
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
 
 def login(request):
-    return render(request, 'ShoesInvasionAdmin/login.html')
-    # if (check_login_status(request) == False):
-    #     return render(request, 'ShoesInvasionAdmin/login.html')
-    # elif (check_login_status(request) == True):
-    #     return redirect('manage')
-
+    try:
+        if (check_login_status(request) == False):
+            if request.method == 'POST':
+                username = request.POST['username']
+                password = request.POST['password']
+                response = request.POST['g-recaptcha-response']
+                if len(response) == 0:
+                        form = AdminLoginForm()
+                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
+                account = UserTable.objects.get(username=username)
+                
+                if (account.accountType == 'Admin' and account.lockedStatus == 0):
+                    if checkPassword(password, account.password):
+                        # 2FA not enabled, can login
+                        if (account.secret_key == ""):
+                            # Right Password | Change Locked Counter to 0
+                            account.lockedCounter = 0
+                            account.save()
+                            # Store into Session
+                            request.session['unique_id'] = account.unique_id
+                            request.session.set_expiry(900)
+                            request.session['secret_key'] = account.secret_key
+                            return HttpResponseRedirect('manage')
+                        # Got 2FA Enabled
+                        else:
+                            otpToken = request.POST['otpToken']
+                            if (otpToken == None):
+                                return render(request, 'ShoesInvasionAdmin/login.html')
+                            else:
+                                adminSecretKey = pyotp.TOTP(account.secret_key)
+                                if (adminSecretKey.verify(otpToken)):
+                                    # Right Password | Change Locked Counter to 0
+                                    account.lockedCounter = 0
+                                    account.save()
+                                    # Store into Session
+                                    request.session['unique_id'] = account.unique_id
+                                    request.session.set_expiry(900)
+                                    return HttpResponseRedirect('manage')
+                                else:     
+                                    form = AdminLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
+                    else:
+                        # Wrong Password | Need to append into Locked Counter
+                        account.lockedCounter += 1
+                        # Once Locked Counter = 3, Lock Account 
+                        if (account.lockedCounter == 3):
+                            account.lockedStatus = 1
+                        account.save()
+                        form = AdminLoginForm()
+                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                    
+                    
+                else:
+                    # Wrong Account type. 
+                    form = AdminLoginForm()
+                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+            else:
+                form = AdminLoginForm()
+                return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form})
+        else:
+            # Already Logged in but trying to access login page again
+            return HttpResponseRedirect('manage')
+    except UserTable.DoesNotExist:
+            form = AdminLoginForm()
+            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+    except:
+            form = AdminLoginForm()
+            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+ 
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
@@ -42,14 +112,10 @@ def manage(request):
                 "accountType":user.accountType, 
             }
             dictArray.append(mydict)
-    print(dictArray)
     context = {
         'data':dictArray
     }
     return render(request, 'ShoesInvasionAdmin/user.html', context=context)
-    
-
-
 
 def check_login_status(request):
     try:
@@ -66,7 +132,6 @@ def check_login_status(request):
     except ObjectDoesNotExist:
         # UID is wrong
         return redirect('login')
-
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
@@ -89,61 +154,6 @@ def checkCaptcha(response_id):
         return 1
     else:
         return 0
-
-def admin_login(request):
-    try:
-        # Check if Logined alr. Cannot Access here if so 
-        data = json.loads(request.body)
-        username = data['username']
-        pw = data['pw']
-        response = data['g-recaptcha-response']
-        if len(response) == 0:
-            return JsonResponse('Login Failed', safe=False)
-        else:
-            # Check Code is valid or not
-            valid_status = checkCaptcha(response)
-            print(valid_status)
-            if valid_status != 0:
-                # Response Code Error
-                return JsonResponse('Login Failed', safe=False)
-
-            # Empty 
-        print("username: "+ username)
-        print("pw: "+ pw) 
-        # print("g-recaptcha-response: "+  data['g-recaptcha-response'] )
-        # Simple Validation if empty string is passed
-        if (username == "" or pw == ""):
-                return redirect('login')
-
-        account = UserTable.objects.get(username=username)
-        print(account.unique_id)
-        if (account.accountType == 'Admin' and account.lockedStatus == 0):
-            if checkPassword(pw, account.password):
-                # Right Password | Change Locked Counter to 0
-                    account.lockedCounter = 0
-                    account.save()
-                    # Store into Session
-                    request.session['unique_id'] = account.unique_id
-                    # Render to index page
-                    return JsonResponse('Login Success', safe=False)
-                    # return render(request, 'ShoesInvasionAdmin/index.html')
-            else:
-                # Wrong Password | Need to append into Locked Counter
-                account.lockedCounter += 1
-                # Once Locked Counter = 3, Lock Account 
-                if (account.lockedCounter == 3):
-                    account.lockedStatus = 1
-                account.save()
-                return JsonResponse('Login Failed', safe=False)
-                # return render(request, 'ShoesInvasionAdmin/login.html')
-        else:
-            return JsonResponse('Login Failed', safe=False)
-    
-    except UserTable.DoesNotExist:
-        # Error 403
-        return JsonResponse('Login Failed', safe=False)
-    except:
-        return JsonResponse('Login Failed', safe=False)
 
 def ban_unban(request):
     try:
@@ -174,8 +184,83 @@ def logout(request):
     # Used to delete session from database so wont be able to access anymore
     # If login again, it will create a new session
       request.session.flush()
-      return HttpResponseRedirect('../login')
+      return HttpResponseRedirect('../index')
    except:
       pass
-      return HttpResponseRedirect('../login')
+      return HttpResponseRedirect('../index')
 
+
+def twoFA(request):
+    context = {}
+    if request.method == "POST":
+        # Checked
+        if 'enable2FA' in request.POST:
+            # Get user unique ID
+            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+            # pyotp generates a random key that is assigned to user and save in db
+            userSecretKey = pyotp.random_base32()
+            userDetails.secret_key = userSecretKey
+            userDetails.save()
+            # Create url for qrcode
+            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+            factory = qrcode.image.svg.SvgImage
+            img = qrcode.make(url, image_factory=factory, box_size=20)
+            stream = BytesIO()
+            img.save(stream)
+            context["svg"] = stream.getvalue().decode()
+            return render(request,"ShoesInvasionAdmin/twoFA.html", context=context)
+        # Not checked
+        else:
+            return render(request, 'ShoesInvasionAdmin/twoFA.html')
+    else:
+        return render(request, 'ShoesInvasionAdmin/twoFA.html')
+
+def createEditorAccount(request):
+    # Check if logged in
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('login')
+
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        password = request.POST['password']
+        verify_password = request.POST['verify_password']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        if UserTable.objects.filter(username=username).exists():
+            form = RegisterEditorForm()
+            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+            context={"create_form":form, "status":"Failed", "message":"Username already exist."})
+        else:
+            if UserTable.objects.filter(email=email).exists():
+                form = RegisterEditorForm()
+                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                context={"create_form":form, "status":"Failed", "message":"Email already exist."})
+            else:
+                if UserTable.objects.filter(phone=phone).exists():
+                    form = RegisterEditorForm()
+                    return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                    context={"create_form":form, "status":"Failed", "message":"Phone Number already registered."})
+                else:
+                    if (password != verify_password):
+                        form = RegisterEditorForm()
+                        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                        context={"create_form":form, "status":"Failed", "message":"Password does not match."})
+                    else:
+                        unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                        hashedPW = make_password(password)
+                        hashedVPW = make_password(verify_password)
+                        # Create Account obj
+                        accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW, 
+                        verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
+                        lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
+                        # Save 
+                        accountObj.save()
+                        # data = {"status":"Success", "message":"Insert Successful"}
+                        # return JsonResponse(data, safe=False)
+                        return HttpResponseRedirect('manage')
+
+    else:
+        form = RegisterEditorForm()
+        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", context={"create_form":form})

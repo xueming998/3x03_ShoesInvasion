@@ -1,17 +1,21 @@
 from ctypes.wintypes import SIZE
 from dataclasses import field
+from faulthandler import disable
+from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
 # from captcha.fields import ReCaptchaField
 # from captcha.widgets import ReCaptchaV2Checkbox
 from .models.user import UserTable  
 from django.contrib.auth.hashers import make_password
+from django.forms import ModelForm
+from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 import requests
-import bcrypt
 import secrets
 import string
+import pyotp
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -19,21 +23,19 @@ class RegisterForm(forms.ModelForm):
     class Meta:  
         model = UserTable  
         fields = '__all__'
-        # exclude = ['bannedStatus', 'verifiedStatus', 'lockedStatus', 'lockedCounter', 'verificationCode', 'accountType', 'unique_id']
+        exclude = ['secret_key']
         widgets = {
             'password': forms.PasswordInput(),
             'verify_password': forms.PasswordInput(),
             'phone': forms.NumberInput(attrs={'min': 60000000, 'max': 99999999}),
-            'bannedStatus': forms.HiddenInput(attrs={'value': 0}),
-            'verifiedStatus': forms.HiddenInput(attrs={'value': 0}),
+            'bannedStatus': forms.HiddenInput(attrs={'value': False}),
+            'verifiedStatus': forms.HiddenInput(attrs={'value': False}),
             'lockedStatus': forms.HiddenInput(attrs={'value': 0}),
             'lockedCounter': forms.HiddenInput(attrs={'value': 0}),
             'verificationCode': forms.HiddenInput(attrs={'value': 0}),
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
-            # 'captcha': ReCaptchaField(widget=ReCaptchaV2Checkbox),
         }
-        # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox)
 
 
     # Function used for validation
@@ -47,6 +49,7 @@ class RegisterForm(forms.ModelForm):
         phone = self.cleaned_data.get('phone')
 
         if UserTable.objects.filter(username=username).exists():
+            print("verifiedStatus")
             self.errors['username'] = self.error_class(['Username already taken.'])
         else:
             if UserTable.objects.filter(email=email).exists():
@@ -58,9 +61,6 @@ class RegisterForm(forms.ModelForm):
                     if (password != verifyPassword):
                         self.errors['verify_password'] = self.error_class(['Password does not match.'])
                     else:
-                        # salt = bcrypt.gensalt()
-                        # encryptedPassword = bcrypt.hashpw(password.encode('utf-8'), salt)
-                        # print("Password: ", make_password(password))
                         self.cleaned_data['password'] = make_password(password)
                         self.cleaned_data['verify_password'] = make_password(password)
                         unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
@@ -77,6 +77,11 @@ class UserLoginForm(AuthenticationForm):
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
+
+    otpToken = forms.IntegerField(widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'placeholder': 'OTP Token', 'oninput': 'limit_input()', 'id': 'otpToken'}),
+        label="OTP Token",
+        required=False)
 
     captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
 
@@ -97,3 +102,38 @@ class UserLoginForm(AuthenticationForm):
                 code='invalid',
             )
         print("status = " + status)
+
+class updateProfileForm(ModelForm):
+    class Meta:
+            # model = UserDetailsTable
+            # fields = ['address', ]
+            model = UserTable
+            fields = ['first_name', 'last_name', 'email', 'phone', 'username']
+
+
+    def __init__(self, *args, **kwargs):
+        super(updateProfileForm, self).__init__(*args, **kwargs)
+
+    first_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter First Name'}),
+        label="First Name")
+    
+    last_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'}),
+        label="Last Name")
+    
+    # address = forms.CharField(widget=forms.TextInput(
+    #     attrs={'class': 'form-control', 'placeholder': 'Enter Address'}),
+    #     label="Address")
+    
+    email = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Email'}),
+        label="Email")
+    email.disabled = True
+    
+    phone = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Phone Number'}),
+        label="Phone Number")
+    
+    def clean(self):
+        super(updateProfileForm, self).clean()

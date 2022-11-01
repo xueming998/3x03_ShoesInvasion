@@ -8,16 +8,12 @@ app_name = 'ShoesInvasionAdmin'
 urlpatterns = [
     # Home page Routing
     path('', views.login, name='index'),
-    # path('index', views.login, name='index'),
-    # path('home', views.login, name='home'),
-    path('login', views.login, name='login'),
-
+    path('index', views.login, name='index'),
+    path('login', views.login, name='index'),
     # User Table Route
-    path('manage', views.manage, name='manage'),
-
-    # Login API Point
-    path('admin_login/', views.admin_login, name='admin_login'),
-    
+    path('manage', views.manage, name='manage'),    
     path('ban_unban/', views.ban_unban, name='ban_unban'),
     path('logout/', views.logout, name='logout'),
+    path('twoFA', views.twoFA, name='twoFA' ),
+    path('createEditorAccount', views.createEditorAccount, name='createEditorAccount')
 ]

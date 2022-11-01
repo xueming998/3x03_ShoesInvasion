@@ -2,6 +2,8 @@ from asyncio.windows_events import NULL
 from decimal import Decimal
 from enum import unique
 import errno
+from itertools import product
+from mimetypes import init
 from multiprocessing import context
 from operator import truediv
 from re import T
@@ -12,10 +14,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from ShoesInvasionApp.models import productQuantity, shoppingCartTable
 from ShoesInvasionApp.models import ShoppingCartTable
+from ShoesInvasionApp.models.preorder import PreOrderTable
 from .models.products import ProductsTable
 from .models.productQuantity import ProductQuantityTable
 from .models.transaction import TransactionTable
 from .models.transactionDetails import TransactionDetailsTable
+from .models.preorder import PreOrderTable
 from datetime import datetime
 import json
 from django.http import JsonResponse
@@ -25,7 +29,6 @@ from ShoesInvasionApp.forms import RegisterForm
 from ShoesInvasionApp.forms import UserLoginForm
 from .models.user import UserTable 
 from .models.userDetails import UserDetailsTable
-import bcrypt
 
 from ShoesInvasionApp.models import user
 from ShoesInvasionApp.models import transactionDetails
@@ -40,12 +43,16 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.hashers import check_password
 
+# Import for 2FA
+import pyotp
+import qrcode
+import qrcode.image.svg
+from io import BytesIO
+from ShoesInvasionApp.forms import updateProfileForm
 
 # Create your views here.
 def index(request):
-    # unique_id = request.session['unique_id']
-    # print("unique_id", unique_id)
-    return render(request, 'ShoesInvasionApp/index.html')
+        return render(request, 'ShoesInvasionApp/index.html')
 
 def about(request):
     return render(request, 'ShoesInvasionApp/about.html')
@@ -56,7 +63,6 @@ def contact(request):
 def cart(request):
     try:
         if request.session.has_key('unique_id'):
-            print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             cart = ShoppingCartTable.objects.filter(user=uid)
             total = 0
@@ -71,9 +77,9 @@ def cart(request):
             }
             return render(request, 'ShoesInvasionApp/cart.html', context)
         else:
-            return HttpResponseRedirect(request=request, template_name="ShoesInvasionApp/login_user.html")
+           return HttpResponseRedirect('login')
     except:
-        return redirect('login/')
+        return HttpResponseRedirect('login')
 
 # API CALL POINT 
 def update_cartItem(request):
@@ -102,10 +108,10 @@ def update_cartItem(request):
             
             return JsonResponse('Item was added', safe=False)
         else:
-            return redirect('login/')
+            return HttpResponseRedirect('login')
 
     except:
-        return redirect('login/')
+        return HttpResponseRedirect('login')
 
 def del_cartItem(request):
     try:
@@ -118,37 +124,40 @@ def del_cartItem(request):
 
             return JsonResponse('Item was deleted', safe=False)
         else:
-            return redirect('login/')
+            return HttpResponseRedirect('login')
     except:
-        return redirect('login/')
+        return HttpResponseRedirect('login')
 
 def checkout_cartItem(request):
     try:
         if request.session.has_key('unique_id'):
-            print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
             user_id = data['user_id']
             userObj = UserTable.objects.get(unique_id=user_id)
-
+            cartDetails = ShoppingCartTable.objects.filter(user = uid)
             t = TransactionTable.objects.create(user=userObj)
             t.save
-
-            cartDetails = ShoppingCartTable.objects.filter(user = uid)
             for i in cartDetails:
                 shoe = ProductsTable.objects.get(id = i.product.id)
                 tranDetails = TransactionDetailsTable.objects.create(transaction = t, product = shoe, quantity = i.quantity, size = i.size, amount = i.getCurrentProductTotal)
                 tranDetails.save
+                # Adding pre-order shoes into pre-order table
+                if (i.status == "2"):
+                    save = ""
+                    save = PreOrderTable.objects.create(product = shoe, unique_id = userObj)
+                    save.save()
+                else:
+                    pass
                 # Removing from shopping cart
                 cartItemToDel = ShoppingCartTable.objects.get(id = i.id)
                 cartItemToDel.delete()
                 
             return JsonResponse('Shoes were sold', safe=False)
         else:
-            return redirect('login/')
+            return HttpResponseRedirect('login')
     except:
-        return redirect('login/')
-
+        return HttpResponseRedirect('login')
 
 def add_to_cart(request):
     try:
@@ -156,26 +165,26 @@ def add_to_cart(request):
             print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
-            # {'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'user_id':1 }
+            print("Unique", data)
             color = data['color']
             size = data['size']
             quantity = data['quantity']
             shoe_id = data['shoe_id']
-            # user_id = data['user_id'] # Redundant 
+            status = data['status']
 
             shoeObj = ProductsTable.objects.get(id=shoe_id)
             userObj = UserTable.objects.get(unique_id=uid)
             chosenTotalPrice = Decimal(shoeObj.product_price) * Decimal(quantity)
-            t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice)
+            t = ShoppingCartTable.objects.create(user = userObj, product = shoeObj, quantity = quantity, size = size, color = color, total_price = chosenTotalPrice, status = status)
             t.save
 
             # Insert Shoe here 
             return JsonResponse('Shoe Added', safe=False)
         else:
             # Not Logged In
-            return redirect('login/')
+            return HttpResponseRedirect('login')
     except:
-        return redirect('login/')
+        return HttpResponseRedirect('login')
 
 # Just to render Payment Success Page
 def paymentSuccess(request):
@@ -214,6 +223,7 @@ def shoeDetails(request):
             'product_size':product_size,
             'product_quantity':product_quantity, 
             'product_color':product_color,
+            'status':e.status,
         }
     return render(request, 'ShoesInvasionApp/details.html',context)
 
@@ -224,29 +234,29 @@ def shop(request):
     # product = ProductsTable.objects.all
     # No Filter 
     if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
-        product = ProductsTable.objects.all
+        product = ProductsTable.objects.filter(status=1)
     
     # Filter 
     elif (shoeType == "All Products" and brand != "Any" and gender != "Any" ):
-        product = ProductsTable.objects.filter(product_brand = brand, gender_type = gender)
+        product = ProductsTable.objects.filter(product_brand = brand, gender_type = gender, status=1)
     elif (shoeType == "All Products" and brand == "Any" and gender != "Any" ):
-        product = ProductsTable.objects.filter(gender_type = gender)
+        product = ProductsTable.objects.filter(gender_type = gender, status=1)
     elif (shoeType == "All Products" and brand != "Any" and gender == "Any" ):
-        product = ProductsTable.objects.filter(product_brand = brand)
+        product = ProductsTable.objects.filter(product_brand = brand, status=1)
 
     elif (shoeType != "All Products" and brand == "Any" and gender == "Any" ):
-        product = ProductsTable.objects.filter(product_category = shoeType)
+        product = ProductsTable.objects.filter(product_category = shoeType, status=1)
     elif (shoeType != "All Products" and brand != "Any" and gender == "Any"):
-        is_exist = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand).exists()
+        is_exist = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, status=1).exists()
         if (is_exist == False):
             product = None
         else:
-            product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand)
+            product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, status=1)
 
     elif (shoeType != "All Products" and brand != "Any" and gender != "Any"):
-        product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, gender_type = gender)
+        product = ProductsTable.objects.filter(product_category = shoeType,product_brand = brand, gender_type = gender, status=1)
     elif (shoeType != "All Products" and brand == "Any" and gender != "Any"):
-        product = ProductsTable.objects.filter(product_category = shoeType,gender_type = gender)
+        product = ProductsTable.objects.filter(product_category = shoeType,gender_type = gender, status=1)
     else:
         product = None
 
@@ -278,38 +288,50 @@ def profilePage(request):
             return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
         else:
             # Not Logged In
-            return redirect('login/')
-            #return HttpResponseRedirect(request=request,template_name="ShoesInvasionApp/login_user.html") | Cannot work
+            return HttpResponseRedirect('login')
     except:
         # Log 
         # Redirect cause some error occured.
-        return redirect('login/')
-
+        return HttpResponseRedirect('login')
 def viewUpdateProfilePage(request):
     try:
         if request.session.has_key('unique_id'):
             # Logged In
             uid = request.session['unique_id']
-            print(uid)
-            # uid = request.session.get('unique_id')
-            userObj = UserTable.objects.get(unique_id=uid)
-            userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
-            context = {
-                'firstname': userObj.first_name,
-                'lastname': userObj.last_name,
-                'username': userObj.username,
-                'email': userObj.email,
-                'phone': userObj.phone,
-                'address': userDetailsObj.address,
-            }
-            return render(request, 'ShoesInvasionApp/update-profile.html', context=context)
+            # Check if POST OR NOT
+            if request.method == 'POST':
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+                phone = request.POST['phone']
+                username = request.POST['username']
+                userObj = UserTable.objects.get(unique_id=uid)
+                print(userObj)
+                userObj.first_name = first_name
+                userObj.last_name = last_name
+                userObj.phone = phone
+                userObj.username = username
+                userObj.save()
+                return HttpResponseRedirect('profilePage')
+            else:
+                userObj = UserTable.objects.get(unique_id=uid)
+                userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
+                form = updateProfileForm(instance=userObj)
+                context = {
+                    'first_name': userObj.first_name,
+                    'last_name': userObj.last_name,
+                    'email': userObj.email,
+                    'phone': userObj.phone,
+                    'address': userDetailsObj.address,
+                    'updateProfile_form':form, 
+                }
+                return render(request, 'ShoesInvasionApp/update-profile.html', context=context)
         else:
             # Not Logged In
-            return redirect('login/')
+            return HttpResponseRedirect('login')
     except:
         # Log 
         # Redirect cause some error occured.
-        return redirect('login/')
+        return HttpResponseRedirect('login')
 
 def updateProfileDetails(request):
     # Check for session | Logged In or Not
@@ -324,7 +346,7 @@ def updateProfileDetails(request):
             address = data['address']
 
             if (fname == "" or lname == "" or phone == "" or address == ""):
-                return redirect('profilePage')
+                return HttpResponseRedirect('profilePage')
 
 
             userDetailObj = UserDetailsTable.objects.get(unique_id = uid)
@@ -340,49 +362,75 @@ def updateProfileDetails(request):
             return JsonResponse('Update Success', safe=False)
         else:
             # No UID 
-            return redirect('login/')
+            return HttpResponseRedirect('login')
     except:
         # Log Error Message 
         return JsonResponse('Exception Error', safe=False)
 
-
 def login_request(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        print("username: " + username)
-        # print(request.POST['data-sitekey'])
-        try:
-            account = UserTable.objects.get(username=username)
+    if request.session.has_key('unique_id'):
+           return HttpResponseRedirect('home')
+        # return render(request, 'ShoesInvasionApp/index.html')
+    else:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            otpToken = request.POST['otpToken']
+            try:
+                account = UserTable.objects.get(username=username)
 
-            if (account.accountType == 'User' and account.lockedStatus == 0):
-                if checkPassword(password, account.password):
-                    # Right Password | Change Locked Counter to 0
-                    account.lockedCounter = 0
-                    account.save()
-                    # Store into Session
-                    request.session['unique_id'] = account.unique_id
-                    # print(request.session['unqiue_id'])
-                    # request.session['unqiue_id'] = account.unique_id
-                    return render(request, 'ShoesInvasionApp/register_success.html')
+                if (account.accountType == 'User' and account.lockedStatus == 0):
+                    if checkPassword(password, account.password):
+                        # 2FA not enabled, can login
+                        if (account.secret_key == ""):
+                            # Right Password | Change Locked Counter to 0
+                            account.lockedCounter = 0
+                            account.save()
+                            # Store into Session
+                            request.session['unique_id'] = account.unique_id
+                            request.session.set_expiry(900)
+                            request.session['secret_key'] = account.secret_key
+                            return HttpResponseRedirect('home')
+
+                        # Got 2FA Enabled
+                        else:
+                            otpToken = request.POST['otpToken']
+                            if (otpToken == None):
+                                return HttpResponseRedirect('home')
+
+                            else:
+                                userSecretKey = pyotp.TOTP(account.secret_key)
+                                if (userSecretKey.verify(otpToken)):
+                                    # Right Password | Change Locked Counter to 0
+                                    account.lockedCounter = 0
+                                    account.save()
+                                    # Store into Session
+                                    request.session['unique_id'] = account.unique_id
+                                    request.session.set_expiry(900)
+                                    request.session['secret_key'] = account.secret_key
+                                    return HttpResponseRedirect('home')
+                                else:
+                                    form = UserLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+                    else:
+                        # Wrong Password | Need to append into Locked Counter
+                        account.lockedCounter += 1
+                        # Once Locked Counter = 3, Lock Account 
+                        if (account.lockedCounter == 3):
+                            account.lockedStatus = 1
+                        account.save()
+                        form = UserLoginForm()
+                        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+
                 else:
-                    # Wrong Password | Need to append into Locked Counter
-                    account.lockedCounter += 1
-                    # Once Locked Counter = 3, Lock Account 
-                    if (account.lockedCounter == 3):
-                        account.lockedStatus = 1
-                    account.save()
-                    return render(request, 'ShoesInvasionApp/register_fail.html')
+                    # Wrong Account type. 
+                    return HttpResponseRedirect('home')
 
-            else:
-                # Wrong Account type. 
+            except UserTable.DoesNotExist:
                 return render(request, 'ShoesInvasionApp/register_fail.html')
-
-        except UserTable.DoesNotExist:
-            return render(request, 'ShoesInvasionApp/register_fail.html')
-    else:       
-        form = UserLoginForm()
-        return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
+        else:       
+            form = UserLoginForm()
+            return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
@@ -413,6 +461,58 @@ def registerSuccess(request):
     return render(request, 'ShoesInvasionApp/register_success.html')
 
 def registerFailed(request):
-    # template = loader.get_template("/index.html")
-    # return HttpResponse(template.render())
     return render(request, 'ShoesInvasionApp/register_fail.html')
+
+def logout(request):
+   try:
+      del request.session['unique_id']
+    # Used to delete session from database so wont be able to access anymore
+    # If login again, it will create a new session
+      request.session.flush()
+   except:
+      pass
+   return HttpResponseRedirect('home')
+
+
+def preOrder(request):
+    shoeType = request.GET.get('type', "All Products")
+    brand = request.GET.get('brand', "Any")
+    gender = request.GET.get('gender', "Any")
+    # No Filter 
+    if (shoeType == "All Products" and brand == "Any" and gender == "Any"):
+        product = ProductsTable.objects.filter(status= 2)
+    else:
+        product = None
+
+    context = {
+        'product':product,
+        'type':shoeType,
+        'gender':brand,
+        'brand' : gender, 
+        'status': 2,
+    }
+    return render(request, 'ShoesInvasionApp/preorder.html',context)
+def user_2fa(request):
+    context = {}
+    if request.method == "POST":
+        # Checked
+        if 'enable2FA' in request.POST:
+            # Get user unique ID
+            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+            # pyotp generates a random key that is assigned to user and save in db
+            userSecretKey = pyotp.random_base32()
+            userDetails.secret_key = userSecretKey
+            userDetails.save()
+            # Create url for qrcode
+            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+            factory = qrcode.image.svg.SvgImage
+            img = qrcode.make(url, image_factory=factory, box_size=20)
+            stream = BytesIO()
+            img.save(stream)
+            context["svg"] = stream.getvalue().decode()
+            return render(request,"ShoesInvasionApp/user-2fa.html", context=context)
+        # Not checked
+        else:
+            return render(request, 'ShoesInvasionApp/user-2fa.html')
+    else:
+        return render(request, 'ShoesInvasionApp/user-2fa.html')
