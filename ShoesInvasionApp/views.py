@@ -292,7 +292,9 @@ def profilePage(request):
             # Logged In
             uid = request.session['unique_id']
             userObj = UserTable.objects.get(unique_id=uid)
+            print("before userdetails")
             userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
+            print("before context done")
             context = {
                 'firstname': userObj.first_name,
                 'lastname': userObj.last_name,
@@ -301,6 +303,7 @@ def profilePage(request):
                 'phone': userObj.phone,
                 'address': userDetailsObj.address,
             }
+            print("context done")
             return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
         else:
             # Not Logged In
@@ -491,6 +494,12 @@ def register_request(request):
             context = {}
             registerEmail = formDetails.cleaned_data['email']
             context['email'] = registerEmail
+            # Use email get uid 
+            userObj = UserTable.objects.get(email = registerEmail)
+            uid = userObj.unique_id
+            # store user details inside 
+            newUserDetailObj = UserDetailsTable.objects.create(address = "Orchard Rd", date_of_birth="1998-06-21", gender = "Male", unique_id = userObj)
+            newUserDetailObj.save()
             return render(request, 'ShoesInvasionApp/register_success.html', context)
         
         else:

@@ -67,6 +67,9 @@ class RegisterForm(forms.ModelForm):
                                 self.cleaned_data['unique_id'] = unique
                                 vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
                                 self.cleaned_data['verificationCode'] = vCode
+                                # self.cleaned_data['address'] = 'Orchard Road'
+                                # self.cleaned_data['gender'] = 'Male'
+                                # self.cleaned_data['date_of_birth'] = '1998-06-21'
                                 return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):
