@@ -4,18 +4,13 @@ from faulthandler import disable
 from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
-# from captcha.fields import ReCaptchaField
-# from captcha.widgets import ReCaptchaV2Checkbox
 from .models.user import UserTable  
 from django.contrib.auth.hashers import make_password
 from django.forms import ModelForm
 from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-import requests
-import secrets
-import string
-import pyotp
+import requests, secrets, string
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -70,6 +65,11 @@ class RegisterForm(forms.ModelForm):
                                 self.cleaned_data['verify_password'] = make_password(password)
                                 unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                                 self.cleaned_data['unique_id'] = unique
+                                vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
+                                self.cleaned_data['verificationCode'] = vCode
+                                # self.cleaned_data['address'] = 'Orchard Road'
+                                # self.cleaned_data['gender'] = 'Male'
+                                # self.cleaned_data['date_of_birth'] = '1998-06-21'
                                 return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):
