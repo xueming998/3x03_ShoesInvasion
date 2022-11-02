@@ -44,11 +44,11 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.messages',
+    #'django.contrib.messages',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
     'ShoesInvasionAdmin.apps.ShoesInvasionAdminConfig',
     'ShoesInvasionEditor.apps.ShoesInvasionEditorConfig',
@@ -86,7 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                # 'django.contrib.messages.context_processors.messages',
+                #'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -105,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'asif1234',
+        'PASSWORD': 'admin',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -138,7 +138,7 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.ScryptPasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher', #Don't know if it is needed
 ]
 
 
@@ -167,13 +167,37 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#EMAIL Backend
-DEFAULT_FROM_EMAIL="marisschool@outlook.com"
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST="smtp.office365.com"
-EMAIL_FROM = 'marisschool@outlook.com'
-EMAIL_HOST_USER = 'marisschool@outlook.com'
-EMAIL_HOST_PASSWORD='tcinrclkincpzois'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-PASSWORD_RESET_TIMEOUT = 14400
+#Youtube 
+STATIC_URL = '/static/'
+import os
+
+LOGGING = {
+    'version':1,
+    'loggers':{
+        'user':{
+            'handlers':['file'],
+            'level':'INFO'
+        },
+        'inputvalidation':{
+            'handlers':['file'],
+            'level':'INFO'
+
+        }
+    },
+    'handlers':{
+        'file':{
+            'level':'INFO',
+            'class':'logging.FileHandler',
+            'filename':f"logs/debug.log",
+            'mode':'a',
+            'encoding':'utf-8',
+            'formatter':'verbose'
+        }
+    },
+    'formatters':{
+        'verbose':{
+            'format':'{levelname} {message} {asctime:s}',
+            'style':'{',
+        },
+    }
+}

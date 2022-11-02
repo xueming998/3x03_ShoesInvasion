@@ -21,6 +21,10 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 
+#Import for Logging
+import logging
+logger=logging.getLogger('user')
+
 def login(request):
     try:
         if (check_login_status(request) == False):
@@ -31,8 +35,11 @@ def login(request):
                 if len(response) == 0:
                         form = EditorLoginForm()
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
-                account = UserTable.objects.get(username=username)
-                
+                try:
+                    account = UserTable.objects.get(username=username)
+                    id = account.unique_id
+                except ObjectDoesNotExist:
+                    account = None
                 if (account.accountType == 'Editor' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
                         # 2FA not enabled, can login
@@ -119,28 +126,26 @@ def create(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('login')
-
+    
     if request.method == 'POST':
         product_name = request.POST['product_name']
         product_price = request.POST['product_price']
         product_info = request.POST['product_info']
         product_brand = request.POST['product_brand']
-        status = request.POST['status']
+        available = request.POST['status']
         gender = request.POST['gender']
         category = request.POST['category']
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
+
         # Create Product obj
         newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand, 
-        status = status, available = "Yes",gender_type = gender, product_category = category, review=5)
+        status = available, available = "Yes",gender_type = gender, product_category = category)
         # Save 
         newProductObj.save()
-        product_id = ProductsTable.objects.latest('id')
-        dictArr = [{"size":"UK 7","quantity":87, "color":"Black", "product_id": product_id}, 
-        {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id}, 
-        {"size":"UK 9","quantity":67, "color":"Blue", "product_id": product_id}]
-        for x in range(3):
-            print(dictArr[x])
-            newProductDetailObj = ProductQuantityTable.objects.create(size = dictArr[x]['size'], quantity =dictArr[x]['quantity'], color=dictArr[x]['color'], product = product_id )
-            newProductDetailObj.save()
+        logger.info(f"Editor {editorid} from {client_ip} created {newProductObj} at")
+        # data = {"status":"Success", "message":"Insert Successful"}
+        # return JsonResponse(data, safe=False)
         return HttpResponseRedirect('manage')
 
     else:
@@ -167,8 +172,11 @@ def updateProduct(request, pk):
         product.status = status
         product.gender_type = gender
         product.product_category = category
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
 
         product.save()
+        logger.info(f"Editor {editorid} from {client_ip} updated {product} at")
         return HttpResponseRedirect('../../manage')
 
     else:
@@ -186,22 +194,28 @@ def remove(request):
         data = json.loads(request.body)
         product_id = data['product_id']
         productObj = ProductsTable.objects.get(id = product_id)
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
         print(productObj)
         if (productObj.available == "Yes"):
             productObj.available = "No"
             productObj.save()
+            logger.info(f"Editor {editorid} from {client_ip} made {productObj} unavailable at")
             data = {"status":"Success", "message":"Product made Unavailable!"}
         elif (productObj.available == "No"):
             productObj.available = "Yes"
             productObj.save()
+            logger.info(f"Editor {editorid} from {client_ip} made {productObj} available at")
             data = {"status":"Success", "message":"Product made Available!"}
         else:
             # Error 
+            logger.info(f"Editor {editorid} from {client_ip} unable to modify {productObj} at")
             data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
         return JsonResponse(data, safe=False)
 
     except ObjectDoesNotExist:
     # UID is wrong
+        logger.info(f"Editor {editorid} from {client_ip} tried to modify non-existent product: {productObj} at")
         data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
         return JsonResponse(data, safe=False)
 
