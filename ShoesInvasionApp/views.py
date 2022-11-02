@@ -60,6 +60,12 @@ import qrcode.image.svg
 from io import BytesIO
 from ShoesInvasionApp.forms import updateProfileForm
 
+#Import for Logging
+import logging
+logger=logging.getLogger('user')
+validationlogger=logging.getLogger('inputvalidation')
+#from ShoesInvasionApp import signals
+
 # Create your views here.
 def index(request):
         return render(request, 'ShoesInvasionApp/index.html')
@@ -397,9 +403,12 @@ def login_request(request):
             password = request.POST['password']
             print("username: " + username)
             otpToken = request.POST['otpToken']
+            # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+            # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+            client_ip=request.META.get('REMOTE_ADDR')
             try:
                 account = UserTable.objects.get(username=username)
-
+                id = account.unique_id
                 if (account.accountType == 'User' and account.lockedStatus == 0):
                     if (len(password) < 12):
                         form = UserLoginForm()
@@ -420,19 +429,22 @@ def login_request(request):
                                     request.session['unique_id'] = account.unique_id
                                     request.session.set_expiry(900)
                                     request.session['secret_key'] = account.secret_key
-                                    return HttpResponseRedirect('home')
+                                    logger.info(f"Successful user login by {id} from {client_ip} at time:")
+                                    return render(request, 'ShoesInvasionApp/index.html')
                                 else:
                                     form = UserLoginForm()
-                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Incorrect or Expired OTP"})
+                                    return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
                             else:
                                 # Wrong Password | Need to append into Locked Counter
                                 account.lockedCounter += 1
                                 # Once Locked Counter = 3, Lock Account 
                                 if (account.lockedCounter == 3):
                                     account.lockedStatus = 1
+                                    logger.critical(f"User account ({id}) from {client_ip} locked out at time:")
                                 account.save()
                                 form = UserLoginForm()
-                                return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Incorrect Password"})
+                                logger.critical(f"Failed user login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
+                                return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
                 else:
                     # Wrong Account type. 
@@ -440,6 +452,7 @@ def login_request(request):
 
             except UserTable.DoesNotExist:
                 form = UserLoginForm()
+                logger.critical(f"Failed user login attempt with non-registered user: {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
                 return render(request, 'ShoesInvasionApp/login_user.html', context={"login_form":form, "error": "Username does not exist."})
         else:       
             form = UserLoginForm()
