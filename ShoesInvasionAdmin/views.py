@@ -14,6 +14,7 @@ from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers import serialize
 from ShoesInvasionEditor.forms import createProductForm, updateProductForm, EditorLoginForm
+from ShoesInvasionAdmin.forms import RegisterEditorForm, AdminLoginForm
 
 # Import for 2FA
 import pyotp
@@ -32,17 +33,24 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+                # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
-                        form = EditorLoginForm()
-                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
-                try:
-                    account = UserTable.objects.get(username=username)
-                    id = account.unique_id
-                except ObjectDoesNotExist:
-                    account = None
-                if (account.accountType == 'Editor' and account.lockedStatus == 0):
-                    if checkPassword(password, account.password):
-                        # 2FA not enabled, can login
+                        form = AdminLoginForm()
+                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
+                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
+                
+                account = UserTable.objects.get(username=username)
+                id = account.unique_id
+                
+                if (account.accountType == 'Admin' and account.lockedStatus == 0):
+                    if (len(password) < 12):
+                        form = AdminLoginForm()
+                        return render(request=request, template_name="ShoesInvasionApp/login.html", context={"login_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
+                    else:
+                        if checkPassword(password, account.password):
+                            # 2FA not enabled, can login
                             if (account.secret_key == ""):
                                 # Right Password | Change Locked Counter to 0
                                 account.lockedCounter = 0
@@ -50,6 +58,8 @@ def login(request):
                                 # Store into Session
                                 request.session['unique_id'] = account.unique_id
                                 request.session.set_expiry(900)
+                                request.session['secret_key'] = account.secret_key
+                                logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
@@ -66,23 +76,29 @@ def login(request):
                                         # Store into Session
                                         request.session['unique_id'] = account.unique_id
                                         request.session.set_expiry(900)
+                                        logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                         return HttpResponseRedirect('manage')
-                                    else:
-                                        form = EditorLoginForm()
-                                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
-                    else:
-                        # Wrong Password | Need to append into Locked Counter
-                        account.lockedCounter += 1
-                        # Once Locked Counter = 3, Lock Account 
-                        if (account.lockedCounter == 3):
-                            account.lockedStatus = 1
-                        account.save()
-                        form = EditorLoginForm()
-                        return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                                    else:     
+                                        form = AdminLoginForm()
+                                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
+                        else:
+                            # Wrong Password | Need to append into Locked Counter
+                            account.lockedCounter += 1
+                            # Once Locked Counter = 3, Lock Account 
+                            if (account.lockedCounter == 3):
+                                account.lockedStatus = 1
+                                logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
+                            account.save()
+                            form = AdminLoginForm()
+                            logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                    
                 else:
                     # Wrong Account type. 
-                    form = EditorLoginForm()
-                    return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                    form = AdminLoginForm()
+                    logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
+                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
                 form = EditorLoginForm()
                 return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
@@ -90,8 +106,9 @@ def login(request):
             # Already Logged in but trying to access login page again
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
-            form = EditorLoginForm()
-            return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+            form = AdminLoginForm()
+            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
+            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = EditorLoginForm()
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
@@ -297,4 +314,63 @@ def twoFA(request):
         else:
             return render(request, 'ShoesInvasionEditor/twoFA.html')
     else:
-        return render(request, 'ShoesInvasionEditor/twoFA.html')
+        return render(request, 'ShoesInvasionAdmin/twoFA.html')
+
+def createEditorAccount(request):
+    # Check if logged in
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('login')
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        username = request.POST['username']
+        password = request.POST['password']
+        verify_password = request.POST['verify_password']
+        email = request.POST['email']
+        phone = request.POST['phone']
+        if (len(password) < 12):
+            form = RegisterEditorForm()
+            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+            context={"create_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
+        else:
+            if (len(verify_password) < 12):
+                form = RegisterEditorForm()
+                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                context={"create_form":form, "status":"Failed", "message":"Verify Password have to be at least 12 characters long."})
+            else:
+                if UserTable.objects.filter(username=username).exists():
+                    form = RegisterEditorForm()
+                    return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                    context={"create_form":form, "status":"Failed", "message":"Username already exist."})
+                else:
+                    if UserTable.objects.filter(email=email).exists():
+                        form = RegisterEditorForm()
+                        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                        context={"create_form":form, "status":"Failed", "message":"Email already exist."})
+                    else:
+                        if UserTable.objects.filter(phone=phone).exists():
+                            form = RegisterEditorForm()
+                            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                            context={"create_form":form, "status":"Failed", "message":"Phone Number already registered."})
+                        else:
+                            if (password != verify_password):
+                                form = RegisterEditorForm()
+                                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                                context={"create_form":form, "status":"Failed", "message":"Password does not match."})
+                            else:
+                                unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                                hashedPW = make_password(password)
+                                hashedVPW = make_password(verify_password)
+                                # Create Account obj
+                                accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW, 
+                                verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
+                                lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
+                                # Save 
+                                accountObj.save()
+                                # data = {"status":"Success", "message":"Insert Successful"}
+                                # return JsonResponse(data, safe=False)
+                                return HttpResponseRedirect('manage')
+
+    else:
+        form = RegisterEditorForm()
+        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", context={"create_form":form})

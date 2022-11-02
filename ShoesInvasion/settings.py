@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from ensurepip import version
 import os
 from pathlib import Path
 
@@ -36,10 +37,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Application definition
 
@@ -58,9 +55,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles', 
     'captcha',
 ]
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -167,9 +161,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-#Youtube 
-STATIC_URL = '/static/'
-import os
+#EMAIL Backend
+DEFAULT_FROM_EMAIL="marisschool@outlook.com"
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST="smtp.office365.com"
+EMAIL_FROM = 'marisschool@outlook.com'
+EMAIL_HOST_USER = 'marisschool@outlook.com'
+EMAIL_HOST_PASSWORD='tcinrclkincpzois'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+PASSWORD_RESET_TIMEOUT = 14400
 
 LOGGING = {
     'version':1,
