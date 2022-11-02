@@ -375,6 +375,29 @@ def createEditorAccount(request):
         form = RegisterEditorForm()
         return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", context={"create_form":form})
 
+def ban_unban(request):
+    try:
+        data = json.loads(request.body)
+        uid = data['uid']
+        accountObj = UserTable.objects.get(unique_id=uid)
+        if (accountObj.lockedStatus == 0):
+            # Ban
+            accountObj.lockedCounter = 3
+            accountObj.lockedStatus = 1
+            accountObj.save()
+        else:
+            # unban
+            accountObj.lockedStatus = 0
+            accountObj.lockedCounter = 0
+            accountObj.save()
+        data = {"status":"Success", "message":"Ban Successful"}
+        return JsonResponse(data, safe=False)
+    except UserTable.DoesNotExist:
+        # Error 403
+        return JsonResponse('Failed Does not exist', safe=False)
+    except:
+        return JsonResponse('Failed', safe=False)
+
 def page_not_found_view(request, exception):
     return render(request, '404.html', status=404)
 
