@@ -41,11 +41,11 @@ ALLOWED_HOSTS = ['127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-    # 'django.contrib.admin',
+    #'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.messages',
+    #'django.contrib.messages',
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
     'ShoesInvasionAdmin.apps.ShoesInvasionAdminConfig',
     'ShoesInvasionEditor.apps.ShoesInvasionEditorConfig',
@@ -80,7 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                # 'django.contrib.messages.context_processors.messages',
+                #'django.contrib.messages.context_processors.messages',
             ],
         },
     },
@@ -132,7 +132,7 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
     'django.contrib.auth.hashers.Argon2PasswordHasher',
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
-    'django.contrib.auth.hashers.ScryptPasswordHasher',
+    'django.contrib.auth.hashers.ScryptPasswordHasher', #Don't know if it is needed
 ]
 
 
