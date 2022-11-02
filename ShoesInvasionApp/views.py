@@ -536,13 +536,13 @@ def preOrder(request):
 #         return render(request, 'ShoesInvasionApp/register.html')
 
 def page_not_found_view(request, exception):
-    return render(request, '404.html', status=404)
+    return render(request, 'ShoesInvasionApp/404.html', status=404)
 
 def server_error_view(request,*args, **argv):
-    return render(request, '500.html', status=500)
+    return render(request, 'ShoesInvasionApp/500.html', status=500)
 
 def unauthorized_view(request,*args, **argv):
-    return render(request, '401.html', status=401)
+    return render(request, 'ShoesInvasionApp/401.html', status=401)
 
 def bad_gateway_view(request,*args, **argv):
-    return render(request, '501.html', status=501)
+    return render(request, 'ShoesInvasionApp/501.html', status=501)
