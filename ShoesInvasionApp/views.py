@@ -387,8 +387,7 @@ def login_request(request):
                             request.session['unique_id'] = account.unique_id
                             request.session.set_expiry(900)
                             request.session['secret_key'] = account.secret_key
-                            print(client_ip, "passsss")
-                            logger.info(f"Successful login by {id} from {client_ip} at time:")
+                            logger.info(f"Successful user login by {id} from {client_ip} at time:")
                             return render(request, 'ShoesInvasionApp/index.html')
                         # Got 2FA Enabled
                         else:
@@ -405,7 +404,7 @@ def login_request(request):
                                     request.session['unique_id'] = account.unique_id
                                     request.session.set_expiry(900)
                                     request.session['secret_key'] = account.secret_key
-                                    logger.info(f"Successful login by {id} from {client_ip} at time:")
+                                    logger.info(f"Successful user login by {id} from {client_ip} at time:")
                                     return render(request, 'ShoesInvasionApp/index.html')
                                 else:
                                     form = UserLoginForm()
@@ -416,9 +415,10 @@ def login_request(request):
                         # Once Locked Counter = 3, Lock Account 
                         if (account.lockedCounter == 3):
                             account.lockedStatus = 1
+                            logger.critical(f"User account ({id}) from {client_ip} locked out at time:")
                         account.save()
                         form = UserLoginForm()
-                        logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
+                        logger.info(f"Failed user login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
                         return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form})
 
                 else:
@@ -426,6 +426,7 @@ def login_request(request):
                     return render(request, 'ShoesInvasionApp/index.html')
 
             except UserTable.DoesNotExist:
+                logger.info(f"Failed user login attempt with non-registered user: {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
                 return render(request, 'ShoesInvasionApp/register.html')
         else:       
             form = UserLoginForm()

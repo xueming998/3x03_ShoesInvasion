@@ -33,11 +33,9 @@ class RegisterForm(forms.ModelForm):
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
 
-
     # Function used for validation
     def clean(self):
         super(RegisterForm, self).clean()
-
         password = self.cleaned_data.get('password')
         verifyPassword = self.cleaned_data.get('verify_password')
         username = self.cleaned_data.get('username')
@@ -45,7 +43,6 @@ class RegisterForm(forms.ModelForm):
         phone = self.cleaned_data.get('phone')
 
         if UserTable.objects.filter(username=username).exists():
-            print("verifiedStatus")
             self.errors['username'] = self.error_class(['Username already taken.'])
         else:
             if UserTable.objects.filter(email=email).exists():
@@ -62,6 +59,7 @@ class RegisterForm(forms.ModelForm):
                         unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                         self.cleaned_data['unique_id'] = unique
                         return self.cleaned_data
+    
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

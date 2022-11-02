@@ -36,7 +36,7 @@ def login(request):
                 client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         form = AdminLoginForm()
-                        logger.info(f"Failed login attempt by {username} from {client_ip} with no captcha provided at")
+                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 
                 account = UserTable.objects.get(username=username)
@@ -54,7 +54,7 @@ def login(request):
                             request.session.set_expiry(900)
                             request.session['secret_key'] = account.secret_key
                             #Log the successful login
-                            logger.info(f"Successful login by {id} from {client_ip} at")
+                            logger.info(f"Successful administrator login by {id} from {client_ip} at")
                             return HttpResponseRedirect('manage')
                         # Got 2FA Enabled
                         else:
@@ -70,11 +70,11 @@ def login(request):
                                     # Store into Session
                                     request.session['unique_id'] = account.unique_id
                                     request.session.set_expiry(900)
-                                    logger.info(f"Successful login by {id} from {client_ip} at")
+                                    logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                     return HttpResponseRedirect('manage')
                                 else:     
                                     form = AdminLoginForm()
-                                    logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                                    logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                     else:
                         # Wrong Password | Need to append into Locked Counter
@@ -82,16 +82,17 @@ def login(request):
                         # Once Locked Counter = 3, Lock Account 
                         if (account.lockedCounter == 3):
                             account.lockedStatus = 1
+                            logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
                         account.save()
                         form = AdminLoginForm()
-                        logger.info(f"Failed login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                     
                 else:
                     # Wrong Account type. 
                     form = AdminLoginForm()
-                    logger.info(f"Failed login attempt with non-registered user: {username} from {client_ip} at")
-                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is IncorrectTHERE."})
+                    logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
+                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
                 form = AdminLoginForm()
                 return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form})
@@ -100,7 +101,7 @@ def login(request):
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = AdminLoginForm()
-            logger.info(f"Failed login attempt with non-registered user: {username} from {client_ip} at")
+            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = AdminLoginForm()
@@ -235,7 +236,6 @@ def createEditorAccount(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('login')
-
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
@@ -244,6 +244,7 @@ def createEditorAccount(request):
         verify_password = request.POST['verify_password']
         email = request.POST['email']
         phone = request.POST['phone']
+        
         if UserTable.objects.filter(username=username).exists():
             form = RegisterEditorForm()
             return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
@@ -272,7 +273,7 @@ def createEditorAccount(request):
                         verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
                         lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
                         # Save 
-                        accountObj.save()
+                        accountObj.save()                        
                         # data = {"status":"Success", "message":"Insert Successful"}
                         # return JsonResponse(data, safe=False)
                         return HttpResponseRedirect('manage')
