@@ -20,7 +20,7 @@ class UserTable(models.Model):
     # verifiedStatus = models.BooleanField(default=False)
     verifiedStatus = models.BooleanField()
     # Used to store random generated verify code, empty it when account verified
-    verificationCode = models.PositiveSmallIntegerField(null=True)
+    verificationCode = models.CharField(max_length=100, null=True)
     # True = Locked, None/Null/False = Not Locked
     lockedStatus = models.BooleanField()
     lockedCounter = models.PositiveSmallIntegerField(null=True)

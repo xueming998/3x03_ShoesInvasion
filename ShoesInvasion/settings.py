@@ -29,6 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = False
+
+# ALLOWED_HOSTS = ['127.0.0.1']
+
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -95,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'asif1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -159,7 +163,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #EMAIL Backend
 DEFAULT_FROM_EMAIL="marisschool@outlook.com"
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST="smtp.office365.com"
 EMAIL_FROM = 'marisschool@outlook.com'
 EMAIL_HOST_USER = 'marisschool@outlook.com'
@@ -167,10 +172,6 @@ EMAIL_HOST_PASSWORD='tcinrclkincpzois'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 PASSWORD_RESET_TIMEOUT = 14400
-
-#Youtube 
-STATIC_URL = '/static/'
-import os
 
 LOGGING = {
     'version':1,

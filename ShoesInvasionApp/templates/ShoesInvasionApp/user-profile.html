@@ -22,10 +22,6 @@
   </div>    
   <div class="untree_co-section bg-light">
       <div  class="container">
-             <!-- <div style="margin-bottom:2em;" class ="alert alert-warning alert-dismissible fade show" role="alert">
-                 <strong>Success! </strong><?php echo $_SESSION['profile_status']; ?>
-                 <button type="button" class="close" data-dismiss='alert'>&times;</button>
-             </div> -->
         <div class="col-xl-12 order-xl-1">
           <div class="card bg-secondary shadow">
             <div class="card-header bg-white border-0">
@@ -67,18 +63,6 @@
                         <input type="text" class="form-control" id="lname" name="lname" pattern="[A-Za-z]" readonly="" value="{{lastname}}">
                       </div>
                     </div>
-                    <!-- <div class="col-lg-6">
-                      <div class="form-group focused">
-                        <label for="dob" class="text-black">Date of Birth <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="dob" name="dob" readonly="" value="<?php echo $final_array[4]; ?>">
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group focused">
-                        <label for="gender" class="text-black">Gender <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="gender" name="gender" pattern="[A-Za-z]" readonly="" value="<?php echo $final_array[5]; ?>">
-                      </div>
-                    </div> -->
                   </div>
                 </div>
                 <hr class="my-4">
@@ -104,7 +88,12 @@
                 <!-- Description -->
                 <div class="pl-lg-4">
                   <div class="form-group focused">
-                    <a href='viewUpdateProfilePage'><button class="btn btn-black btn-lg py-3 btn-block">Update Credentials</a></button>
+                    <a href='viewUpdateProfilePage' class="btn btn-black btn-lg py-3 btn-block">Update Credentials</a>
+                  </div>                 
+                </div>
+                <div class="pl-lg-4">
+                  <div class="form-group focused">
+                    <a href='logout' class="btn btn-black btn-lg py-3 btn-block">Logout</a>
                   </div>                 
                 </div>
               </form>

@@ -1,17 +1,16 @@
 from ctypes.wintypes import SIZE
 from dataclasses import field
+from faulthandler import disable
+from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
-# from captcha.fields import ReCaptchaField
-# from captcha.widgets import ReCaptchaV2Checkbox
 from .models.user import UserTable  
 from django.contrib.auth.hashers import make_password
+from django.forms import ModelForm
+from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-import requests
-import secrets
-import string
-import pyotp
+import requests, secrets, string
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 
@@ -41,25 +40,35 @@ class RegisterForm(forms.ModelForm):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
         phone = self.cleaned_data.get('phone')
-
-        if UserTable.objects.filter(username=username).exists():
-            self.errors['username'] = self.error_class(['Username already taken.'])
+        if (len(password) < 12 ):
+            self.errors['password'] = self.error_class(['Password have to be at least 12 characters long.'])
         else:
-            if UserTable.objects.filter(email=email).exists():
-                self.errors['email'] = self.error_class(['Email already taken/registered.'])
+            if (len(verifyPassword) < 12 ):
+                self.errors['verifyPassword'] = self.error_class(['Password have to be at least 12 characters long.'])
             else:
-                if UserTable.objects.filter(phone=phone).exists():
-                    self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
+                if UserTable.objects.filter(username=username).exists():
+                    print("verifiedStatus")
+                    self.errors['username'] = self.error_class(['Username already taken.'])
                 else:
-                    if (password != verifyPassword):
-                        self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                    if UserTable.objects.filter(email=email).exists():
+                        self.errors['email'] = self.error_class(['Email already taken/registered.'])
                     else:
-                        self.cleaned_data['password'] = make_password(password)
-                        self.cleaned_data['verify_password'] = make_password(password)
-                        unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
-                        self.cleaned_data['unique_id'] = unique
-                        return self.cleaned_data
-    
+                        if UserTable.objects.filter(phone=phone).exists():
+                            self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
+                        else:
+                            if (password != verifyPassword):
+                                self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                            else:
+                                self.cleaned_data['password'] = make_password(password)
+                                self.cleaned_data['verify_password'] = make_password(password)
+                                unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                                self.cleaned_data['unique_id'] = unique
+                                vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
+                                self.cleaned_data['verificationCode'] = vCode
+                                # self.cleaned_data['address'] = 'Orchard Road'
+                                # self.cleaned_data['gender'] = 'Male'
+                                # self.cleaned_data['date_of_birth'] = '1998-06-21'
+                                return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -81,6 +90,10 @@ class UserLoginForm(AuthenticationForm):
 
     def clean(self):
         super(UserLoginForm, self).clean()
+        password = self.cleaned_data.get('password')
+        if (len(password) < 12 ):
+            self.errors['username'] = self.error_class(['Username already taken.'])
+        else: pass
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
@@ -96,3 +109,39 @@ class UserLoginForm(AuthenticationForm):
                 code='invalid',
             )
         print("status = " + status)
+
+
+class updateProfileForm(ModelForm):
+    class Meta:
+            # model = UserDetailsTable
+            # fields = ['address', ]
+            model = UserTable
+            fields = ['first_name', 'last_name', 'email', 'phone', 'username']
+
+
+    def __init__(self, *args, **kwargs):
+        super(updateProfileForm, self).__init__(*args, **kwargs)
+
+    first_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter First Name'}),
+        label="First Name")
+    
+    last_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'}),
+        label="Last Name")
+    
+    # address = forms.CharField(widget=forms.TextInput(
+    #     attrs={'class': 'form-control', 'placeholder': 'Enter Address'}),
+    #     label="Address")
+    
+    email = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Email'}),
+        label="Email")
+    email.disabled = True
+    
+    phone = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Enter Phone Number'}),
+        label="Phone Number")
+    
+    def clean(self):
+        super(updateProfileForm, self).clean()

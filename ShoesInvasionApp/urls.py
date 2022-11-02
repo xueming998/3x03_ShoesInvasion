@@ -7,9 +7,9 @@ app_name = 'ShoesInvasionApp'
 
 urlpatterns = [
     # Home page Routing
-    path('', views.index, name='index'),
+    path('', views.index, name=''),
     path('index', views.index, name='index'),
-    path('home', views.index, name='index'),
+    path('home', views.index, name='home'),
     # About Page Routing
     path('about', views.about, name='about'),
     # Contact Page Routing
@@ -21,7 +21,7 @@ urlpatterns = [
      # Shoe Product
     path('shoeDetails', views.shoeDetails, name='shoeDetails'),
     # Login
-    path('login/', views.login_request, name='login'),
+    path('login', views.login_request, name='login'),
     # Register
     path('register/', views.register_request, name='register'), 
     # Register Success
@@ -43,10 +43,12 @@ urlpatterns = [
     path('checkout_cartItem/', views.checkout_cartItem, name='checkout_cartItem'),
     # add_to_cart
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    # email_verification_activate
+    path('activate/<verificationcode>/<token>', views.activate, name='activate'),
      # PreOrder
     path('preOrder', views.preOrder, name='preOrder'),
     # Logout
-    path('logout/', views.logout, name='logout'),
+    path('logout', views.logout, name='logout'),
     # 2FA
-    path('user_2fa/', views.user_2fa, name='user_2fa'),
+    # path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]

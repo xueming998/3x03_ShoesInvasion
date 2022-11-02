@@ -146,17 +146,24 @@ def create(request):
         product_price = request.POST['product_price']
         product_info = request.POST['product_info']
         product_brand = request.POST['product_brand']
-        available = request.POST['status']
+        # available = request.POST['status']
+        status = request.POST['status']
         gender = request.POST['gender']
         category = request.POST['category']
 
         # Create Product obj
         newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand, 
-        status = available, available = "Yes",gender_type = gender, product_category = category)
+        status = status, available = "Yes",gender_type = gender, product_category = category, review=5)
         # Save 
         newProductObj.save()
-        # data = {"status":"Success", "message":"Insert Successful"}
-        # return JsonResponse(data, safe=False)
+        product_id = ProductsTable.objects.latest('id')
+        dictArr = [{"size":"UK 7","quantity":87, "color":"Black", "product_id": product_id}, 
+        {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id}, 
+        {"size":"UK 9","quantity":67, "color":"Blue", "product_id": product_id}]
+        for x in range(3):
+            print(dictArr[x])
+            newProductDetailObj = ProductQuantityTable.objects.create(size = dictArr[x]['size'], quantity =dictArr[x]['quantity'], color=dictArr[x]['color'], product = product_id )
+            newProductDetailObj.save()
         return HttpResponseRedirect('manage')
 
     else:

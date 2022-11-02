@@ -77,7 +77,7 @@
       <div class="row align-items-end">
         <div class="col-lg-7">
           <h1>Verify your email!</h1>
-          <p>Already have an account? <a href="../login">Member Login</a></p>
+          <p>Already have an account? <a href="login">Member Login</a></p>
         </div>
       </div>
     </div>
@@ -88,11 +88,19 @@
       <div class="row mb-5">
 
         <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
-
-            <p>We've sent an email to your account to verify your email address.</p>
+            <p>We've sent an email to {{ email}} to verify.</p>
         </div>
+        <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
+          <form method="POST" action={% url 'ShoesInvasionApp:registerSuccess' %}>
+            <p>In addition to verify your email address, click the 'Generate' button below to generate your two-factor authentication that is needed during login.</p>
+            {% csrf_token %}
+            <input type="hidden" value="{{email}}" name="email">
+            <input type="submit" value="Generate">
+      </form>
+      {{ svg|safe }}
       </div>
-
+      </div>
+      
     </div>
   </div>
   {% include 'ShoesInvasionApp/footer.html' %}  
