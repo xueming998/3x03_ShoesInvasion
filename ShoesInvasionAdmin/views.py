@@ -20,6 +20,10 @@ import qrcode
 import qrcode.image.svg
 from io import BytesIO
 
+#import logging
+import logging
+logger=logging.getLogger('user')
+
 def login(request):
     try:
         if (check_login_status(request) == False):
@@ -27,10 +31,16 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+                # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         form = AdminLoginForm()
+                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
+                
                 account = UserTable.objects.get(username=username)
+                id = account.unique_id
                 
                 if (account.accountType == 'Admin' and account.lockedStatus == 0):
                     if (len(password) < 12):
@@ -47,6 +57,7 @@ def login(request):
                                 request.session['unique_id'] = account.unique_id
                                 request.session.set_expiry(900)
                                 request.session['secret_key'] = account.secret_key
+                                logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
@@ -62,9 +73,11 @@ def login(request):
                                         # Store into Session
                                         request.session['unique_id'] = account.unique_id
                                         request.session.set_expiry(900)
+                                        logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                         return HttpResponseRedirect('manage')
                                     else:     
                                         form = AdminLoginForm()
+                                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                         else:
                             # Wrong Password | Need to append into Locked Counter
@@ -72,14 +85,16 @@ def login(request):
                             # Once Locked Counter = 3, Lock Account 
                             if (account.lockedCounter == 3):
                                 account.lockedStatus = 1
+                                logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
                             account.save()
                             form = AdminLoginForm()
+                            logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-                    
                     
                 else:
                     # Wrong Account type. 
                     form = AdminLoginForm()
+                    logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
                 form = AdminLoginForm()
@@ -89,6 +104,7 @@ def login(request):
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = AdminLoginForm()
+            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = AdminLoginForm()
@@ -223,7 +239,6 @@ def createEditorAccount(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('login')
-
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']

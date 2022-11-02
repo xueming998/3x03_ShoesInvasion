@@ -32,11 +32,9 @@ class RegisterForm(forms.ModelForm):
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
 
-
     # Function used for validation
     def clean(self):
         super(RegisterForm, self).clean()
-
         password = self.cleaned_data.get('password')
         verifyPassword = self.cleaned_data.get('verify_password')
         username = self.cleaned_data.get('username')
