@@ -28,3 +28,6 @@ handler500 = "ShoesInvasionApp.views.server_error_view"
 
 # for error 401 pages
 handler401 = "ShoesInvasionApp.views.unauthorized_view"
+
+# for error 502 pages
+handler502 = "ShoesInvasionApp.views.bad_gateway_view"

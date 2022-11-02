@@ -43,6 +43,8 @@ urlpatterns = [
     path('checkout_cartItem/', views.checkout_cartItem, name='checkout_cartItem'),
     # add_to_cart
     path('add_to_cart/', views.add_to_cart, name='add_to_cart'),
+    # email_verification_activate
+    path('activate/<verificationcode>/<token>', views.activate, name='activate'),
      # PreOrder
     path('preOrder', views.preOrder, name='preOrder'),
     # Logout
@@ -50,3 +52,15 @@ urlpatterns = [
     # 2FA
     # path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]
+
+# For error 404 pages
+handler404 = "ShoesInvasionApp.views.page_not_found_view"
+
+# for error 500 pages
+handler500 = "ShoesInvasionApp.views.server_error_view"
+
+# for error 401 pages
+handler401 = "ShoesInvasionApp.views.unauthorized_view"
+
+# for error 501 pages
+handler501 = "ShoesInvasionApp.views.bad_gateway_view"

@@ -543,3 +543,6 @@ def server_error_view(request,*args, **argv):
 
 def unauthorized_view(request,*args, **argv):
     return render(request, '401.html', status=401)
+
+def bad_gateway_view(request,*args, **argv):
+    return render(request, '501.html', status=501)
