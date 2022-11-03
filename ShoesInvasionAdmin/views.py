@@ -45,13 +45,17 @@ def login(request):
                 id = account.unique_id
                 
                 if (account.accountType == 'Admin' and account.lockedStatus == 0):
+                    print("account1")
                     if (len(password) < 12):
                         form = AdminLoginForm()
                         return render(request=request, template_name="ShoesInvasionApp/login.html", context={"login_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
                     else:
+                        print("account2")
                         if checkPassword(password, account.password):
+                            print("account4")
                             # 2FA not enabled, can login
-                            if (account.secret_key == ""):
+                            if (account.secret_key == "" or account.secret_key == None):
+                                print("account5")
                                 # Right Password | Change Locked Counter to 0
                                 account.lockedCounter = 0
                                 account.save()
@@ -63,6 +67,7 @@ def login(request):
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
+                                print("account6")
                                 otpToken = request.POST['otpToken']
                                 if (otpToken == None):
                                     form = EditorLoginForm()
@@ -83,6 +88,7 @@ def login(request):
                                         logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                         else:
+                            print("account3")
                             # Wrong Password | Need to append into Locked Counter
                             account.lockedCounter += 1
                             # Once Locked Counter = 3, Lock Account 
