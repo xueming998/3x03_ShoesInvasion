@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django.contrib.staticfiles', 
     'captcha',
+    'django_jenkins',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
