@@ -100,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ShoesInvasion',
         'USER': 'root',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'asif1234',
         'HOST': '127.0.0.1',
         'PORT': '3306',
     }
@@ -206,3 +206,17 @@ LOGGING = {
         },
     }
 }
+# Rules set for pages across application. 
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'Lax'
+# More Difficult to hijack user session. 
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+# Preventing Clickjacking
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+# Serve Pages with 'x-content-type-options: nosniff' header
+SECURE_CONTENT_TYPE_NOSNIFF = True
+# Instructs the browser to send a full URL, but only for same-origin links. No referrer will be sent for cross-origin links.
+SECURE_REFERRER_POLICY = 'same-origin'
+# Defense-in-depth protection against cross-origin attacks, especially those like Spectre 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'

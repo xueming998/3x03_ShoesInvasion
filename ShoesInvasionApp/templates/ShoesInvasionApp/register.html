@@ -94,8 +94,8 @@
         <div class="col-lg-7 mr-auto order-1" data-aos="fade-up" data-aos-delay="200">
 
           <form style="width: 1000px;" method="POST" id="MyForm">
-        {% csrf_token %}
-        {% bootstrap_form form %}
+            {% csrf_token %}
+            {% bootstrap_form form %}
             <div class="form-group">
               <button class="btn btn-primary" id="submit">Submit</button>
             </div>
@@ -113,6 +113,8 @@
       <span class="sr-only">Loading...</span>
     </div>
   </div>
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+  async defer></script> 
 </body>
 
 </html>

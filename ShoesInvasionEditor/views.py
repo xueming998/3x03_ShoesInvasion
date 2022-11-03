@@ -27,8 +27,12 @@ logger=logging.getLogger('user')
 
 def login(request):
     try:
+        print("Inside Try ")
         if (check_login_status(request) == False):
+            print("Inside check_login_status ")
+            print(request)
             if request.method == 'POST':
+                print("Inside Method POST ")
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
@@ -39,12 +43,8 @@ def login(request):
                         form = EditorLoginForm()
                         logger.info(f"Failed editor login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
-                try:
-                    account = UserTable.objects.get(username=username)
-                    id = account.unique_id
-                except ObjectDoesNotExist:
-                    account = None
-                    logger.info(f"Failed editor login attempt with non-registered user: {username} from {client_ip} at")
+                account = UserTable.objects.get(username=username)
+                
                 if (account.accountType == 'Editor' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
                         # 2FA not enabled, can login
@@ -96,8 +96,10 @@ def login(request):
                     logger.info(f"Failed editor login attempt by {id} from {client_ip} (Attempt {account.lockedCounter})")
                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
+                print("Inside Method Else ")
                 form = EditorLoginForm()
-                logger.info(f"Failed editor login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                print("After Editor Form ")
+                print("Before Return ")
                 return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
         else:
             # Already Logged in but trying to access login page again
@@ -109,7 +111,7 @@ def login(request):
     except:
             form = EditorLoginForm()
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-        
+            
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
@@ -155,12 +157,18 @@ def create(request):
 
         # Create Product obj
         newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand, 
-        status = available, available = "Yes",gender_type = gender, product_category = category)
+        status = status, available = "Yes",gender_type = gender, product_category = category, review=5)
         # Save 
         newProductObj.save()
+        product_id = ProductsTable.objects.latest('id')
+        dictArr = [{"size":"UK 7","quantity":87, "color":"Black", "product_id": product_id}, 
+        {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id}, 
+        {"size":"UK 9","quantity":67, "color":"Blue", "product_id": product_id}]
+        for x in range(3):
+            print(dictArr[x])
+            newProductDetailObj = ProductQuantityTable.objects.create(size = dictArr[x]['size'], quantity =dictArr[x]['quantity'], color=dictArr[x]['color'], product = product_id )
+            newProductDetailObj.save()
         logger.info(f"Editor {editorid} from {client_ip} created {newProductObj} at")
-        # data = {"status":"Success", "message":"Insert Successful"}
-        # return JsonResponse(data, safe=False)
         return HttpResponseRedirect('manage')
 
     else:

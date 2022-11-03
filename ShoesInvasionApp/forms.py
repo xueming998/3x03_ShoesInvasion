@@ -32,6 +32,8 @@ class RegisterForm(forms.ModelForm):
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+
 
     # Function used for validation
     def clean(self):

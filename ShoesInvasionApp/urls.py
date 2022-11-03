@@ -25,7 +25,7 @@ urlpatterns = [
     # Register
     path('register/', views.register_request, name='register'), 
     # Register Success
-    path('registerSuccess', views.registerSuccess, name='registerSuccess'),
+    path('registerSuccess/', views.registerSuccess, name='registerSuccess'),
     # Register Failed 
     path('registerFailed', views.registerFailed, name='registerFailed'),
     # Thankyou.html (After Payment Successful )

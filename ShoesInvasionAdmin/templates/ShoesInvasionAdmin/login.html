@@ -59,7 +59,13 @@
         async defer></script> 
 
   {% include 'ShoesInvasionEditor/footer.html' %}
-
+  <script type="text/javascript">
+    var btnClose = document.getElementById('btnClose')
+      btnClose.addEventListener('click', function(){
+          var error_msg = document.getElementById('error_msg')
+          error_msg.style.display = "None"
+    })
+  </script>
 </body>
 
 </html>

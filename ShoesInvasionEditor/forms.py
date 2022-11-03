@@ -33,7 +33,7 @@ class createProductForm(forms.Form):
         label="Product Name")
 
     product_price = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': '$150', 'type':'number'}),
+        attrs={'class': 'form-control', 'placeholder': '$150', 'type':'number', "pattern":"[0-9]+"}),
         label="Product Price")
     
     product_info = forms.CharField(widget=forms.Textarea(

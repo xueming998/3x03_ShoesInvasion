@@ -70,7 +70,7 @@ class RegisterEditorForm(forms.Form):
         label="Password")
 
     verify_password = forms.CharField(widget=forms.PasswordInput(
-        attrs={'class': 'form-control', 'placeholder': 'E.g. Nike, Adidas'}),
+        attrs={'class': 'form-control', 'placeholder': 'Reenter Password from above'}),
         label="Verify Password")
 
     email = forms.CharField(widget=forms.EmailInput(
