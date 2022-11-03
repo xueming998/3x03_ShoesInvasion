@@ -35,7 +35,7 @@ SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['188.166.238.172']
 
 
 # Application definition
@@ -150,6 +150,8 @@ USE_TZ = True
 RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
 RECAPTCHA_PRIVATE_KEY = '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
