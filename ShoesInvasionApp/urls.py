@@ -52,3 +52,15 @@ urlpatterns = [
     # 2FA
     # path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]
+
+# For error 404 pages
+handler404 = "ShoesInvasionApp.views.page_not_found_view"
+
+# for error 500 pages
+handler500 = "ShoesInvasionApp.views.server_error_view"
+
+# for error 401 pages
+handler401 = "ShoesInvasionApp.views.unauthorized_view"
+
+# for error 501 pages
+handler501 = "ShoesInvasionApp.views.bad_gateway_view"

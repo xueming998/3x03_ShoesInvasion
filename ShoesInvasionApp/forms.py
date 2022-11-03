@@ -32,11 +32,9 @@ class RegisterForm(forms.ModelForm):
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
 
-
     # Function used for validation
     def clean(self):
         super(RegisterForm, self).clean()
-
         password = self.cleaned_data.get('password')
         verifyPassword = self.cleaned_data.get('verify_password')
         username = self.cleaned_data.get('username')
@@ -67,6 +65,9 @@ class RegisterForm(forms.ModelForm):
                                 self.cleaned_data['unique_id'] = unique
                                 vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
                                 self.cleaned_data['verificationCode'] = vCode
+                                # self.cleaned_data['address'] = 'Orchard Road'
+                                # self.cleaned_data['gender'] = 'Male'
+                                # self.cleaned_data['date_of_birth'] = '1998-06-21'
                                 return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):

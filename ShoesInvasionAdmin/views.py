@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 import json
@@ -5,20 +6,25 @@ from django.http import JsonResponse
 from http import HTTPStatus
 from django.urls import reverse
 from requests import request
-import requests, string, secrets
-from ShoesInvasionApp.models.user import UserTable 
-from ShoesInvasionApp.models.userDetails import UserDetailsTable 
+import requests
+from ShoesInvasionApp.models.user import  UserTable
+from ShoesInvasionApp.models.products import  ProductsTable
+from ShoesInvasionApp.models.productQuantity import ProductQuantityTable 
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
-from ShoesInvasionAdmin.forms import AdminLoginForm, RegisterEditorForm
 from django.core.serializers import serialize
-from django.contrib.auth.hashers import make_password
+from ShoesInvasionEditor.forms import createProductForm, updateProductForm, EditorLoginForm
+from ShoesInvasionAdmin.forms import RegisterEditorForm, AdminLoginForm
 
 # Import for 2FA
 import pyotp
 import qrcode
 import qrcode.image.svg
 from io import BytesIO
+
+#Import for Logging
+import logging
+logger=logging.getLogger('user')
 
 def login(request):
     try:
@@ -27,11 +33,16 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+                # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         form = AdminLoginForm()
+                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
+                
                 account = UserTable.objects.get(username=username)
-                print("account", account)
+                id = account.unique_id
                 
                 if (account.accountType == 'Admin' and account.lockedStatus == 0):
                     print("account1")
@@ -52,25 +63,29 @@ def login(request):
                                 request.session['unique_id'] = account.unique_id
                                 request.session.set_expiry(900)
                                 request.session['secret_key'] = account.secret_key
+                                logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
                                 print("account6")
                                 otpToken = request.POST['otpToken']
                                 if (otpToken == None):
-                                    return render(request, 'ShoesInvasionAdmin/login.html')
+                                    form = EditorLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Enabled OTP cannot be empty."})
                                 else:
-                                    adminSecretKey = pyotp.TOTP(account.secret_key)
-                                    if (adminSecretKey.verify(otpToken)):
+                                    userSecretKey = pyotp.TOTP(account.secret_key)
+                                    if (userSecretKey.verify(otpToken)):
                                         # Right Password | Change Locked Counter to 0
                                         account.lockedCounter = 0
                                         account.save()
                                         # Store into Session
                                         request.session['unique_id'] = account.unique_id
                                         request.session.set_expiry(900)
+                                        logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                         return HttpResponseRedirect('manage')
                                     else:     
                                         form = AdminLoginForm()
+                                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                         else:
                             print("account3")
@@ -79,54 +94,158 @@ def login(request):
                             # Once Locked Counter = 3, Lock Account 
                             if (account.lockedCounter == 3):
                                 account.lockedStatus = 1
+                                logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
                             account.save()
                             form = AdminLoginForm()
+                            logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-                    
                     
                 else:
                     # Wrong Account type. 
                     form = AdminLoginForm()
+                    logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
-                form = AdminLoginForm()
-                return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form})
+                form = EditorLoginForm()
+                return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
         else:
             # Already Logged in but trying to access login page again
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = AdminLoginForm()
+            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
-            form = AdminLoginForm()
-            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
- 
+            form = EditorLoginForm()
+            return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+        
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('login')
 
-    
     # Retrieve all User Info 
-    allUserObjs = UserTable.objects.all().exclude(accountType = "Admin")
-    
+    allProdObjs = ProductsTable.objects.all()
+
     dictArray = []
-    for user in allUserObjs:
+    for products in allProdObjs:
         # Store Required Data inside Dictionary 
-        if (user.accountType == "User" or user.accountType == "Editor"):
-            mydict = {
-                "uid": user.unique_id, 
-                "username":user.username, 
-                "lname":user.last_name, 
-                "verifiedStatus": user.verifiedStatus, 
-                "lockedStatus":user.lockedStatus, 
-                "accountType":user.accountType, 
-            }
-            dictArray.append(mydict)
+        mydict = {
+            "product_id": products.id, 
+            "name":products.product_name, 
+            "price":products.product_price, 
+            "category": products.product_category, 
+            "available":products.available, 
+            "status":products.status, 
+            "brand":products.product_brand
+        }
+        dictArray.append(mydict)
     context = {
         'data':dictArray
     }
-    return render(request, 'ShoesInvasionAdmin/user.html', context=context)
+    return render(request, 'ShoesInvasionEditor/products.html', context=context)
+
+def create(request):
+    # Check if logged in
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('login')
+    
+    if request.method == 'POST':
+        product_name = request.POST['product_name']
+        product_price = request.POST['product_price']
+        product_info = request.POST['product_info']
+        product_brand = request.POST['product_brand']
+        available = request.POST['status']
+        gender = request.POST['gender']
+        category = request.POST['category']
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
+
+        # Create Product obj
+        newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand, 
+        status = available, available = "Yes",gender_type = gender, product_category = category)
+        # Save 
+        newProductObj.save()
+        logger.info(f"Editor {editorid} from {client_ip} created {newProductObj} at")
+        # data = {"status":"Success", "message":"Insert Successful"}
+        # return JsonResponse(data, safe=False)
+        return HttpResponseRedirect('manage')
+
+    else:
+        form = createProductForm()
+        return render(request=request, template_name="ShoesInvasionEditor/insertProducts.html", context={"create_form":form})
+
+def updateProduct(request, pk):
+    # Check if logged in
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('../../login')
+    if request.method == 'POST':
+        product_name = request.POST['product_name']
+        product_price = request.POST['product_price']
+        product_info = request.POST['product_info']
+        product_brand = request.POST['product_brand']
+        status = request.POST['status']
+        gender = request.POST['gender_type']
+        category = request.POST['product_category']
+        product = ProductsTable.objects.get(id=pk)
+        product.product_name = product_name
+        product.product_price = product_price
+        product.product_info = product_info
+        product.product_brand = product_brand
+        product.status = status
+        product.gender_type = gender
+        product.product_category = category
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
+
+        product.save()
+        logger.info(f"Editor {editorid} from {client_ip} updated {product} at")
+        return HttpResponseRedirect('../../manage')
+
+    else:
+        product = ProductsTable.objects.get(id=pk)
+        # print("Product is")
+        print(product)
+        form = updateProductForm(instance=product)
+        context={'create_form':form}
+        return render(request, template_name="ShoesInvasionEditor/insertProducts.html", context = context)
+
+
+# products
+def remove(request):
+    try:
+        data = json.loads(request.body)
+        product_id = data['product_id']
+        productObj = ProductsTable.objects.get(id = product_id)
+        client_ip=request.META.get('REMOTE_ADDR')
+        editorid=request.session['unique_id']
+        print(productObj)
+        if (productObj.available == "Yes"):
+            productObj.available = "No"
+            productObj.save()
+            logger.info(f"Editor {editorid} from {client_ip} made {productObj} unavailable at")
+            data = {"status":"Success", "message":"Product made Unavailable!"}
+        elif (productObj.available == "No"):
+            productObj.available = "Yes"
+            productObj.save()
+            logger.info(f"Editor {editorid} from {client_ip} made {productObj} available at")
+            data = {"status":"Success", "message":"Product made Available!"}
+        else:
+            # Error 
+            logger.info(f"Editor {editorid} from {client_ip} unable to modify {productObj} at")
+            data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
+        return JsonResponse(data, safe=False)
+
+    except ObjectDoesNotExist:
+    # UID is wrong
+        logger.info(f"Editor {editorid} from {client_ip} tried to modify non-existent product: {productObj} at")
+        data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
+        return JsonResponse(data, safe=False)
+
+    except:
+        data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
+        return JsonResponse(data, safe=False)
+
 
 def check_login_status(request):
     try:
@@ -134,7 +253,7 @@ def check_login_status(request):
             uid = request.session['unique_id']
             # Check if uid exist inside db and its admin
             userObj = UserTable.objects.get(unique_id = uid)
-            if userObj.accountType == "Admin":
+            if userObj.accountType == "Editor":
                 return True
             else:
                 return False
@@ -143,6 +262,7 @@ def check_login_status(request):
     except ObjectDoesNotExist:
         # UID is wrong
         return redirect('login')
+
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
@@ -166,29 +286,6 @@ def checkCaptcha(response_id):
     else:
         return 0
 
-def ban_unban(request):
-    try:
-        data = json.loads(request.body)
-        uid = data['uid']
-        accountObj = UserTable.objects.get(unique_id=uid)
-        if (accountObj.lockedStatus == 0):
-            # Ban
-            accountObj.lockedCounter = 3
-            accountObj.lockedStatus = 1
-            accountObj.save()
-        else:
-            # unban
-            accountObj.lockedStatus = 0
-            accountObj.lockedCounter = 0
-            accountObj.save()
-        data = {"status":"Success", "message":"Ban Successful"}
-        return JsonResponse(data, safe=False)
-    except UserTable.DoesNotExist:
-        # Error 403
-        return JsonResponse('Failed Does not exist', safe=False)
-    except:
-        return JsonResponse('Failed', safe=False)
-
 def logout(request):
    try:
       del request.session['unique_id']
@@ -199,7 +296,6 @@ def logout(request):
    except:
       pass
       return HttpResponseRedirect('../index')
-
 
 def twoFA(request):
     context = {}
@@ -219,10 +315,10 @@ def twoFA(request):
             stream = BytesIO()
             img.save(stream)
             context["svg"] = stream.getvalue().decode()
-            return render(request,"ShoesInvasionAdmin/twoFA.html", context=context)
+            return render(request,"ShoesInvasionEditor/twoFA.html", context=context)
         # Not checked
         else:
-            return render(request, 'ShoesInvasionAdmin/twoFA.html')
+            return render(request, 'ShoesInvasionEditor/twoFA.html')
     else:
         return render(request, 'ShoesInvasionAdmin/twoFA.html')
 
@@ -230,7 +326,6 @@ def createEditorAccount(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('login')
-
     if request.method == 'POST':
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
@@ -285,3 +380,38 @@ def createEditorAccount(request):
     else:
         form = RegisterEditorForm()
         return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", context={"create_form":form})
+
+def ban_unban(request):
+    try:
+        data = json.loads(request.body)
+        uid = data['uid']
+        accountObj = UserTable.objects.get(unique_id=uid)
+        if (accountObj.lockedStatus == 0):
+            # Ban
+            accountObj.lockedCounter = 3
+            accountObj.lockedStatus = 1
+            accountObj.save()
+        else:
+            # unban
+            accountObj.lockedStatus = 0
+            accountObj.lockedCounter = 0
+            accountObj.save()
+        data = {"status":"Success", "message":"Ban Successful"}
+        return JsonResponse(data, safe=False)
+    except UserTable.DoesNotExist:
+        # Error 403
+        return JsonResponse('Failed Does not exist', safe=False)
+    except:
+        return JsonResponse('Failed', safe=False)
+
+def page_not_found_view(request, exception):
+    return render(request, '404.html', status=404)
+
+def server_error_view(request,*args, **argv):
+    return render(request, '500.html', status=500)
+
+def unauthorized_view(request,*args, **argv):
+    return render(request, '401.html', status=401)
+
+def bad_gateway_view(request,*args, **argv):
+    return render(request, '502.html', status=502)
