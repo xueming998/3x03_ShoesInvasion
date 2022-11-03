@@ -4,7 +4,7 @@
 1. Clone this repository into a desired folder.
 2. Open cmd and cd to 3x03_ShoesInvasion folder.
 3. Install virtual environment by `pip install virtualenv`, `virtualenv -p python3 venv`.
-4. Activiate the virtual environment by `venv\Script\activate`.
+4. Activate the virtual environment by `venv\Script\activate`.
 5. Install required libraries by `pip install -r requirements.txt`.
 6. Run the server by doing `python manage.py runserver`.
 7. It should run at 127.0.0.1:8000 by default, but use '127.0.0.1:8000/ShoesInvasionApp' to access the website.

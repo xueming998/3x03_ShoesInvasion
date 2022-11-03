@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import make_password
 from django.forms import ModelForm
 from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+import pwnedpasswords
 
 import requests, secrets, string
 from captcha.fields import ReCaptchaField
@@ -42,49 +43,43 @@ class RegisterForm(forms.ModelForm):
         username = self.cleaned_data.get('username')
         email = self.cleaned_data.get('email')
         phone = self.cleaned_data.get('phone')
+        # To do a threshold check on user entering commonly used password 
+        # Setting threshold to be maximum 1000 times from pwned password database
+        pwnedoutput = pwnedpasswords.check(password)
+        commonPasswordThreshold = 1000
+
         if (len(password) < 12 ):
             self.errors['password'] = self.error_class(['Password have to be at least 12 characters long.'])
         else:
             if (len(verifyPassword) < 12 ):
                 self.errors['verifyPassword'] = self.error_class(['Password have to be at least 12 characters long.'])
             else:
-                if UserTable.objects.filter(username=username).exists():
-                    print("verifiedStatus")
-                    self.errors['username'] = self.error_class(['Username already taken.'])
+                if (pwnedoutput > commonPasswordThreshold):
+                    self.errors['password'] = self.error_class(["This is a commonly used password. Please enter another password."])
                 else:
-                    if UserTable.objects.filter(email=email).exists():
-                        self.errors['email'] = self.error_class(['Email already taken/registered.'])
+                    if UserTable.objects.filter(username=username).exists():
+                        print("verifiedStatus")
+                        self.errors['username'] = self.error_class(['Username already taken.'])
                     else:
-                        if UserTable.objects.filter(phone=phone).exists():
-                            self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
+                        if UserTable.objects.filter(email=email).exists():
+                            self.errors['email'] = self.error_class(['Email already taken/registered.'])
                         else:
-                            if (password != verifyPassword):
-                                self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                            if UserTable.objects.filter(phone=phone).exists():
+                                self.errors['phone'] = self.error_class(['Phone already taken/registered.'])
                             else:
-                                # print(self.data['g-recaptcha-response'])
-                                # ca = self.data['g-recaptcha-response']
-                                # url = "https://www.google.com/recaptcha/api/siteverify"
-                                # params = {
-                                #     'secret': '6LekYtciAAAAABz-C07mpIGOJ4vSNghbD3ByB-ce',
-                                #     'response': ca,
-                                # }
-                                # verify_rs = requests.get(url, params=params, verify=True)
-                                # verify_rs = verify_rs.json()
-                                # status = verify_rs.get("success", False)
-                                # print(status)
-                                # if not status:
-                                #     raise forms.ValidationError(
-                                #         ('Captcha Validation Failed.'),
-                                #         code='invalid',
-                                #     ) 
-                                # print("status = " + status)
-                                self.cleaned_data['password'] = make_password(password)
-                                self.cleaned_data['verify_password'] = make_password(password)
-                                unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
-                                self.cleaned_data['unique_id'] = unique
-                                vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
-                                self.cleaned_data['verificationCode'] = vCode
-                                return self.cleaned_data
+                                if (password != verifyPassword):
+                                    self.errors['verify_password'] = self.error_class(['Password does not match.'])
+                                else:
+                                    self.cleaned_data['password'] = make_password(password)
+                                    self.cleaned_data['verify_password'] = make_password(password)
+                                    unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
+                                    self.cleaned_data['unique_id'] = unique
+                                    vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
+                                    self.cleaned_data['verificationCode'] = vCode
+                                    # self.cleaned_data['address'] = 'Orchard Road'
+                                    # self.cleaned_data['gender'] = 'Male'
+                                    # self.cleaned_data['date_of_birth'] = '1998-06-21'
+                                    return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

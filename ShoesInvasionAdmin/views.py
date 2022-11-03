@@ -27,55 +27,69 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
+                # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         form = AdminLoginForm()
+                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 account = UserTable.objects.get(username=username)
-                
+                id = account.unique_id
                 if (account.accountType == 'Admin' and account.lockedStatus == 0):
-                    if checkPassword(password, account.password):
-                        # 2FA not enabled, can login
-                        if (account.secret_key == ""):
-                            # Right Password | Change Locked Counter to 0
-                            account.lockedCounter = 0
-                            account.save()
-                            # Store into Session
-                            request.session['unique_id'] = account.unique_id
-                            request.session.set_expiry(900)
-                            request.session['secret_key'] = account.secret_key
-                            return HttpResponseRedirect('manage')
-                        # Got 2FA Enabled
-                        else:
-                            otpToken = request.POST['otpToken']
-                            if (otpToken == None):
-                                return render(request, 'ShoesInvasionAdmin/login.html')
-                            else:
-                                adminSecretKey = pyotp.TOTP(account.secret_key)
-                                if (adminSecretKey.verify(otpToken)):
-                                    # Right Password | Change Locked Counter to 0
-                                    account.lockedCounter = 0
-                                    account.save()
-                                    # Store into Session
-                                    request.session['unique_id'] = account.unique_id
-                                    request.session.set_expiry(900)
-                                    return HttpResponseRedirect('manage')
-                                else:     
-                                    form = AdminLoginForm()
-                                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
-                    else:
-                        # Wrong Password | Need to append into Locked Counter
-                        account.lockedCounter += 1
-                        # Once Locked Counter = 3, Lock Account 
-                        if (account.lockedCounter == 3):
-                            account.lockedStatus = 1
-                        account.save()
+                    if (len(password) < 12):
                         form = AdminLoginForm()
-                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-                    
-                    
+                        return render(request=request, template_name="ShoesInvasionApp/login.html", context={"login_form":form, "status":"Failed", "message":"Password have to be at least 12 characters long."})
+                    else:
+                        if checkPassword(password, account.password):
+                            # 2FA not enabled, can login
+                            if (account.secret_key == "" or account.secret_key == None):
+                                # Right Password | Change Locked Counter to 0
+                                account.lockedCounter = 0
+                                account.save()
+                                # Store into Session
+                                request.session['unique_id'] = account.unique_id
+                                request.session.set_expiry(900)
+                                request.session['secret_key'] = account.secret_key
+                                logger.info(f"Successful administrator login by {id} from {client_ip} at")
+                                return HttpResponseRedirect('manage')
+                            # Got 2FA Enabled
+                            else:
+                                otpToken = request.POST['otpToken']
+                                if (otpToken == None):
+                                    form = EditorLoginForm()
+                                    return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Please Enter OTP."})
+                                else:
+                                    adminSecretKey = pyotp.TOTP(account.secret_key)
+                                    if (adminSecretKey.verify(otpToken)):
+                                        # Right Password | Change Locked Counter to 0
+                                        account.lockedCounter = 0
+                                        account.save()
+                                        # Store into Session
+                                        request.session['unique_id'] = account.unique_id
+                                        request.session.set_expiry(900)
+                                        logger.info(f"Successful administrator login by {id} from {client_ip} at")
+                                        return HttpResponseRedirect('manage')
+                                    else:     
+                                        form = AdminLoginForm()
+                                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                                        return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
+                        else:
+                            # Wrong Password | Need to append into Locked Counter
+                            account.lockedCounter += 1
+                            # Once Locked Counter = 3, Lock Account 
+                            if (account.lockedCounter == 3):
+                                account.lockedStatus = 1
+                                logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
+                            account.save()
+                            form = AdminLoginForm()
+                            logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                            return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
+                        
                 else:
                     # Wrong Account type. 
                     form = AdminLoginForm()
+                    logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
                 form = AdminLoginForm()
@@ -85,6 +99,7 @@ def login(request):
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = AdminLoginForm()
+            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = AdminLoginForm()
