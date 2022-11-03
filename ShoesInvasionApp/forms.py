@@ -31,6 +31,8 @@ class RegisterForm(forms.ModelForm):
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
+    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
+
 
     # Function used for validation
     def clean(self):
@@ -59,15 +61,29 @@ class RegisterForm(forms.ModelForm):
                             if (password != verifyPassword):
                                 self.errors['verify_password'] = self.error_class(['Password does not match.'])
                             else:
+                                # print(self.data['g-recaptcha-response'])
+                                # ca = self.data['g-recaptcha-response']
+                                # url = "https://www.google.com/recaptcha/api/siteverify"
+                                # params = {
+                                #     'secret': '6LekYtciAAAAABz-C07mpIGOJ4vSNghbD3ByB-ce',
+                                #     'response': ca,
+                                # }
+                                # verify_rs = requests.get(url, params=params, verify=True)
+                                # verify_rs = verify_rs.json()
+                                # status = verify_rs.get("success", False)
+                                # print(status)
+                                # if not status:
+                                #     raise forms.ValidationError(
+                                #         ('Captcha Validation Failed.'),
+                                #         code='invalid',
+                                #     ) 
+                                # print("status = " + status)
                                 self.cleaned_data['password'] = make_password(password)
                                 self.cleaned_data['verify_password'] = make_password(password)
                                 unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                                 self.cleaned_data['unique_id'] = unique
                                 vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
                                 self.cleaned_data['verificationCode'] = vCode
-                                # self.cleaned_data['address'] = 'Orchard Road'
-                                # self.cleaned_data['gender'] = 'Male'
-                                # self.cleaned_data['date_of_birth'] = '1998-06-21'
                                 return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):

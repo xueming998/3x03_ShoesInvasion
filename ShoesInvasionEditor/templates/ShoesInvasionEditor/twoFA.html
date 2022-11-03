@@ -2,24 +2,22 @@
 <html lang="en">
 
 <head>
-    {% include 'ShoesInvasionAdmin/head.html' %}
+    {% include 'ShoesInvasionEditor/head.html' %}
   <title>ShoesInvasion Admin - User</title>
 </head>
 
 <body id="page-top">
   <div id="wrapper">
-    {% include 'ShoesInvasionAdmin/sidebar.html' %}
+    {% include 'ShoesInvasionEditor/sidebar.html' %}
     <div id="content-wrapper" class="d-flex flex-column">
       <div id="content">
-        {% include 'ShoesInvasionAdmin/navbar.html' %}
+        {% include 'ShoesInvasionEditor/navbar.html' %}
         <!-- Container Fluid-->
         <div class="container-fluid" id="container-wrapper">
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">User Accounts</h1>
             <ol class="breadcrumb">
-              <!-- <li class="breadcrumb-item"><a href="home">Home</a></li> -->
               <li class="breadcrumb-item">2 Factor Authentication</li>
-              <!-- <li class="breadcrumb-item active" aria-current="page">Blank Page</li> -->
             </ol>
           </div>
           <div class="card-body">
@@ -44,7 +42,7 @@
         </div>
         <!---Container Fluid-->
       </div>
-      {% include 'ShoesInvasionAdmin/logout-container.html' %}
+      {% include 'ShoesInvasionEditor/logout-container.html' %}
     </div>
   </div>
 
@@ -53,7 +51,7 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
-  {% include 'ShoesInvasionAdmin/footer.html' %}
+  {% include 'ShoesInvasionEditor/footer.html' %}
   <script>
     function show() {
       var rowId = event.target.parentNode.parentNode.id;
