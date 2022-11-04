@@ -11,7 +11,7 @@ from ShoesInvasionApp.models.user import UserTable
 class ViewsTestCase(TestCase):
     def test_index_loads_properly(self):
         """The index page loads properly"""
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionAdmin/')
+        response = self.client.get('/ShoesInvasionAdmin/')
         self.assertEqual(response.status_code, 200)
 
 # Admin Test Case
@@ -73,7 +73,6 @@ class AdminTestCase(TestCase):
         user.save()
 
     def test_admin_can_get_details(self):
-        # New Product added as shown above
         adminUsername = UserTable.objects.get(username = "elonmusk")
         self.assertEqual(adminUsername.email, "elonmusk@twitter.com")
         self.assertEqual(adminUsername.unique_id, "1l3rjjr1212bju13rbjuo1br5j3q")

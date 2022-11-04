@@ -12,8 +12,7 @@ from ShoesInvasionApp.models.user import UserTable
 # Test if pages loads properly
 class ViewsTestCase(TestCase):
     def test_index_loads_properly(self):
-        """The index page loads properly"""
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionEditor/')
+        response = self.client.get('/ShoesInvasionEditor/')
         self.assertEqual(response.status_code, 200)
 
 # Test to create product and extract details from table
@@ -66,7 +65,7 @@ class EditorTestCase(TestCase):
         self.assertEqual(adminUsername2.unique_id, "t43ionop3nr1p1onm31ft1")
 
     def test_login_loads_properly(self):
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionEditor/login')
+        response = self.client.get('/ShoesInvasionEditor/login')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='ShoesInvasionEditor/login.html')
 
@@ -76,7 +75,6 @@ class EditorTestCase(TestCase):
         response = c.post('/ShoesInvasionEditor/login', {'username': 'jeffbezos', 'password': 'amazonecommerce', "otpToken": "123456"})
         self.assertEqual(response.status_code, 200)
         c = Client()
-        # Dummy OTP because OTP is required to login but for unit test, unable to generate QR Code to do
         response2 = c.post('/ShoesInvasionEditor/login', {'username': 'billgates', 'password': 'windows11ezmoney', "otpToken": ""})
         self.assertEqual(response2.status_code, 200)
 

@@ -16,7 +16,7 @@ class AdminLoginForm(AuthenticationForm):
         super(AdminLoginForm, self).__init__(*args, **kwargs)
 
     username = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Username or Email'}),
+        attrs={'class': 'form-control', 'placeholder': 'Username'}),
         label="Username")
 
     password = forms.CharField(widget=forms.PasswordInput(
@@ -47,7 +47,6 @@ class AdminLoginForm(AuthenticationForm):
                 _('Captcha Validation Failed.'),
                 code='invalid',
             )
-        print("status = " + status)
 
 class RegisterEditorForm(forms.Form):  
     def __init__(self, *args, **kwargs):

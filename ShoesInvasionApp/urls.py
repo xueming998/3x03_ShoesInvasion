@@ -47,8 +47,6 @@ urlpatterns = [
     path('preOrder', views.preOrder, name='preOrder'),
     # Logout
     path('logout', views.logout, name='logout'),
-    # 2FA
-    # path('user_2fa/', views.user_2fa, name='user_2fa'),
 ]
 
 # For error 404 pages

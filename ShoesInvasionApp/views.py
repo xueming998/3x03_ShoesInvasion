@@ -485,7 +485,6 @@ def login_request(request):
                             if checkPassword(password, account.password):
                                 userSecretKey = pyotp.TOTP(account.secret_key)
                                 if (userSecretKey.verify(otpToken)):
-                                    print("3")
                                     # Right Password | Change Locked Counter to 0
                                     account.lockedCounter = 0
                                     account.save()
@@ -530,10 +529,8 @@ def login_request(request):
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
-        print("True")
         return True
     else:
-        print("False")
         return False  
     
 def activate(request, verificationcode,token):    
@@ -651,26 +648,6 @@ def preOrder(request):
         'status': 2,
     }
     return render(request, 'ShoesInvasionApp/preorder.html',context)
-
-# def user_2fa(request):
-#     context = {}
-#     if request.method == "POST":
-#             # Get user unique ID
-#             userDetails = UserTable.objects.get(email=request.POST['email'])
-#             # pyotp generates a random key that is assigned to user and save in db
-#             userSecretKey = pyotp.random_base32()
-#             userDetails.secret_key = userSecretKey
-#             userDetails.save()
-#             # Create url for qrcode
-#             url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
-#             factory = qrcode.image.svg.SvgImage
-#             img = qrcode.make(url, image_factory=factory, box_size=20)
-#             stream = BytesIO()
-#             img.save(stream)
-#             context["svg"] = stream.getvalue().decode()
-#             return render(request,"ShoesInvasionApp/register_success.html", context=context)
-#     else:
-#         return render(request, 'ShoesInvasionApp/register.html')
 
 def page_not_found_view(request, exception):
     return render(request, 'ShoesInvasionApp/404.html', status=404)
