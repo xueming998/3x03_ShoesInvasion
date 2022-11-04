@@ -13,8 +13,7 @@ from .models.products import ProductsTable
 # Test if pages loads properly
 class ViewsTestCase(TestCase):
     def test_index_loads_properly(self):
-        """The index page loads properly"""
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionApp/')
+        response = self.client.get('/ShoesInvasionApp/')
         self.assertEqual(response.status_code, 200)
 
 # Test to create product and extract details from table
@@ -34,7 +33,6 @@ class ProductsTableTestCase(TestCase):
         product.save()
 
     def test_products_can_get_details(self):
-        """Products from Products table is correctly identified"""
         # New Product added as shown above
         nmdProduct = ProductsTable.objects.get(product_name="NMD_R1 V3 SHOES")
         self.assertEqual(nmdProduct.product_price, 240)
@@ -60,7 +58,7 @@ class LoginTestCase(TestCase):
         user.save()
 
     def test_login_loads_properly(self):
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionApp/login/')
+        response = self.client.get('/ShoesInvasionApp/login/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='ShoesInvasionApp/login_user.html')
 
@@ -76,7 +74,7 @@ class LoginTestCase(TestCase):
 class RegisterTestCase(TestCase):
 
     def test_register_load_properly(self):
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionApp/register/')
+        response = self.client.get('/ShoesInvasionApp/register/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='ShoesInvasionApp/register.html')
 
@@ -106,7 +104,7 @@ class ShoppingCartTestCase(TestCase):
         session = self.client.session
         session['unique_id'] ='6je4xSHjftes8DRi55nwzyGTMrULxgE6cKJVAoEZo7IwHO2i8ByWwRaHotQdgmnOrUeFl6taDh2T4g4qynAawhQoemBR0YhVtcabiSU34pb07w3khgDFqqtTYfMehSXZBaA3Uo0hBfY1mTX5dMYztIQSF7azNW0X1srZPqFDD3BHr77VSXtoywRpwdRVaXFO48panBYV'
         session.save()
-        response = self.client.get('http://127.0.0.1:8000/ShoesInvasionApp/cart')
+        response = self.client.get('/ShoesInvasionApp/cart')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, template_name='ShoesInvasionApp/cart.html')
 

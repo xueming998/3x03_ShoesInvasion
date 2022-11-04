@@ -150,10 +150,8 @@ def check_login_status(request):
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
-        print("True")
         return True
     else:
-        print("False")
         return False
 
 def checkCaptcha(response_id):
@@ -163,8 +161,6 @@ def checkCaptcha(response_id):
 
     result = requests.post(url, headers=headers,data = myobj)
     result_json = result.json()
-    print(result_json)
-    print(result_json['success'])
     if result_json['success'] == False:
         return 1
     else:

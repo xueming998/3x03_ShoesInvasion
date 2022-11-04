@@ -27,12 +27,8 @@ logger=logging.getLogger('user')
 
 def login(request):
     try:
-        print("Inside Try ")
         if (check_login_status(request) == False):
-            print("Inside check_login_status ")
-            print(request)
             if request.method == 'POST':
-                print("Inside Method POST ")
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
@@ -96,10 +92,7 @@ def login(request):
                     logger.info(f"Failed editor login attempt by {id} from {client_ip} (Attempt {account.lockedCounter})")
                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
             else:
-                print("Inside Method Else ")
                 form = EditorLoginForm()
-                print("After Editor Form ")
-                print("Before Return ")
                 return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form})
         else:
             # Already Logged in but trying to access login page again
@@ -165,7 +158,6 @@ def create(request):
         {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id}, 
         {"size":"UK 9","quantity":67, "color":"Blue", "product_id": product_id}]
         for x in range(3):
-            print(dictArr[x])
             newProductDetailObj = ProductQuantityTable.objects.create(size = dictArr[x]['size'], quantity =dictArr[x]['quantity'], color=dictArr[x]['color'], product = product_id )
             newProductDetailObj.save()
         logger.info(f"Editor {editorid} from {client_ip} created {newProductObj} at")
@@ -204,8 +196,6 @@ def updateProduct(request, pk):
 
     else:
         product = ProductsTable.objects.get(id=pk)
-        # print("Product is")
-        print(product)
         form = updateProductForm(instance=product)
         context={'create_form':form}
         return render(request, template_name="ShoesInvasionEditor/insertProducts.html", context = context)
@@ -219,7 +209,6 @@ def remove(request):
         productObj = ProductsTable.objects.get(id = product_id)
         client_ip=request.META.get('REMOTE_ADDR')
         editorid=request.session['unique_id']
-        print(productObj)
         if (productObj.available == "Yes"):
             productObj.available = "No"
             productObj.save()
@@ -266,10 +255,8 @@ def check_login_status(request):
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
-        print("True")
         return True
     else:
-        print("False")
         return False
 
 def checkCaptcha(response_id):
@@ -279,8 +266,6 @@ def checkCaptcha(response_id):
 
     result = requests.post(url, headers=headers,data = myobj)
     result_json = result.json()
-    print(result_json)
-    print(result_json['success'])
     if result_json['success'] == False:
         return 1
     else:

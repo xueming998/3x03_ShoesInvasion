@@ -50,9 +50,6 @@ from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 
-# Create your views here.
-def index(request):
-    return render(request, 'ShoesInvasionApp/index.html')
 # Import for 2FA
 import pyotp
 import qrcode
@@ -104,8 +101,6 @@ def update_cartItem(request):
             data = json.loads(request.body)
             shoppingCartID = data['shoppingCartID']
             action = data['action']
-            print(shoppingCartID)
-            print(action)
 
             cartItem = ShoppingCartTable.objects.get(id = shoppingCartID)
             
@@ -177,10 +172,8 @@ def checkout_cartItem(request):
 def add_to_cart(request):
     try:
         if request.session.has_key('unique_id'):
-            print("Unique",request.session.get('unique_id'))
             uid = request.session['unique_id']
             data = json.loads(request.body)
-            print("Unique", data)
             color = data['color']
             size = data['size']
             quantity = data['quantity']
@@ -226,8 +219,6 @@ def shoeDetails(request):
                 product_size.append(a.size)
         list_for_random = range(20)
         list_for_random2 = range(1,3)
-        print(shoeId)
-        print(type(shoeId))
         context = {
             'shoeId':shoeId,
             'shoeIdInt':int(shoeId),
@@ -298,9 +289,7 @@ def profilePage(request):
             # Logged In
             uid = request.session['unique_id']
             userObj = UserTable.objects.get(unique_id=uid)
-            print("before userdetails")
             userDetailsObj = UserDetailsTable.objects.get(unique_id=uid)
-            print("before context done")
             context = {
                 'firstname': userObj.first_name,
                 'lastname': userObj.last_name,
@@ -309,7 +298,6 @@ def profilePage(request):
                 'phone': userObj.phone,
                 'address': userDetailsObj.address,
             }
-            print("context done")
             return render(request, 'ShoesInvasionApp/user-profile.html', context=context)
         else:
             # Not Logged In
@@ -330,7 +318,6 @@ def viewUpdateProfilePage(request):
                 phone = request.POST['phone']
                 username = request.POST['username']
                 userObj = UserTable.objects.get(unique_id=uid)
-                print(userObj)
                 userObj.first_name = first_name
                 userObj.last_name = last_name
                 userObj.phone = phone
@@ -401,7 +388,6 @@ def login_request(request):
         if request.method == 'POST':
             username = request.POST['username']
             password = request.POST['password']
-            print("username: " + username)
             otpToken = request.POST['otpToken']
             # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
             # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
@@ -421,7 +407,6 @@ def login_request(request):
                             if checkPassword(password, account.password):
                                 userSecretKey = pyotp.TOTP(account.secret_key)
                                 if (userSecretKey.verify(otpToken)):
-                                    print("3")
                                     # Right Password | Change Locked Counter to 0
                                     account.lockedCounter = 0
                                     account.save()
@@ -460,10 +445,8 @@ def login_request(request):
 
 def checkPassword(password, hashedPassword):
     if check_password(password, hashedPassword):
-        print("True")
         return True
     else:
-        print("False")
         return False  
     
 def activate(request, verificationcode,token):    
@@ -509,7 +492,6 @@ def register_request(request):
             context['email'] = registerEmail
             # Use email get uid 
             userObj = UserTable.objects.get(email = registerEmail)
-            uid = userObj.unique_id
             # store user details inside 
             newUserDetailObj = UserDetailsTable.objects.create(address = "Orchard Rd", date_of_birth="1998-06-21", gender = "Male", unique_id = userObj)
             newUserDetailObj.save()
@@ -576,26 +558,6 @@ def preOrder(request):
         'status': 2,
     }
     return render(request, 'ShoesInvasionApp/preorder.html',context)
-
-# def user_2fa(request):
-#     context = {}
-#     if request.method == "POST":
-#             # Get user unique ID
-#             userDetails = UserTable.objects.get(email=request.POST['email'])
-#             # pyotp generates a random key that is assigned to user and save in db
-#             userSecretKey = pyotp.random_base32()
-#             userDetails.secret_key = userSecretKey
-#             userDetails.save()
-#             # Create url for qrcode
-#             url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
-#             factory = qrcode.image.svg.SvgImage
-#             img = qrcode.make(url, image_factory=factory, box_size=20)
-#             stream = BytesIO()
-#             img.save(stream)
-#             context["svg"] = stream.getvalue().decode()
-#             return render(request,"ShoesInvasionApp/register_success.html", context=context)
-#     else:
-#         return render(request, 'ShoesInvasionApp/register.html')
 
 def page_not_found_view(request, exception):
     return render(request, 'ShoesInvasionApp/404.html', status=404)

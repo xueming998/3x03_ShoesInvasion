@@ -32,8 +32,6 @@ class RegisterForm(forms.ModelForm):
             'accountType': forms.HiddenInput(attrs={'value': 'User'}),
             'unique_id': forms.HiddenInput(attrs={'value': '123321'}),
         }
-    # captcha = ReCaptchaField(widget=ReCaptchaV2Checkbox())
-
 
     # Function used for validation
     def clean(self):
@@ -58,7 +56,6 @@ class RegisterForm(forms.ModelForm):
                     self.errors['password'] = self.error_class(["This is a commonly used password. Please enter another password."])
                 else:
                     if UserTable.objects.filter(username=username).exists():
-                        print("verifiedStatus")
                         self.errors['username'] = self.error_class(['Username already taken.'])
                     else:
                         if UserTable.objects.filter(email=email).exists():
@@ -76,9 +73,6 @@ class RegisterForm(forms.ModelForm):
                                     self.cleaned_data['unique_id'] = unique
                                     vCode = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (20))
                                     self.cleaned_data['verificationCode'] = vCode
-                                    # self.cleaned_data['address'] = 'Orchard Road'
-                                    # self.cleaned_data['gender'] = 'Male'
-                                    # self.cleaned_data['date_of_birth'] = '1998-06-21'
                                     return self.cleaned_data
 
 class UserLoginForm(AuthenticationForm):
@@ -86,8 +80,8 @@ class UserLoginForm(AuthenticationForm):
         super(UserLoginForm, self).__init__(*args, **kwargs)
 
     username = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Username or Email'}),
-        label="Username or Email*")
+        attrs={'class': 'form-control', 'placeholder': 'Username'}),
+        label="Username")
 
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control', 'placeholder': 'Password'}))
@@ -119,15 +113,12 @@ class UserLoginForm(AuthenticationForm):
                 _('Captcha Validation Failed.'),
                 code='invalid',
             )
-        print("status = " + status)
 
 
 class updateProfileForm(ModelForm):
     class Meta:
-            # model = UserDetailsTable
-            # fields = ['address', ]
-            model = UserTable
-            fields = ['first_name', 'last_name', 'email', 'phone', 'username']
+        model = UserTable
+        fields = ['first_name', 'last_name', 'email', 'phone', 'username']
 
 
     def __init__(self, *args, **kwargs):
@@ -140,10 +131,6 @@ class updateProfileForm(ModelForm):
     last_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'}),
         label="Last Name")
-    
-    # address = forms.CharField(widget=forms.TextInput(
-    #     attrs={'class': 'form-control', 'placeholder': 'Enter Address'}),
-    #     label="Address")
     
     email = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control', 'placeholder': 'Enter Email'}),
