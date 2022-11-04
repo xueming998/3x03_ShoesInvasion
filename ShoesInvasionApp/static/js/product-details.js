@@ -13,25 +13,36 @@
 //     }
 //     return cookieValue;
 //   }
-//   var csrftoken = getToken('csrftoken')
+// var csrftoken = getToken('csrftoken') 
+// var csrftoken = document.getElementsByName('csrfmiddlewaretoken').value
+
+
 var addToCart = document.getElementById('addToCart')
 addToCart.addEventListener('click', function(){
     console.log("Add to cart clicked")
-
-    var color = document.getElementById('color').value;
-    var size = document.getElementById('size').value;
-    var quantity = document.getElementById("quantity_count").value;
+    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+    var color = document.getElementById('color').value
+    console.log(color)
+    var size = document.getElementById('size').value
+    console.log(size)
+    var quantity = document.getElementById("quantity_count").value
+    console.log(quantity)
     var url ='add_to_cart/'
-    var productID = document.getElementById('product_id').value;
-    var status = document.getElementById('status').value;
+    var productID = document.getElementById('product_id').value
+    console.log(productID)
+    var status = document.getElementById('status').value
+    console.log(status)
+    console.log("Detail collection over")
+    console.log(csrfToken)
 
     fetch(url,
         {
         method:'POST',
         headers:{
             'Content-Type':'application/json',
-            'X-CSRFToken':csrftoken, 
+            'X-CSRFToken': csrfToken,  
         }, 
+        mode:'same-origin',
         body:JSON.stringify({'color':color,'size':size,'quantity':quantity,'shoe_id':productID,'status':status})
         })
         .then((respose) => {
@@ -46,4 +57,5 @@ addToCart.addEventListener('click', function(){
                 location.reload()
             }
         });
+
 });

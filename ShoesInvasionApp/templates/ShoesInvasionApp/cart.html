@@ -25,6 +25,7 @@
     <div class="row mb-5">
       {% if cartTotal != 0 %}
       <form class="col-md-12" method="post">
+        {% csrf_token %}
         <div class="site-blocks-table">
           
           <table class="table table-bordered">

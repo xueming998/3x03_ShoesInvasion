@@ -33,9 +33,9 @@ SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!
 
 # ALLOWED_HOSTS = ['127.0.0.1']
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['188.166.238.172']
+ALLOWED_HOSTS = ['188.166.238.172','127.0.0.1']
 
 
 # Application definition
@@ -209,12 +209,14 @@ LOGGING = {
 # Rules set for pages across application. 
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = True
 # More Difficult to hijack user session. 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_HTTPONLY = True
 # Preventing Clickjacking
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-# Serve Pages with 'x-content-type-options: nosniff' header
+# Serve Pages with 'x-content-type-options: nosniff' header. Prevents the browser from trying to mime-sniff the content-type of a response
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # Instructs the browser to send a full URL, but only for same-origin links. No referrer will be sent for cross-origin links.
 SECURE_REFERRER_POLICY = 'same-origin'

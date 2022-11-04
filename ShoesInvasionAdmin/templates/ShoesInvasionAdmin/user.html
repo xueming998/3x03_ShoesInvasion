@@ -96,7 +96,7 @@
       var data = document.getElementById(rowId).querySelectorAll(".row-data"); 
       var username = data[0].innerHTML;
       var age = data[1].innerHTML;
-      var url ='ban_unban/'
+      var url ='ban_unban'
       fetch(url,{
           method:'POST',
           headers:{
@@ -110,8 +110,13 @@
           return response.json();
           })
           .then((data) => {
-            // console.log(data)
-            location. reload() 
+            console.log(data)
+            if(data['status'] == "Failed" && data['message'] == "logout"){
+              // Redirect to Login Screen
+              window.location.replace("login");
+            }else{
+              location. reload() 
+            }
           })
         }
     

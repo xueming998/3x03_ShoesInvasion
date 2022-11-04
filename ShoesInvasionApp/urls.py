@@ -12,8 +12,6 @@ urlpatterns = [
     path('home', views.index, name='home'),
     # About Page Routing
     path('about', views.about, name='about'),
-    # Contact Page Routing
-    path('home#contact', views.index, name='home'),
     # Shopping Cart Routing
     path('cart', views.cart, name='cart'),
      # Shop
@@ -21,7 +19,7 @@ urlpatterns = [
      # Shoe Product
     path('shoeDetails', views.shoeDetails, name='shoeDetails'),
     # Login
-    path('login/', views.login_request, name='login'),
+    path('login', views.login_request, name='login'),
     # Register
     path('register/', views.register_request, name='register'), 
     # Register Success
