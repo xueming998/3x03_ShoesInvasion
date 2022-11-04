@@ -1,7 +1,6 @@
 from ctypes.wintypes import SIZE
 from dataclasses import field
 from faulthandler import disable
-from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
 from .models.user import UserTable  
