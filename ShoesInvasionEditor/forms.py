@@ -11,7 +11,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import AuthenticationForm
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
-import requests
+import requests, os
 
 statusChoice = (
     ('1', 'Available'),
@@ -101,7 +101,7 @@ class EditorLoginForm(AuthenticationForm):
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
-            'secret': '6LdwPcUiAAAAAFot1LqP3dQbUbcqGNW1UR5FR36G',
+            'secret':os.getenv('editor_login_captcha_secretkey'),
             'response': ca,
         }
         verify_rs = requests.get(url, params=params, verify=True)

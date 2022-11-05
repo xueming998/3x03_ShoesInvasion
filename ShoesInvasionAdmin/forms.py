@@ -10,6 +10,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from captcha.fields import ReCaptchaField
 from captcha.widgets import ReCaptchaV2Checkbox
 import requests, string, secrets
+import os
 
 class AdminLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -36,7 +37,7 @@ class AdminLoginForm(AuthenticationForm):
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
-            'secret': '6LeT_rciAAAAACCmGM-MTK9x5Pogedk3VUMV8c0T',
+            'secret':os.getenv('admin_login_captcha_secretkey'),
             'response': ca,
         }
         verify_rs = requests.get(url, params=params, verify=True)

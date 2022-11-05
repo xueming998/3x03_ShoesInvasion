@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'django_forms_bootstrap',
     'bootstrap4',
     'crispy_forms',
-    'django.contrib.staticfiles', 
+    'django.contrib.staticfiles',
     'captcha',
 ]
 
@@ -159,13 +159,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-#RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
-#RECAPTCHA_PRIVATE_KEY = '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ'
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -178,13 +174,13 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #EMAIL Backend
-DEFAULT_FROM_EMAIL="marisschool@outlook.com"
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL="shoesinvasion@outlook.com"
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST="smtp.office365.com"
-EMAIL_FROM = 'marisschool@outlook.com'
-EMAIL_HOST_USER = 'marisschool@outlook.com'
-EMAIL_HOST_PASSWORD='tcinrclkincpzois'
+EMAIL_FROM = 'shoesinvasion@outlook.com'
+EMAIL_HOST_USER = 'shoesinvasion@outlook.com'
+EMAIL_HOST_PASSWORD='kckzscrdngvarzhw'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 PASSWORD_RESET_TIMEOUT = 14400
@@ -219,12 +215,12 @@ LOGGING = {
         },
     }
 }
-# Rules set for pages across application. 
+# Rules set for pages across application.
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = ['https://*.shoesinvasion.tk']
-# More Difficult to hijack user session. 
+# More Difficult to hijack user session.
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_HTTPONLY = True
@@ -234,5 +230,5 @@ X_FRAME_OPTIONS = 'SAMEORIGIN'
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # Instructs the browser to send a full URL, but only for same-origin links. No referrer will be sent for cross-origin links.
 SECURE_REFERRER_POLICY = 'same-origin'
-# Defense-in-depth protection against cross-origin attacks, especially those like Spectre 
+# Defense-in-depth protection against cross-origin attacks, especially those like Spectre
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'

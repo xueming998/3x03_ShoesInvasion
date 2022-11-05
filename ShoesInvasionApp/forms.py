@@ -9,6 +9,7 @@ from django.forms import ModelForm
 from ShoesInvasionApp.models import UserTable, UserDetailsTable  
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 import pwnedpasswords
+import os
 
 import requests, secrets, string
 from captcha.fields import ReCaptchaField
@@ -97,7 +98,7 @@ class UserLoginForm(AuthenticationForm):
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
-            'secret': '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ',
+            'secret': os.getenv('user_login_captcha_secretkey'),
             'response': ca,
         }
         verify_rs = requests.get(url, params=params, verify=True)
