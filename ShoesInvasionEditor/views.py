@@ -23,7 +23,8 @@ from io import BytesIO
 
 #Import for Logging
 import logging
-logger=logging.getLogger('user')
+logger=logging.getLogger('editor')
+validationlogger=logging.getLogger('inputvalidation')
 
 def login(request):
     try:
@@ -108,7 +109,7 @@ def login(request):
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('logout')
 
     # Retrieve all User Info 
     allProdObjs = ProductsTable.objects.all()
@@ -134,7 +135,7 @@ def manage(request):
 def create(request):
     # Check if logged in
     if (check_login_status(request) == False):
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('logout')
     
     if request.method == 'POST':
         product_name = request.POST['product_name']
@@ -170,7 +171,7 @@ def create(request):
 def updateProduct(request, pk):
     # Check if logged in
     if (check_login_status(request) == False):
-        return HttpResponseRedirect('../../login')
+        return HttpResponseRedirect('../../logout')
     if request.method == 'POST':
         product_name = request.POST['product_name']
         product_price = request.POST['product_price']
@@ -283,29 +284,32 @@ def logout(request):
       return HttpResponseRedirect('../index')
 
 def twoFA(request):
-    context = {}
-    if request.method == "POST":
-        # Checked
-        if 'enable2FA' in request.POST:
-            # Get user unique ID
-            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
-            # pyotp generates a random key that is assigned to user and save in db
-            userSecretKey = pyotp.random_base32()
-            userDetails.secret_key = userSecretKey
-            userDetails.save()
-            # Create url for qrcode
-            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
-            factory = qrcode.image.svg.SvgImage
-            img = qrcode.make(url, image_factory=factory, box_size=20)
-            stream = BytesIO()
-            img.save(stream)
-            context["svg"] = stream.getvalue().decode()
-            return render(request,"ShoesInvasionEditor/twoFA.html", context=context)
-        # Not checked
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('logout')
+    else:
+        context = {}
+        if request.method == "POST":
+            # Checked
+            if 'enable2FA' in request.POST:
+                # Get user unique ID
+                userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+                # pyotp generates a random key that is assigned to user and save in db
+                userSecretKey = pyotp.random_base32()
+                userDetails.secret_key = userSecretKey
+                userDetails.save()
+                # Create url for qrcode
+                url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+                factory = qrcode.image.svg.SvgImage
+                img = qrcode.make(url, image_factory=factory, box_size=20)
+                stream = BytesIO()
+                img.save(stream)
+                context["svg"] = stream.getvalue().decode()
+                return render(request,"ShoesInvasionEditor/twoFA.html", context=context)
+            # Not checked
+            else:
+                return render(request, 'ShoesInvasionEditor/twoFA.html')
         else:
             return render(request, 'ShoesInvasionEditor/twoFA.html')
-    else:
-        return render(request, 'ShoesInvasionEditor/twoFA.html')
 
 
 def page_not_found_view(request, exception):

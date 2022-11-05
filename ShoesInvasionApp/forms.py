@@ -1,7 +1,6 @@
 from ctypes.wintypes import SIZE
 from dataclasses import field
 from faulthandler import disable
-from tkinter import DISABLED
 from unittest.util import _MAX_LENGTH
 from django import forms  
 from .models.user import UserTable  
@@ -108,6 +107,7 @@ class UserLoginForm(AuthenticationForm):
         verify_rs = requests.get(url, params=params, verify=True)
         verify_rs = verify_rs.json()
         status = verify_rs.get("success", False)
+        print(status)
         if not status:
             raise forms.ValidationError(
                 _('Captcha Validation Failed.'),

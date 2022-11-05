@@ -14,6 +14,10 @@ from ShoesInvasionAdmin.forms import AdminLoginForm, RegisterEditorForm
 from django.core.serializers import serialize
 from django.contrib.auth.hashers import make_password
 
+import logging
+logger=logging.getLogger('admins')
+validationlogger=logging.getLogger('inputvalidation')
+
 # Import for 2FA
 import pyotp
 import qrcode
@@ -27,12 +31,16 @@ def login(request):
                 username = request.POST['username']
                 password = request.POST['password']
                 response = request.POST['g-recaptcha-response']
+                print("Response Below")
+                print(response)
                 # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
                 # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
                 client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
+                        print("Inside IF ")
                         form = AdminLoginForm()
                         logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
+                        print("After Logger")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 account = UserTable.objects.get(username=username)
                 id = account.unique_id
@@ -50,14 +58,14 @@ def login(request):
                                 # Store into Session
                                 request.session['unique_id'] = account.unique_id
                                 request.session.set_expiry(900)
-                                request.session['secret_key'] = account.secret_key
+                                # request.session['secret_key'] = account.secret_keys
                                 logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                 return HttpResponseRedirect('manage')
                             # Got 2FA Enabled
                             else:
                                 otpToken = request.POST['otpToken']
                                 if (otpToken == None):
-                                    form = EditorLoginForm()
+                                    form = AdminLoginForm()
                                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Please Enter OTP."})
                                 else:
                                     adminSecretKey = pyotp.TOTP(account.secret_key)
@@ -108,29 +116,28 @@ def login(request):
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
-        return HttpResponseRedirect('login')
-
-    
-    # Retrieve all User Info 
-    allUserObjs = UserTable.objects.all().exclude(accountType = "Admin")
-    
-    dictArray = []
-    for user in allUserObjs:
-        # Store Required Data inside Dictionary 
-        if (user.accountType == "User" or user.accountType == "Editor"):
-            mydict = {
-                "uid": user.unique_id, 
-                "username":user.username, 
-                "lname":user.last_name, 
-                "verifiedStatus": user.verifiedStatus, 
-                "lockedStatus":user.lockedStatus, 
-                "accountType":user.accountType, 
-            }
-            dictArray.append(mydict)
-    context = {
-        'data':dictArray
-    }
-    return render(request, 'ShoesInvasionAdmin/user.html', context=context)
+        return HttpResponseRedirect('logout/')
+    else:
+        # Retrieve all User Info 
+        allUserObjs = UserTable.objects.all().exclude(accountType = "Admin")
+        
+        dictArray = []
+        for user in allUserObjs:
+            # Store Required Data inside Dictionary 
+            if (user.accountType == "User" or user.accountType == "Editor"):
+                mydict = {
+                    "uid": user.unique_id, 
+                    "username":user.username, 
+                    "lname":user.last_name, 
+                    "verifiedStatus": user.verifiedStatus, 
+                    "lockedStatus":user.lockedStatus, 
+                    "accountType":user.accountType, 
+                }
+                dictArray.append(mydict)
+        context = {
+            'data':dictArray
+        }
+        return render(request, 'ShoesInvasionAdmin/user.html', context=context)
 
 def check_login_status(request):
     try:
@@ -142,6 +149,12 @@ def check_login_status(request):
                 return True
             else:
                 return False
+                # Other Account Accessing.
+                del request.session['unique_id']
+                # Used to delete session from database so wont be able to access anymore
+                # If login again, it will create a new session
+                request.session.flush()
+                return HttpResponseRedirect('logout')
         else:
             return False
     except ObjectDoesNotExist:
@@ -168,21 +181,25 @@ def checkCaptcha(response_id):
 
 def ban_unban(request):
     try:
-        data = json.loads(request.body)
-        uid = data['uid']
-        accountObj = UserTable.objects.get(unique_id=uid)
-        if (accountObj.lockedStatus == 0):
-            # Ban
-            accountObj.lockedCounter = 3
-            accountObj.lockedStatus = 1
-            accountObj.save()
+        if (check_login_status(request) == True):
+            data = json.loads(request.body)
+            uid = data['uid']
+            accountObj = UserTable.objects.get(unique_id=uid)
+            if (accountObj.lockedStatus == 0):
+                # Ban
+                accountObj.lockedCounter = 3
+                accountObj.lockedStatus = 1
+                accountObj.save()
+            else:
+                # unban
+                accountObj.lockedStatus = 0
+                accountObj.lockedCounter = 0
+                accountObj.save()
+            data = {"status":"Success", "message":"Ban Successful"}
+            return JsonResponse(data, safe=False)
         else:
-            # unban
-            accountObj.lockedStatus = 0
-            accountObj.lockedCounter = 0
-            accountObj.save()
-        data = {"status":"Success", "message":"Ban Successful"}
-        return JsonResponse(data, safe=False)
+            data = {"status":"Failed", "message":"logout"}
+            return JsonResponse(data, safe=False)
     except UserTable.DoesNotExist:
         # Error 403
         return JsonResponse('Failed Does not exist', safe=False)
@@ -195,41 +212,45 @@ def logout(request):
     # Used to delete session from database so wont be able to access anymore
     # If login again, it will create a new session
       request.session.flush()
-      return HttpResponseRedirect('../index')
+      return HttpResponseRedirect('../login')
    except:
       pass
-      return HttpResponseRedirect('../index')
+      return HttpResponseRedirect('../login')
 
 
 def twoFA(request):
-    context = {}
-    if request.method == "POST":
-        # Checked
-        if 'enable2FA' in request.POST:
-            # Get user unique ID
-            userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
-            # pyotp generates a random key that is assigned to user and save in db
-            userSecretKey = pyotp.random_base32()
-            userDetails.secret_key = userSecretKey
-            userDetails.save()
-            # Create url for qrcode
-            url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
-            factory = qrcode.image.svg.SvgImage
-            img = qrcode.make(url, image_factory=factory, box_size=20)
-            stream = BytesIO()
-            img.save(stream)
-            context["svg"] = stream.getvalue().decode()
-            return render(request,"ShoesInvasionAdmin/twoFA.html", context=context)
-        # Not checked
+    # need Check if Logged In or Not (And as Admin or Not)
+    if (check_login_status(request) == False):
+        return HttpResponseRedirect('logout')
+    else:
+        context = {}
+        if request.method == "POST":
+            # Checked
+            if 'enable2FA' in request.POST:
+                # Get user unique ID
+                userDetails = UserTable.objects.get(unique_id=request.session['unique_id'])
+                # pyotp generates a random key that is assigned to user and save in db
+                userSecretKey = pyotp.random_base32()
+                userDetails.secret_key = userSecretKey
+                userDetails.save()
+                # Create url for qrcode
+                url = pyotp.totp.TOTP(userSecretKey).provisioning_uri(name=userDetails.username, issuer_name='ShoesInvasion')
+                factory = qrcode.image.svg.SvgImage
+                img = qrcode.make(url, image_factory=factory, box_size=20)
+                stream = BytesIO()
+                img.save(stream)
+                context["svg"] = stream.getvalue().decode()
+                return render(request,"ShoesInvasionAdmin/twoFA.html", context=context)
+            # Not checked
+            else:
+                return render(request, 'ShoesInvasionAdmin/twoFA.html')
         else:
             return render(request, 'ShoesInvasionAdmin/twoFA.html')
-    else:
-        return render(request, 'ShoesInvasionAdmin/twoFA.html')
 
 def createEditorAccount(request):
     # Check if logged in
     if (check_login_status(request) == False):
-        return HttpResponseRedirect('login')
+        return HttpResponseRedirect('logout/')
 
     if request.method == 'POST':
         first_name = request.POST['first_name']

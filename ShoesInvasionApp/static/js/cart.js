@@ -15,35 +15,42 @@ for (i = 0; i < updateBtns.length; i++) {
 
 
 // DeleteBtn 
-var deletBtn = document.getElementById('deletBtn')
-    deletBtn.addEventListener('click', function(){
-    console.log("DeleteBtn Pressed")
-    var url ='del_cartItem/'
-    var shoppingCartID = this.dataset.product
-    console.log(shoppingCartID)
-    fetch(url,
-    {
-    method:'POST',
-    headers:{
-    'Content-Type':'application/json',
-            'X-CSRFToken':csrftoken, 
-    }, 
-    body:JSON.stringify({'shoppingCartID':shoppingCartID})
+var deletBtn = document.getElementsByClassName('deletBtn')
+for (x =0; x < deletBtn.length; x++)
+{
+    deletBtn[x].addEventListener('click', function(){
+        console.log("DeleteBtn Pressed")
+        var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+        var url ='del_cartItem/'
+        var shoppingCartID = this.dataset.product
+        console.log(shoppingCartID)
+        fetch(url,
+        {
+        method:'POST',
+        headers:{
+        'Content-Type':'application/json',
+                'X-CSRFToken':csrfToken, 
+        }, 
+        body:JSON.stringify({'shoppingCartID':shoppingCartID})
+        })
+        .then((respose) => {
+        return respose.json();
+        })
+        .then((data) => {
+        // Either Reload or change the variable. Decide later. 
+            location.reload()
+        });
     })
-    .then((respose) => {
-    return respose.json();
-    })
-    .then((data) => {
-    // Either Reload or change the variable. Decide later. 
-        location.reload()
-    });
-})
+}
+
 
 //checkoutBtn 
 var checkoutBtn = document.getElementById('checkoutBtn')
 checkoutBtn.addEventListener('click', function(){
     console.log("checkoutBtn Pressed")
     var url ='checkout_cartItem/'
+    var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+    console.log(csrfToken)
     var user_id = this.dataset.product
     console.log(user_id)
     fetch(url,
@@ -51,7 +58,7 @@ checkoutBtn.addEventListener('click', function(){
     method:'POST',
     headers:{
     'Content-Type':'application/json',
-            'X-CSRFToken':csrftoken, 
+    'X-CSRFToken':csrfToken, 
     }, 
     body:JSON.stringify({'user_id':user_id})
     })
@@ -69,13 +76,15 @@ function shoppingCartOrder(shoppingCartID,action)
 {
 console.log("Updating Data from Shopping Cart ")
 var url ='update_cartItem/'
+var csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value
+    
 // 'X-CSRFToken':csrftoken, (Supposed to be inside headers)
 fetch(url,
 {
 method:'POST',
 headers:{
 'Content-Type':'application/json',
-        'X-CSRFToken':csrftoken, 
+        'X-CSRFToken':csrfToken, 
 }, 
 body:JSON.stringify({'shoppingCartID':shoppingCartID, 'action':action})
 })
