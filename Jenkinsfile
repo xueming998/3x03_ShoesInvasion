@@ -1,17 +1,54 @@
 pipeline {
 	agent any
+
+	environment{
+		test_dir ="./ShoesInvasion"
+	}
+
+	parameters{
+		booleanParam(name:"RUN_TEST", defaultValue: true, description: "Run Test Stage")
+	}
+
 	stages {
-		stage('Checkout SCM') {
+		stage('Build') {
 			steps {
-				git '/home/JenkinsDependencyCheckTest'
+				echo 'Building the application ...'
+				echo "TEST_DIR: ${test_dir}"
 			}
 		}
 
 		stage('OWASP DependencyCheck') {
+			when{
+				expression {
+					params.RUN_TEST 
+					//Only run DependencyCheck in development or master branch, this should only work if you have a multibranch pipeline
+					env.BRANCH_NAME == 'Development' 
+				}
+
+			}
 			steps {
-				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
+				echo 'OWASP DependencyCheck ...'
+				//Disable yarn audit as not in used
+				dependencyCheck additionalArguments: '--format HTML --format XML --disableYarnAudit', odcInstallation: 'Default'
 			}
 		}
+
+		stage('Unit Test') {
+			when{
+				expression {
+					params.RUN_TEST 
+					//Only run unit test in development or master branch, this should only work if you have a multibranch pipeline
+					env.BRANCH_NAME == 'development' || env.BRANCH_NAME == 'master' 
+				}
+
+			}
+
+            steps {
+                //echo 'Testing the application ...'
+				dir("${test_dir}"){
+					sh "python manage.py test"
+				}
+            }
 	}	
 	post {
 		success {

@@ -94,10 +94,6 @@ class UserLoginForm(AuthenticationForm):
 
     def clean(self):
         super(UserLoginForm, self).clean()
-        password = self.cleaned_data.get('password')
-        if (len(password) < 12 ):
-            self.errors['username'] = self.error_class(['Username already taken.'])
-        else: pass
         ca = self.request.POST["g-recaptcha-response"]
         url = "https://www.google.com/recaptcha/api/siteverify"
         params = {
@@ -107,7 +103,6 @@ class UserLoginForm(AuthenticationForm):
         verify_rs = requests.get(url, params=params, verify=True)
         verify_rs = verify_rs.json()
         status = verify_rs.get("success", False)
-        print(status)
         if not status:
             raise forms.ValidationError(
                 _('Captcha Validation Failed.'),

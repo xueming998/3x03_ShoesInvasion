@@ -91,4 +91,4 @@ class EditorTestCase(TestCase):
          "gender": "F",
          "category": "Sneakers"})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response['Location'], 'manage')
+        self.assertEqual(response['Location'], 'logout')

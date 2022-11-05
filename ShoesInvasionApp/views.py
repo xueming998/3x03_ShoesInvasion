@@ -460,7 +460,9 @@ def login_request(request):
             username = request.POST['username']
             password = request.POST['password']
             response = request.POST['g-recaptcha-response']
+            # response = request.POST('g-recaptcha-response', False)
             print("username: " + username)
+            print("response" + response)
             otpToken = request.POST['otpToken']
             # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
             # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
@@ -572,7 +574,7 @@ def register_request(request):
             if formDetails.is_valid():
                 post = formDetails.save(commit = False)
                 post.save()
-                activateEmail(request,post, formDetails.cleaned_data.get('email'))
+                # activateEmail(request,post, formDetails.cleaned_data.get('email'))
                 context = {}
                 registerEmail = formDetails.cleaned_data['email']
                 context['email'] = registerEmail

@@ -96,7 +96,7 @@ class AdminTestCase(TestCase):
         userBanned = UserTable.objects.get(username = "warrenbuffett")
         # bannedStatus = 0 means account not banned
         self.assertFalse(userBanned.bannedStatus)
-        response3 = c3.post('/ShoesInvasionAdmin/ban_unban/', {'uid': 'io1obr3jlkkwrsngio32klt4nho1iqnf'})
+        response3 = c3.post('/ShoesInvasionAdmin/ban_unban', {'uid': 'io1obr3jlkkwrsngio32klt4nho1iqnf'})
         self.assertEqual(response3.status_code, 200)
         # bannedStatus = 1 means account banned
         self.assertTrue(response3.content)
