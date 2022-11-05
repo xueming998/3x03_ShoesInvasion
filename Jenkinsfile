@@ -33,7 +33,7 @@ pipeline {
 			}
 		}
 
-		stage('Unit Test') {
+		stage('Test') {
 			when{
 				expression {
 					params.RUN_TEST 
@@ -45,15 +45,17 @@ pipeline {
 
             steps {
                 //echo 'Testing the application ...'
+				echo 'JUnit Test ...'
 				dir("${test_dir}"){
-					sh "python manage.py test"
+					sh "python manage.py jenkins"
 				}
+				junit '**/target/*.xml'
             }
+	}
 	}	
 	post {
 		success {
 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-			junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults : true)
 		}
 	}
 }
