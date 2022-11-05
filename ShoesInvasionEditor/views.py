@@ -149,8 +149,12 @@ def create(request):
         # available = request.POST['status']
         status = request.POST['status']
         gender = request.POST['gender']
-        category = request.POST['category']
-        client_ip=request.META.get('REMOTE_ADDR')
+        category = request.POST['category']        
+        client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+        if client_ip:
+            client_ip = client_ip.split(',')[-1].strip()
+        else:
+            client_ip=request.META.get('REMOTE_ADDR')
         editorid=request.session['unique_id']
 
         # Create Product obj
@@ -192,7 +196,11 @@ def updateProduct(request, pk):
         product.status = status
         product.gender_type = gender
         product.product_category = category
-        client_ip=request.META.get('REMOTE_ADDR')
+        client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+        if client_ip:
+            client_ip = client_ip.split(',')[-1].strip()
+        else:
+            client_ip=request.META.get('REMOTE_ADDR')
         editorid=request.session['unique_id']
 
         product.save()
@@ -212,7 +220,11 @@ def remove(request):
         data = json.loads(request.body)
         product_id = data['product_id']
         productObj = ProductsTable.objects.get(id = product_id)
-        client_ip=request.META.get('REMOTE_ADDR')
+        client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+        if client_ip:
+            client_ip = client_ip.split(',')[-1].strip()
+        else:
+            client_ip=request.META.get('REMOTE_ADDR')
         editorid=request.session['unique_id']
         if (productObj.available == "Yes"):
             productObj.available = "No"

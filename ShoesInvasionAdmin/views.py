@@ -185,6 +185,12 @@ def checkCaptcha(response_id):
 
 def ban_unban(request):
     try:
+        client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+        if client_ip:
+            client_ip = client_ip.split(',')[-1].strip()
+        else:
+            client_ip=request.META.get('REMOTE_ADDR')
+
         if (check_login_status(request) == True):
             data = json.loads(request.body)
             uid = data['uid']
@@ -199,6 +205,7 @@ def ban_unban(request):
                 accountObj.lockedStatus = 0
                 accountObj.lockedCounter = 0
                 accountObj.save()
+            logger.warning(f"Administrator: {id} from {client_ip} banned {uid} at")
             data = {"status":"Success", "message":"Ban Successful"}
             return JsonResponse(data, safe=False)
         else:
@@ -252,6 +259,12 @@ def twoFA(request):
             return render(request, 'ShoesInvasionAdmin/twoFA.html')
 
 def createEditorAccount(request):
+    client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+    if client_ip:
+        client_ip = client_ip.split(',')[-1].strip()
+    else:
+        client_ip=request.META.get('REMOTE_ADDR')
+        
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('logout/')
@@ -295,6 +308,7 @@ def createEditorAccount(request):
                         accountObj.save()
                         # data = {"status":"Success", "message":"Insert Successful"}
                         # return JsonResponse(data, safe=False)
+                        logger.critical(f"Administrator: {id} from {client_ip} created {username} at")
                         return HttpResponseRedirect('manage')
 
     else:
