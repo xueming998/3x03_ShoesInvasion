@@ -38,7 +38,7 @@ pipeline {
 				expression {
 					params.RUN_TEST 
 					//Only run unit test in development or master branch, this should only work if you have a multibranch pipeline
-					env.BRANCH_NAME == 'development' || env.BRANCH_NAME == 'master' 
+					env.BRANCH_NAME == 'Development'
 				}
 
 			}
@@ -53,6 +53,7 @@ pipeline {
 	post {
 		success {
 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+			junit '**/reports/junit/*.xml'
 		}
 	}
 }
