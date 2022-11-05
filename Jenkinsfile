@@ -53,7 +53,7 @@ pipeline {
 	post {
 		success {
 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-			junit '**/reports/junit/*.xml'
+			junit(testResults: 'target/surefire-reports/*.xml', allowEmptyResults : true)
 		}
 	}
 }
