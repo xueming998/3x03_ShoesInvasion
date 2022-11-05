@@ -26,18 +26,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!'
+#SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!'
+SECRET_KEY=os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
+DEBUG = os.getenv('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = ['127.0.0.1']
 
-DEBUG = True
+#DEBUG = True
 
-ALLOWED_HOSTS = ['188.166.238.172','127.0.0.1']
+#ALLOWED_HOSTS = ['188.166.238.172','127.0.0.1']
 # ALLOWED_HOSTS = ['188.166.238.172']
-
 
 # Application definition
 
@@ -107,11 +109,11 @@ WSGI_APPLICATION = 'ShoesInvasion.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ShoesInvasion',
-        'USER': 'root',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASS'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
     }
 }
 
@@ -157,8 +159,10 @@ USE_I18N = True
 
 USE_TZ = True
 
-RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
-RECAPTCHA_PRIVATE_KEY = '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ'
+#RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
+#RECAPTCHA_PRIVATE_KEY = '6Lcax7QiAAAAAPDiSYSHISAGMqiMW6E01YsrtwDQ'
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY')
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies" 
@@ -218,7 +222,8 @@ LOGGING = {
 # Rules set for pages across application. 
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
+CSRF_TRUSTED_ORIGINS = ['https://*.shoesinvasion.tk']
 # More Difficult to hijack user session. 
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
