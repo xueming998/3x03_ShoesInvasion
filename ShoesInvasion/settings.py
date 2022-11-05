@@ -50,15 +50,23 @@ INSTALLED_APPS = [
     'ShoesInvasionApp.apps.ShoesInvasionAppConfig',
     'ShoesInvasionAdmin.apps.ShoesInvasionAdminConfig',
     'ShoesInvasionEditor.apps.ShoesInvasionEditorConfig',
+    'django_jenkins',
     'django_forms_bootstrap',
     'bootstrap4',
     'crispy_forms',
     'django.contrib.staticfiles', 
     'captcha',
-    'django_jenkins',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+JENKINS_TASKS = (
+    'django_jenkins.tasks.run_pep8',
+    'django_jenkins.tasks.run_pyflakes',
+    'django_jenkins.tasks.run_jslint',
+    'django_jenkins.tasks.run_csslint',
+    'django_jenkins.tasks.run_sloccount'
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

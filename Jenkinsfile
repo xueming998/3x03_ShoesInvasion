@@ -47,15 +47,16 @@ pipeline {
                 //echo 'Testing the application ...'
 				echo 'JUnit Test ...'
 				dir("${test_dir}"){
-					sh "python manage.py jenkins"
+					sh "python manage.py test"
 				}
-				junit '**/target/*.xml'
+				
             }
 	}
 	}	
 	post {
-		success {
+		always {
 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+			junit '**/target/*.xml'
 		}
 	}
 }
