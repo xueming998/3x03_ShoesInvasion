@@ -159,6 +159,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
+
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"

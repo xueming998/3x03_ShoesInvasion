@@ -473,13 +473,16 @@ def login_request(request):
             otpToken = request.POST['otpToken']
             # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
             client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
-            #client_ip=request.META.get('REMOTE_ADDR')
+            if client_ip:
+                client_ip = client_ip.split(',')[-1].strip()
+            else:
+                client_ip=request.META.get('REMOTE_ADDR')
             try:
                 account = UserTable.objects.get(username=username)
                 id = account.unique_id
                 if len(response) == 0:
                     form = UserLoginForm()
-                    logger.critical(f"No Captcha Done by user at user login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
+                    logger.warning(f"No Captcha input by user at user login attempt by {username} from {client_ip} at time:")
                     return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Reattempt Captcha."})
                 if (account.accountType == 'User' and account.lockedStatus == 0):
                     if (len(password) < 12):
@@ -488,7 +491,7 @@ def login_request(request):
                     else:
                         if (len(otpToken) != 6):
                             form = UserLoginForm()
-                            logger.high(f"{client_ip}test loggginggg")
+                            logger.warning(f"Captcha OTP input was less than 6 digits. Action performed by user: {id} from {client_ip} at time:")
                             return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "OTP Token has to be 6 numbers."})
                         else:
                             if checkPassword(password, account.password):
@@ -505,6 +508,7 @@ def login_request(request):
                                     return render(request, 'ShoesInvasionApp/index.html')
                                 else:
                                     form = UserLoginForm()
+                                    logger.warning(f"Incorrect captcha input provided by user: {id} from {client_ip} at time:")
                                     return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Incorrect OTP."})
                             else:
                                 # Wrong Password | Need to append into Locked Counter
@@ -521,7 +525,7 @@ def login_request(request):
                 else:
                     # Wrong Account type.
                     form = UserLoginForm()
-                    logger.critical(f"Failed user login attempt with non-registered user: {id} from {client_ip} (Attempt {account.lockedCounter}) at time:")
+                    logger.warning(f"Failed user login attempt with non-registered user: {id} from {client_ip} at time:")
                     return render(request, 'ShoesInvasionApp/login_user.html', context={"login_form":form, "error": "Incorrect Username or Password."})
 
             except UserTable.DoesNotExist:

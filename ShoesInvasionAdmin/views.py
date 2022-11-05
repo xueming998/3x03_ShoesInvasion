@@ -35,12 +35,15 @@ def login(request):
                 print(response)
                 # need to use HTTP_X_FORWARDED when we deploy, for now its remote addr
                 # client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
-                client_ip=request.META.get('REMOTE_ADDR')
+                client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+                if client_ip:
+                    client_ip = client_ip.split(',')[-1].strip()
+                else:
+                    client_ip=request.META.get('REMOTE_ADDR')
                 if len(response) == 0:
                         print("Inside IF ")
                         form = AdminLoginForm()
-                        logger.info(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
-                        print("After Logger")
+                        logger.warning(f"Failed administrator login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 account = UserTable.objects.get(username=username)
                 id = account.unique_id
@@ -66,6 +69,7 @@ def login(request):
                                 otpToken = request.POST['otpToken']
                                 if (otpToken == None):
                                     form = AdminLoginForm()
+                                    logger.warning(f"Missing OTP input by administrator {id} from {client_ip} at")
                                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Please Enter OTP."})
                                 else:
                                     adminSecretKey = pyotp.TOTP(account.secret_key)
@@ -80,7 +84,7 @@ def login(request):
                                         return HttpResponseRedirect('manage')
                                     else:     
                                         form = AdminLoginForm()
-                                        logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                                        logger.critical(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                         else:
                             # Wrong Password | Need to append into Locked Counter
@@ -91,7 +95,7 @@ def login(request):
                                 logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
                             account.save()
                             form = AdminLoginForm()
-                            logger.warning(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
+                            logger.critical(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                         
                 else:
@@ -107,7 +111,7 @@ def login(request):
             return HttpResponseRedirect('manage')
     except UserTable.DoesNotExist:
             form = AdminLoginForm()
-            logger.info(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
+            logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
     except:
             form = AdminLoginForm()
