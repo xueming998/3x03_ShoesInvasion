@@ -34,6 +34,7 @@ pipeline {
 		}
 
 		stage('Test') {
+			/*
 			when{
 				expression {
 					params.RUN_TEST 
@@ -41,14 +42,16 @@ pipeline {
 					env.BRANCH_NAME == 'Development'
 				}
 
-			}
+			}*/
 
             steps {
                 //echo 'Testing the application ...'
 				echo 'JUnit Test ...'
+				sh 'python app/manage.py test'
+				/*
 				dir("${test_dir}"){
 					sh "python manage.py test"
-				}
+				} */
 				
             }
 	}
