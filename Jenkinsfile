@@ -1,9 +1,12 @@
 pipeline {
-	agent any
-
+	agent {
+            docker { image 'python:3.9' }
+        }
+/*
 	environment{
 		test_dir ="./ShoesInvasion"
 	}
+*/
 
 	parameters{
 		booleanParam(name:"RUN_TEST", defaultValue: true, description: "Run Test Stage")
