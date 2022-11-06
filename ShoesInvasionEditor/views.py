@@ -9,7 +9,7 @@ from requests import request
 import requests
 from ShoesInvasionApp.models.user import  UserTable
 from ShoesInvasionApp.models.products import  ProductsTable
-from ShoesInvasionApp.models.productQuantity import ProductQuantityTable 
+from ShoesInvasionApp.models.productQuantity import ProductQuantityTable
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers import serialize
@@ -23,7 +23,7 @@ from io import BytesIO
 
 #Import for Logging
 import logging
-logger=logging.getLogger('editor')
+logger=logging.getLogger('user')
 validationlogger=logging.getLogger('inputvalidation')
 
 def login(request):
@@ -45,7 +45,7 @@ def login(request):
                         logger.warning(f"Failed editor login attempt by {username} from {client_ip} with no captcha provided at")
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Kindly complete the captcha."})
                 account = UserTable.objects.get(username=username)
-                
+
                 if (account.accountType == 'Editor' and account.lockedStatus == 0):
                     if checkPassword(password, account.password):
                         # 2FA not enabled, can login
@@ -83,7 +83,7 @@ def login(request):
                     else:
                         # Wrong Password | Need to append into Locked Counter
                         account.lockedCounter += 1
-                        # Once Locked Counter = 3, Lock Account 
+                        # Once Locked Counter = 3, Lock Account
                         if (account.lockedCounter == 3):
                             account.lockedStatus = 1
                             logger.critical(f"Editor account ({id}) from {client_ip} locked out at time:")
@@ -92,7 +92,7 @@ def login(request):
                         logger.critical(f"Failed editor login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                         return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
                 else:
-                    # Wrong Account type. 
+                    # Wrong Account type.
                     form = EditorLoginForm()
                     logger.critical(f"Failed editor login attempt by {id} from {client_ip} (Attempt {account.lockedCounter})")
                     return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
@@ -109,25 +109,25 @@ def login(request):
     except:
             form = EditorLoginForm()
             return render(request=request, template_name="ShoesInvasionEditor/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-            
+
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('logout')
 
-    # Retrieve all User Info 
+    # Retrieve all User Info
     allProdObjs = ProductsTable.objects.all()
 
     dictArray = []
     for products in allProdObjs:
-        # Store Required Data inside Dictionary 
+        # Store Required Data inside Dictionary
         mydict = {
-            "product_id": products.id, 
-            "name":products.product_name, 
-            "price":products.product_price, 
-            "category": products.product_category, 
-            "available":products.available, 
-            "status":products.status, 
+            "product_id": products.id,
+            "name":products.product_name,
+            "price":products.product_price,
+            "category": products.product_category,
+            "available":products.available,
+            "status":products.status,
             "brand":products.product_brand
         }
         dictArray.append(mydict)
@@ -140,7 +140,7 @@ def create(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('logout')
-    
+
     if request.method == 'POST':
         product_name = request.POST['product_name']
         product_price = request.POST['product_price']
@@ -149,7 +149,7 @@ def create(request):
         # available = request.POST['status']
         status = request.POST['status']
         gender = request.POST['gender']
-        category = request.POST['category']        
+        category = request.POST['category']
         client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
         if client_ip:
             client_ip = client_ip.split(',')[-1].strip()
@@ -158,13 +158,13 @@ def create(request):
         editorid=request.session['unique_id']
 
         # Create Product obj
-        newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand, 
+        newProductObj = ProductsTable.objects.create(product_name = product_name, product_price = product_price, product_info=product_info, product_brand=product_brand,
         status = status, available = "Yes",gender_type = gender, product_category = category, review=5)
-        # Save 
+        # Save
         newProductObj.save()
         product_id = ProductsTable.objects.latest('id')
-        dictArr = [{"size":"UK 7","quantity":87, "color":"Black", "product_id": product_id}, 
-        {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id}, 
+        dictArr = [{"size":"UK 7","quantity":87, "color":"Black", "product_id": product_id},
+        {"size":"UK 8","quantity":77, "color":"Green", "product_id": product_id},
         {"size":"UK 9","quantity":67, "color":"Blue", "product_id": product_id}]
         for x in range(3):
             newProductDetailObj = ProductQuantityTable.objects.create(size = dictArr[x]['size'], quantity =dictArr[x]['quantity'], color=dictArr[x]['color'], product = product_id )
@@ -196,6 +196,7 @@ def updateProduct(request, pk):
         product.status = status
         product.gender_type = gender
         product.product_category = category
+        editorid=request.session['unique_id']
         client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
         if client_ip:
             client_ip = client_ip.split(',')[-1].strip()
@@ -221,6 +222,7 @@ def remove(request):
         product_id = data['product_id']
         productObj = ProductsTable.objects.get(id = product_id)
         client_ip=request.META.get('HTTP_X_FORWARDED_FOR')
+        editorid=request.session['unique_id']
         if client_ip:
             client_ip = client_ip.split(',')[-1].strip()
         else:
@@ -237,7 +239,7 @@ def remove(request):
             logger.info(f"Editor {editorid} from {client_ip} made {productObj} available at")
             data = {"status":"Success", "message":"Product made Available!"}
         else:
-            # Error 
+            # Error
             logger.info(f"Editor {editorid} from {client_ip} unable to modify {productObj} at")
             data = {"status":"Failed", "message":"Unable to modify product. Please contact developer for assistance."}
         return JsonResponse(data, safe=False)

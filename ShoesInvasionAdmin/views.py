@@ -6,8 +6,8 @@ from http import HTTPStatus
 from django.urls import reverse
 from requests import request
 import requests, string, secrets
-from ShoesInvasionApp.models.user import UserTable 
-from ShoesInvasionApp.models.userDetails import UserDetailsTable 
+from ShoesInvasionApp.models.user import UserTable
+from ShoesInvasionApp.models.userDetails import UserDetailsTable
 from django.contrib.auth.hashers import check_password
 from django.core.exceptions import ObjectDoesNotExist
 from ShoesInvasionAdmin.forms import AdminLoginForm, RegisterEditorForm
@@ -15,7 +15,7 @@ from django.core.serializers import serialize
 from django.contrib.auth.hashers import make_password
 
 import logging
-logger=logging.getLogger('admins')
+logger=logging.getLogger('user')
 validationlogger=logging.getLogger('inputvalidation')
 
 # Import for 2FA
@@ -82,14 +82,14 @@ def login(request):
                                         request.session.set_expiry(900)
                                         logger.info(f"Successful administrator login by {id} from {client_ip} at")
                                         return HttpResponseRedirect('manage')
-                                    else:     
+                                    else:
                                         form = AdminLoginForm()
                                         logger.critical(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                                         return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Incorrect OTP."})
                         else:
                             # Wrong Password | Need to append into Locked Counter
                             account.lockedCounter += 1
-                            # Once Locked Counter = 3, Lock Account 
+                            # Once Locked Counter = 3, Lock Account
                             if (account.lockedCounter == 3):
                                 account.lockedStatus = 1
                                 logger.critical(f"Administrator account ({id}) from {client_ip} locked out at time:")
@@ -97,9 +97,9 @@ def login(request):
                             form = AdminLoginForm()
                             logger.critical(f"Failed administrator login attempt by {id} from {client_ip} (Attempt {account.lockedCounter}) at")
                             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
-                        
+
                 else:
-                    # Wrong Account type. 
+                    # Wrong Account type.
                     form = AdminLoginForm()
                     logger.warning(f"Failed administrator login attempt with non-registered user: {username} from {client_ip} at")
                     return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
@@ -116,26 +116,26 @@ def login(request):
     except:
             form = AdminLoginForm()
             return render(request=request, template_name="ShoesInvasionAdmin/login.html", context={"login_form":form, "status":"Failed", "message":"Username or Password is Incorrect."})
- 
+
 def manage(request):
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('logout/')
     else:
-        # Retrieve all User Info 
+        # Retrieve all User Info
         allUserObjs = UserTable.objects.all().exclude(accountType = "Admin")
-        
+
         dictArray = []
         for user in allUserObjs:
-            # Store Required Data inside Dictionary 
+            # Store Required Data inside Dictionary
             if (user.accountType == "User" or user.accountType == "Editor"):
                 mydict = {
-                    "uid": user.unique_id, 
-                    "username":user.username, 
-                    "lname":user.last_name, 
-                    "verifiedStatus": user.verifiedStatus, 
-                    "lockedStatus":user.lockedStatus, 
-                    "accountType":user.accountType, 
+                    "uid": user.unique_id,
+                    "username":user.username,
+                    "lname":user.last_name,
+                    "verifiedStatus": user.verifiedStatus,
+                    "lockedStatus":user.lockedStatus,
+                    "accountType":user.accountType,
                 }
                 dictArray.append(mydict)
         context = {
@@ -192,6 +192,7 @@ def ban_unban(request):
             client_ip=request.META.get('REMOTE_ADDR')
 
         if (check_login_status(request) == True):
+            adminid=request.session['unique_id']
             data = json.loads(request.body)
             uid = data['uid']
             accountObj = UserTable.objects.get(unique_id=uid)
@@ -200,12 +201,13 @@ def ban_unban(request):
                 accountObj.lockedCounter = 3
                 accountObj.lockedStatus = 1
                 accountObj.save()
+                logger.info(f"Admin {adminid} from {client_ip} banned {accountObj} at")
             else:
                 # unban
                 accountObj.lockedStatus = 0
                 accountObj.lockedCounter = 0
                 accountObj.save()
-            logger.warning(f"Administrator: {id} from {client_ip} banned {uid} at")
+                logger.warning(f"Administrator: {adminid} from {client_ip} unbanned {uid} at")
             data = {"status":"Success", "message":"Ban Successful"}
             return JsonResponse(data, safe=False)
         else:
@@ -264,7 +266,7 @@ def createEditorAccount(request):
         client_ip = client_ip.split(',')[-1].strip()
     else:
         client_ip=request.META.get('REMOTE_ADDR')
-        
+
     # Check if logged in
     if (check_login_status(request) == False):
         return HttpResponseRedirect('logout/')
@@ -277,38 +279,38 @@ def createEditorAccount(request):
         verify_password = request.POST['verify_password']
         email = request.POST['email']
         phone = request.POST['phone']
+        adminid=request.session['unique_id']
         if UserTable.objects.filter(username=username).exists():
             form = RegisterEditorForm()
-            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+            return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html",
             context={"create_form":form, "status":"Failed", "message":"Username already exist."})
         else:
             if UserTable.objects.filter(email=email).exists():
                 form = RegisterEditorForm()
-                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html",
                 context={"create_form":form, "status":"Failed", "message":"Email already exist."})
             else:
                 if UserTable.objects.filter(phone=phone).exists():
                     form = RegisterEditorForm()
-                    return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                    return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html",
                     context={"create_form":form, "status":"Failed", "message":"Phone Number already registered."})
                 else:
                     if (password != verify_password):
                         form = RegisterEditorForm()
-                        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html", 
+                        return render(request=request, template_name="ShoesInvasionAdmin/create-editor-account.html",
                         context={"create_form":form, "status":"Failed", "message":"Password does not match."})
                     else:
                         unique = ''.join(secrets.choice(string.ascii_uppercase + string.digits + string.ascii_lowercase) for i in range (200))
                         hashedPW = make_password(password)
                         hashedVPW = make_password(verify_password)
                         # Create Account obj
-                        accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW, 
+                        accountObj = UserTable.objects.create(first_name = first_name, last_name = last_name, username=username, password=hashedPW,
                         verify_password = hashedVPW, email = email, phone = phone, bannedStatus = 0, verifiedStatus = 1, verificationCode = 0,
                         lockedStatus = 0, lockedCounter = 0, accountType = "Editor", unique_id = unique, secret_key="")
-                        # Save 
+                        # Save
                         accountObj.save()
                         # data = {"status":"Success", "message":"Insert Successful"}
-                        # return JsonResponse(data, safe=False)
-                        logger.critical(f"Administrator: {id} from {client_ip} created {username} at")
+                        logger.critical(f"Administrator: {adminid} from {client_ip} created {username} at")
                         return HttpResponseRedirect('manage')
 
     else:
