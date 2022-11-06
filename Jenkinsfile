@@ -6,13 +6,14 @@ pipeline {
 	environment{
 		test_dir ="./ShoesInvasion"
 	}
-*/
 
 	parameters{
 		booleanParam(name:"RUN_TEST", defaultValue: true, description: "Run Test Stage")
 	}
 
+*/
 	stages {
+		/*
 		stage('Build') {
 			steps {
 				echo 'Building the application ...'
@@ -34,7 +35,7 @@ pipeline {
 				//Disable yarn audit as not in used
 				dependencyCheck additionalArguments: '--format HTML --format XML --disableYarnAudit', odcInstallation: 'Default'
 			}
-		}
+		} */
 
 		stage('Test') {
 			/*
