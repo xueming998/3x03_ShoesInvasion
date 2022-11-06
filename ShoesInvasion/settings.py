@@ -28,23 +28,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!'
-SECRET_KEY = '%phr@3)et$_@nt-g75g(w5)w(=eey1ll5q-rjaqq=twn$&m-=s'
-SECRET_KEY=os.getenv('SECRET_KEY')
-#print(get_random_secret_key())
-
+SECRET_KEY=os.getenv('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False
 DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
-#ALLOWED_HOSTS = ['127.0.0.1']
-
-#DEBUG = True
-
-#ALLOWED_HOSTS = ['188.166.238.172','127.0.0.1']
-# ALLOWED_HOSTS = ['188.166.238.172']
 
 # Application definition
 
@@ -108,9 +97,6 @@ WSGI_APPLICATION = 'ShoesInvasion.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-# F up gitignore not working
-# Asif : asif1234
-# Ken : admin
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -164,7 +150,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-RECAPTCHA_PUBLIC_KEY = '6Lcax7QiAAAAAFNjhILY9I7YKyTiIeU0u0FAq96M'
+RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY')
 
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
