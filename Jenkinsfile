@@ -19,9 +19,10 @@ pipeline {
 				echo 'Building the application ...'
 				echo "TEST_DIR: ${test_dir}"
 			}
-		}
+		}*/
 
 		stage('OWASP DependencyCheck') {
+			/*
 			when{
 				expression {
 					params.RUN_TEST 
@@ -29,13 +30,13 @@ pipeline {
 					env.BRANCH_NAME == 'Development' 
 				}
 
-			}
+			}*/
 			steps {
 				echo 'OWASP DependencyCheck ...'
 				//Disable yarn audit as not in used
 				dependencyCheck additionalArguments: '--format HTML --format XML --disableYarnAudit', odcInstallation: 'Default'
 			}
-		} */
+		} 
 
 		stage('Test') {
 			/*
@@ -61,9 +62,9 @@ pipeline {
 	}
 	}	
 	post {
-		always {
+		success {
 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-			junit '**/target/*.xml'
+			// junit '**/target/*.xml'
 		}
 	}
 }
