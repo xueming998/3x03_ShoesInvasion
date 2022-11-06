@@ -1,6 +1,6 @@
 pipeline {
 	agent {
-            docker { image 'python:3.9' }
+            docker { image 'python:3.9-alpine' }
         }
 /*
 	environment{
@@ -13,13 +13,12 @@ pipeline {
 
 */
 	stages {
-		/*
 		stage('Build') {
 			steps {
 				echo 'Building the application ...'
-				echo "TEST_DIR: ${test_dir}"
+				sh 'pip install -r requirements.txt'
 			}
-		}*/
+		}
 
 		stage('OWASP DependencyCheck') {
 			/*
