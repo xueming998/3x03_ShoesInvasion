@@ -478,12 +478,12 @@ def login_request(request):
             else:
                 client_ip=request.META.get('REMOTE_ADDR')
             try:
-                account = UserTable.objects.get(username=username)
-                id = account.unique_id
                 if len(response) == 0:
                     form = UserLoginForm()
                     logger.warning(f"No Captcha input by user at user login attempt by {username} from {client_ip} at time:")
                     return render(request=request, template_name="ShoesInvasionApp/login_user.html", context={"login_form":form, "error": "Reattempt Captcha."})
+                account = UserTable.objects.get(username=username)
+                id = account.unique_id
                 if (account.accountType == 'User' and account.lockedStatus == 0):
                     if (len(password) < 12):
                         form = UserLoginForm()
