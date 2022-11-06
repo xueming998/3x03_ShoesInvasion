@@ -15,7 +15,7 @@ pipeline {
 		stage('Build') {
 			steps {
 				echo 'Building the application ...'
-				sh 'pip install -r requirements.txt'
+				// sh 'pip install -r requirements.txt'
 			}
 		}
 
