@@ -1,20 +1,14 @@
 pipeline {
 	// agent { docker { image 'python:3.10.7-alpine' } }
-	agent any
-/*
-	environment{
-		test_dir ="./ShoesInvasion"
-	}
-
-	parameters{
-		booleanParam(name:"RUN_TEST", defaultValue: true, description: "Run Test Stage")
-	}
-
-*/
+	// agent any
+	agent {
+        docker { image 'python:3' }
+    }
 	stages {
 		stage('Build') {
 			steps {
 				echo 'Building the application ...'
+				sh 'python --version'
 				// sh 'pip install -r requirements.txt'
 			}
 		}
