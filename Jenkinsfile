@@ -1,8 +1,5 @@
 pipeline {
-	agent {
-            //docker { image 'python:3.9' }
-			any
-        }
+	agent any
 /*
 	environment{
 		test_dir ="./ShoesInvasion"
