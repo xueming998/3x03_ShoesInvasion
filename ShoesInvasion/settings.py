@@ -17,6 +17,8 @@ from pathlib import Path
 import pymysql
 pymysql.install_as_MySQLdb()
 
+from django.core.management.utils import get_random_secret_key
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +29,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = 'django-insecure-^4ck*1pvbxsh2z_8z-_-**r!ye1^851+g^)i3gtyjk#8+e62v!'
+SECRET_KEY = '%phr@3)et$_@nt-g75g(w5)w(=eey1ll5q-rjaqq=twn$&m-=s'
 SECRET_KEY=os.getenv('SECRET_KEY')
+#print(get_random_secret_key())
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = False
