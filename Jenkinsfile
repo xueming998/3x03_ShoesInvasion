@@ -47,7 +47,7 @@ pipeline {
             steps {
                 //echo 'Testing the application ...'
 				echo 'JUnit Test ...'
-				sh 'python app/manage.py test'
+				sh 'python manage.py test'
 				/*
 				dir("${test_dir}"){
 					sh "python manage.py test"
